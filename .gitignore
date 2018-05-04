@@ -1,0 +1,14 @@
+/*
+!*.dll
+!.gitignore
+!DevSpec.txt
+!/ProjectSettings/
+!/Assets/
+!/Assets/StreamingAssets/
+!/Assets/StreamingAssets.meta
+/Assets/StreamingAssets/build_info.txt
+/Assets/StreamingAssets/build_info.txt.meta
+/Assets/Unity-Logs-Viewer/
+/Assets/Unity-Logs-Viewer.meta
+
+Library/
