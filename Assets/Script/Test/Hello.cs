@@ -4,6 +4,17 @@ using THEDARKKNIGHT;
 using UnityEngine;
 
 public class Hello : ILifeCycle {
+
+    private LifeCycleTool tool;
+
+    private bool TestVar = false;
+
+    public int proporty;
+
+    public void SetProporty(int i) {
+        this.proporty = i;
+    }
+
     public void BAwake(MonoBehaviour main)
     {
         Debug.Log("Hello BAwake");
@@ -52,21 +63,44 @@ public class Hello : ILifeCycle {
 
     public void BUpdate(MonoBehaviour main)
     {
-        Debug.Log("Hello BUpdate");
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            this.Disable();
-        }
-        if(Input.GetKeyDown(KeyCode.O)) {
+        Debug.Log("Hello BUpdate "+proporty);
+        //if (Input.GetKeyDown(KeyCode.P))
+        //{
+        //    this.Disable(tool);
+        //}
+        //if(Input.GetKeyDown(KeyCode.O)) {
             
-        }
+        //}
     }
 
     public void OpenAble() {
-        this.Enable();
+        if (tool == null)
+        {
+            tool = this.Enable(new LifeCycleTool()
+            {
+                priority = 0,
+                Icycle = this
+            }.SetLifeCycle(LifeCycleTool.LifeType.Update,true));
+        }
+        else {
+            this.Enable(tool);
+        }
+
     }
 
-    public Hello() {
-        this.Enable();
+    public Hello(int i) {
+        if (tool == null)
+        {
+            tool = this.Enable(new LifeCycleTool()
+            {
+                priority = i,
+                Icycle = this
+            }.SetLifeCycle(LifeCycleTool.LifeType.Update, true));
+            SetProporty(i);
+        }
+        else {
+            this.Enable(tool);
+        }
+
     }
 }

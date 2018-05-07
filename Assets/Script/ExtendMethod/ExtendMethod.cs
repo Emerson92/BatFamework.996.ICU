@@ -8,16 +8,17 @@ namespace THEDARKKNIGHT {
         /// 启用生命周期
         /// </summary>
         /// <param name="i"></param>
-        public static void Enable(this ILifeCycle i) {
-            LifeCycleControl.Add(i);
+        public static LifeCycleTool Enable(this ILifeCycle i, LifeCycleTool tool) {
+            LifeCycleControl.Add(tool);
+            return tool;
         }
 
         /// <summary>
         /// 关闭生命周期
         /// </summary>
         /// <param name="i"></param>
-        public static void Disable(this ILifeCycle i) {
-            LifeCycleControl.Remove(i);
+        public static void Disable(this ILifeCycle i, LifeCycleTool tool) {
+            LifeCycleControl.Remove(tool);
         }
     }
 }

@@ -62,7 +62,7 @@ namespace THEDARKKNIGHT
         }
 
 
-        protected virtual void OnDestroy()
+        public virtual void OnDestroy()
         {
             instance = null;
         }
