@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using THEDARKKNIGHT.TcpSocket;
 using UnityEngine;
 namespace THEDARKKNIGHT
 {
@@ -10,10 +11,16 @@ namespace THEDARKKNIGHT
     public class BatmanCore : BatMonoSingletion<BatmanCore>
     {
         Hello hello;
+        TcpSocketClientMgr tcp;
         public void Awake()
         {
             CodeWatcher.Instance().Init();
             LifeCycleControl.Instance().Awake(this);
+            tcp = new TcpSocketClientMgr(new TcpSocket.ReceviceDataKeeper(),new TcpSocket.MessagerDataSender());
+            HeartbeatSolver heartbeat = new HeartbeatSolver();
+            heartbeat.SendPeriod(1000).SetHeartbeatMsg("{}");
+            tcp.SetHeartbeat(heartbeat);
+            tcp.ConnectToServer("192.168.0.122",50015);
         }
 
         public void FixedUpdate()
@@ -43,6 +50,7 @@ namespace THEDARKKNIGHT
 
         public override void OnDestroy()
         {
+            tcp.OnDestoryClient();
             LifeCycleControl.Instance().OnDestory(this);
         }
 
