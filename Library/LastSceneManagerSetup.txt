@@ -1,4 +1,0 @@
-sceneSetups:
-- path: Assets/Scenes/BatMainScene.unity
-  isLoaded: 1
-  isActive: 1
