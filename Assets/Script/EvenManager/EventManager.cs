@@ -36,7 +36,40 @@ namespace THEDARKKNIGHT.EventSystem {
         /// <param name="receviers"></param>
         private void SortEventOrder(List<EventParam> receviers)
         {
-            
+            QuickSort(receviers,0, receviers.Count-1);
+        }
+
+        public static void QuickSort(List<EventParam> list, int left, int right)
+        {
+            if (left < right)
+            {
+                int i = Division(list, left, right);
+                QuickSort(list, i + 1, right);
+                QuickSort(list, left, i - 1);
+            }
+        }
+
+        private static int Division(List<EventParam> list, int left, int right)
+        {
+            while (left < right)
+            {
+                int num = list[left].Priority;
+                if (num > list[left + 1].Priority)
+                {
+                    EventParam Temp = list[left];
+                    list[left] = list[left + 1];
+                    list[left + 1] = Temp;
+                    left++;
+                }
+                else
+                {
+                    EventParam temp = list[right];
+                    list[right] = list[left + 1];
+                    list[left + 1] = temp;
+                    right--;
+                }
+            }
+            return left;
         }
 
         /// <summary>

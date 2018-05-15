@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using THEDARKKNIGHT.EventSystem;
 using THEDARKKNIGHT.TcpSocket;
 using UnityEngine;
 namespace THEDARKKNIGHT
@@ -16,11 +18,30 @@ namespace THEDARKKNIGHT
         {
             CodeWatcher.Instance().Init();
             LifeCycleControl.Instance().Awake(this);
-            tcp = new TcpSocketClientMgr(new TcpSocket.ReceviceDataKeeper(),new TcpSocket.MessagerDataSender());
-            HeartbeatSolver heartbeat = new HeartbeatSolver();
-            heartbeat.SendPeriod(1000).SetHeartbeatMsg("{}");
-            tcp.SetHeartbeat(heartbeat);
-            tcp.ConnectToServer("192.168.0.122",50015);
+            TestCode();
+        }
+
+        private void TestCode()
+        {
+            EventManager.Instance().AddListener("Test", Test1, "0", 0);
+            EventManager.Instance().AddListener("Test", Test1, "2", 2);
+            EventManager.Instance().AddListener("Test", Test1, "1", 1);
+            EventManager.Instance().AddListener("Test", Test1, "8", 8);
+            EventManager.Instance().AddListener("Test", Test1, "3", 3);
+            EventManager.Instance().AddListener("Test", Test1, "4", 4);
+            EventManager.Instance().AddListener("Test", Test1, "10", 10);
+            EventManager.Instance().AddListener("Test", Test1, "5", 5);
+            EventManager.Instance().AddListener("Test", Test1, "7", 7);
+            EventManager.Instance().AddListener("Test", Test1, "9", 9);
+            EventManager.Instance().DispatchEvent("Test",(object num) => {
+                Debug.Log("Callback:"+ num);
+            });
+        }
+
+        private object Test1(object num)
+        {
+            Debug.Log("Test1:"+ num);
+            return num;
         }
 
         public void FixedUpdate()
@@ -50,7 +71,6 @@ namespace THEDARKKNIGHT
 
         public override void OnDestroy()
         {
-            tcp.OnDestoryClient();
             LifeCycleControl.Instance().OnDestory(this);
         }
 
