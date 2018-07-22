@@ -20,17 +20,13 @@ WSATestCertificate.pfx.meta
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
 # ===================================== #
-.vs/
+/.vs/
 ExportedObj/
 obj/
 *.svd
 *.userprefs
-/*.csproj
-*.csproj
 *.pidb
 *.suo
-/*.sln
-*.sln
 *.user
 *.unityproj
 *.ipch
