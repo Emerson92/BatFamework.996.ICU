@@ -10,7 +10,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace>
     </RootNamespace>
-    <ProjectGuid>{2F86ADE8-C747-56A5-8F71-AF7AC14410B8}</ProjectGuid>
+    <ProjectGuid>{22E11C48-1E08-98F6-7D77-B82724830585}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -70,7 +70,7 @@
     <Compile Include="Assets\Script\FileSystem\BFileSystem.cs" />
     <Compile Include="Assets\Script\Interface\ILifeCycle.cs" />
     <Compile Include="Assets\Script\Interface\IMessagerParseSolver.cs" />
-    <Compile Include="Assets\Script\NetWork\BHttpRequest.cs" />
+    <Compile Include="Assets\Script\NetWork\Http\BHttpCore.cs" />
     <Compile Include="Assets\Script\NetWork\TcpSocket\Client\TcpSocketClient.cs" />
     <Compile Include="Assets\Script\NetWork\TcpSocket\Client\TcpSocketClientMgr.cs" />
     <Compile Include="Assets\Script\NetWork\TcpSocket\HeartbeatMode\HeartbeatSolver.cs" />
@@ -86,16 +86,16 @@
     <Compile Include="Assets\Script\Utility\SortArithmetic.cs" />
     <Compile Include="Assets\Script\Utility\ThreadCrossHelper\ThreadCrossHelper.cs" />
     <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>/Users/thedarkkinght/UnityProject/2018.2.1f1/BatFarmework/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+      <HintPath>/Users/thedarkknight/BatFamework/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>/Users/thedarkkinght/UnityProject/2018.2.1f1/BatFarmework/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>/Users/thedarkknight/BatFamework/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>/Users/thedarkkinght/UnityProject/2018.2.1f1/BatFarmework/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>/Users/thedarkknight/BatFamework/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>/Users/thedarkkinght/UnityProject/2018.2.1f1/BatFarmework/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>/Users/thedarkknight/BatFamework/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -296,10 +296,10 @@
       <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Analytics">
-      <HintPath>/Users/thedarkkinght/Library/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
+      <HintPath>/Users/thedarkknight/Library/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.StandardEvents">
-      <HintPath>/Users/thedarkkinght/Library/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
+      <HintPath>/Users/thedarkknight/Library/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>/Applications/Unity/Unity.app/Contents/MonoBleedingEdge/lib/mono/unity/mscorlib.dll</HintPath>
