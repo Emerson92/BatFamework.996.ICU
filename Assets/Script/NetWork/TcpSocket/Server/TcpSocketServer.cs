@@ -72,7 +72,7 @@ namespace THEDARKKNIGHT.TcpSocket
                 }
                 catch (ThreadAbortException ex)
                 {
-                    BLog.Instance().Log("Socket监听线程关闭");
+                    BLog.Instance().Log("Socket监听线程关闭 :"+ex.Message);
                     return;
                 }
                 catch (Exception e)
@@ -134,7 +134,7 @@ namespace THEDARKKNIGHT.TcpSocket
                 {
                     Send(item.Value.workSocket, data);
                 }
-                catch (Exception ex)
+                catch
                 {
                     CloseClients.Add(item.Key);
                 }

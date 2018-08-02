@@ -10,11 +10,13 @@ namespace THEDARKKNIGHT
     {
         private LifeCycleTool tool;
 
-        protected string RequestUrl;
+        private string RequestUrl;
 
-        private UnityWebRequest request = new UnityWebRequest();
+        private UnityWebRequest request;
 
-        private MonoBehaviour mono;
+        protected MonoBehaviour mono;
+
+        private float TimeOut;
 
         private Dictionary<string, string> HeaderDic = new Dictionary<string, string>();
 
@@ -24,6 +26,16 @@ namespace THEDARKKNIGHT
 
         private CertificateHandler CertHelper;
 
+        private float DownloadSpeed = 0;
+
+        private float UploadSpeed = 0;
+
+        private float LastDownloadData = 0;
+
+        private float LastUploadData = 0;
+
+        private RequsetOperater operater;
+
         public enum RequsetMethod{
             GET,
             POST,
@@ -32,13 +44,8 @@ namespace THEDARKKNIGHT
 
         private RequsetMethod RequestMethod;
 
-        public void InitBHttpCore(){
-            tool = this.Enable(new LifeCycleTool()
-            {
-                priority = 0,
-                Icycle = this
-            }.SetLifeCycle(LifeCycleTool.LifeType.Start, true)).SetLifeCycle(LifeCycleTool.LifeType.FixedUpdate,true);
-
+        public virtual void InitBHttpCore(){
+            this.Enable();
         }
 
         public void SetCertificate(CertificateHandler handler){
@@ -68,14 +75,14 @@ namespace THEDARKKNIGHT
         }
 
         public void StartSendResquest(){
-            RequsetOperater operater= new RequsetOperater();
+            if(operater != null) operater = new RequsetOperater();
             operater.RequestOperate = PerpareTransportComponent();
             mono.StartCoroutine(SendRequest(operater));
         }
 
         private UnityWebRequest PerpareTransportComponent()
         {
-            UnityWebRequest request = new UnityWebRequest();
+            request = new UnityWebRequest();
             switch(RequestMethod){
                 case RequsetMethod.GET:
                     request.method = UnityWebRequest.kHttpVerbGET;
@@ -102,10 +109,10 @@ namespace THEDARKKNIGHT
         private IEnumerator SendRequest(RequsetOperater oprater){
             yield return oprater.RequestOperate.SendWebRequest();
             if(oprater.RequestOperate.isNetworkError){
-                 NetworkErrorHappen();
+                NetworkErrorHappen(oprater);
             }
             if(oprater.RequestOperate.isHttpError){
-                HttpErrorHappen();
+                HttpErrorHappen(oprater);
             }
             if(oprater.RequestOperate.isDone){
                 HttpRequsetDone((T)oprater.RequestOperate.downloadHandler, (K)oprater.RequestOperate.uploadHandler);
@@ -116,14 +123,27 @@ namespace THEDARKKNIGHT
         protected abstract void HttpRequsetDone(T donwnloadHelper, K uploadloadHelper);
 
 
-        protected abstract void HttpErrorHappen();
+        protected abstract void HttpErrorHappen(RequsetOperater oprater);
 
-        protected abstract void NetworkErrorHappen();
+        protected abstract void NetworkErrorHappen(RequsetOperater oprater);
 
-        protected abstract void ProgressUpdate(T );
+        protected float ProgressUpdate(){
+            float progress = request != null ?request.downloadProgress : 0;
+            return progress;
+        }
+
+        protected float GetDownloadSpeed(){
+
+            return DownloadSpeed/(1024*1024);
+        }
+
+        protected float GetUploadSpeed(){
+
+            return UploadSpeed/(1024 * 1024);
+        }
 
         public virtual void RecycleTrash(){
-            this.Disable(tool);
+            this.Disable();
         }
 
         void ILifeCycle.BAwake(MonoBehaviour main)
@@ -138,7 +158,8 @@ namespace THEDARKKNIGHT
 
         void ILifeCycle.BFixedUpdate(MonoBehaviour main)
         {
-            ProgressUpdate(DownloadOperate.GetProgress());
+            DownloadSpeed = request != null ? (request.downloadedBytes - LastDownloadData)/Time.fixedDeltaTime : 0;
+            UploadSpeed   = request != null ? (request.uploadedBytes   - LastUploadData) / Time.fixedDeltaTime : 0;
         }
 
         void ILifeCycle.BLateUpdate(MonoBehaviour main)
@@ -193,6 +214,8 @@ namespace THEDARKKNIGHT
             public RequsetMethod RequestMethod;
 
             public string Url;
+
+            public int ConnectionCount = 0;
         }
     }
 }

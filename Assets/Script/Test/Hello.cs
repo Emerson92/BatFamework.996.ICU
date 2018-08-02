@@ -7,8 +7,6 @@ public class Hello : ILifeCycle {
 
     private LifeCycleTool tool;
 
-    private bool TestVar = false;
-
     public int proporty;
 
     public void SetProporty(int i) {
@@ -74,33 +72,33 @@ public class Hello : ILifeCycle {
     }
 
     public void OpenAble() {
-        if (tool == null)
-        {
-            tool = this.Enable(new LifeCycleTool()
-            {
-                priority = 0,
-                Icycle = this
-            }.SetLifeCycle(LifeCycleTool.LifeType.Update,true));
-        }
-        else {
-            this.Enable(tool);
-        }
+        //if (tool == null)
+        //{
+        //    tool = this.Enable(new LifeCycleTool()
+        //    {
+        //        priority = 0,
+        //        Icycle = this
+        //    }.SetLifeCycle(LifeCycleTool.LifeType.Update,true));
+        //}
+        //else {
+        //    this.Enable(tool);
+        //}
 
     }
 
     public Hello(int i) {
-        if (tool == null)
-        {
-            tool = this.Enable(new LifeCycleTool()
-            {
-                priority = i,
-                Icycle = this
-            }.SetLifeCycle(LifeCycleTool.LifeType.Update, true));
-            SetProporty(i);
-        }
-        else {
-            this.Enable(tool);
-        }
+        //if (tool == null)
+        //{
+        //    tool = this.Enable(new LifeCycleTool()
+        //    {
+        //        priority = i,
+        //        Icycle = this
+        //    }.SetLifeCycle(LifeCycleTool.LifeType.Update, true));
+        //    SetProporty(i);
+        //}
+        //else {
+        //    this.Enable(tool);
+        //}
 
     }
 }

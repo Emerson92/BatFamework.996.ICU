@@ -12,6 +12,8 @@ namespace THEDARKKNIGHT
     {
         private LifeCycleControl() { }
 
+        public static Dictionary<int, LifeCycleTool> ToolKeepDic = new Dictionary<int, LifeCycleTool>();
+
         private static List<LifeCycleTool> ItemList = new List<LifeCycleTool>();
 
         public static void Add(LifeCycleTool i)
@@ -70,7 +72,7 @@ namespace THEDARKKNIGHT
             ItemList.Remove(i);
         }
 
-        public void Start(MonoBehaviour enter)
+        private void Start(MonoBehaviour enter)
         {
             LoopSend((LifeCycleTool i) =>
             {
@@ -79,7 +81,7 @@ namespace THEDARKKNIGHT
             });
         }
 
-        public void Awake(MonoBehaviour enter)
+        private void Awake(MonoBehaviour enter)
         {
             LoopSend((LifeCycleTool i) =>
             {
@@ -92,6 +94,11 @@ namespace THEDARKKNIGHT
         {
             LoopSend((LifeCycleTool i) =>
             {
+                if(i.Frame == 0){
+                    Awake(enter);
+                    Start(enter);
+                    i.Frame++;
+                }
                 if (i.GetLifeCycleState(LifeCycleTool.LifeType.Update))
                     i.Icycle.BUpdate(enter);
             });
@@ -100,7 +107,8 @@ namespace THEDARKKNIGHT
         public void FixedUpdate(MonoBehaviour enter) {
             LoopSend((LifeCycleTool i) =>
             {
-                if (i.GetLifeCycleState(LifeCycleTool.LifeType.FixedUpdate))
+                
+                if (i.GetLifeCycleState(LifeCycleTool.LifeType.FixedUpdate) && i.Frame > 0)
                     i.Icycle.BFixedUpdate(enter);
             });
         }
@@ -108,7 +116,7 @@ namespace THEDARKKNIGHT
         public void LateUpdate(MonoBehaviour enter) {
             LoopSend((LifeCycleTool i) =>
             {
-                if (i.GetLifeCycleState(LifeCycleTool.LifeType.LateUpdate))
+                if (i.GetLifeCycleState(LifeCycleTool.LifeType.LateUpdate) && i.Frame > 0)
                     i.Icycle.BLateUpdate(enter);
             });
         }
@@ -205,6 +213,8 @@ namespace THEDARKKNIGHT
         public ILifeCycle Icycle;
 
         public int priority;
+
+        public int Frame = 0;
 
         public LifeCycleTool SetLifeCycle(LifeType type,bool excute) {
             LifeStatue[type] = excute;

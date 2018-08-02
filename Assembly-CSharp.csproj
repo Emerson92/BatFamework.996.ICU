@@ -72,6 +72,7 @@
     <Compile Include="Assets\Script\Interface\IMessagerParseSolver.cs" />
     <Compile Include="Assets\Script\NetWork\Http\BHttpCore.cs" />
     <Compile Include="Assets\Script\NetWork\Http\DownloadHelper.cs" />
+    <Compile Include="Assets\Script\NetWork\Http\DownloadOperater.cs" />
     <Compile Include="Assets\Script\NetWork\TcpSocket\Client\TcpSocketClient.cs" />
     <Compile Include="Assets\Script\NetWork\TcpSocket\Client\TcpSocketClientMgr.cs" />
     <Compile Include="Assets\Script\NetWork\TcpSocket\HeartbeatMode\HeartbeatSolver.cs" />
@@ -87,16 +88,16 @@
     <Compile Include="Assets\Script\Utility\SortArithmetic.cs" />
     <Compile Include="Assets\Script\Utility\ThreadCrossHelper\ThreadCrossHelper.cs" />
     <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>/Users/thedarkknight/BatFamework/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+      <HintPath>/Users/thedarkknight/UnityProject/2018.2.1f1/BatFamework/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>/Users/thedarkknight/BatFamework/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>/Users/thedarkknight/UnityProject/2018.2.1f1/BatFamework/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>/Users/thedarkknight/BatFamework/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>/Users/thedarkknight/UnityProject/2018.2.1f1/BatFamework/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>/Users/thedarkknight/BatFamework/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>/Users/thedarkknight/UnityProject/2018.2.1f1/BatFamework/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

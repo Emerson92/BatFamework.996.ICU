@@ -17,31 +17,12 @@ namespace THEDARKKNIGHT
         public void Awake()
         {
             CodeWatcher.Instance().Init();
-            LifeCycleControl.Instance().Awake(this);
-            TestCode();
         }
 
-        private void TestCode()
+        // Use this for initialization
+        void Start()
         {
-            EventManager.Instance().AddListener("Test", Test1, "0", 0);
-            EventManager.Instance().AddListener("Test", Test1, "2", 2);
-            EventManager.Instance().AddListener("Test", Test1, "1", 1);
-            EventManager.Instance().AddListener("Test", Test1, "8", 8);
-            EventManager.Instance().AddListener("Test", Test1, "3", 3);
-            EventManager.Instance().AddListener("Test", Test1, "4", 4);
-            EventManager.Instance().AddListener("Test", Test1, "10", 10);
-            EventManager.Instance().AddListener("Test", Test1, "5", 5);
-            EventManager.Instance().AddListener("Test", Test1, "7", 7);
-            EventManager.Instance().AddListener("Test", Test1, "9", 9);
-            EventManager.Instance().DispatchEvent("Test",(object num) => {
-                Debug.Log("Callback:"+ num);
-            });
-        }
 
-        private object Test1(object num)
-        {
-            Debug.Log("Test1:"+ num);
-            return num;
         }
 
         public void FixedUpdate()
@@ -82,12 +63,6 @@ namespace THEDARKKNIGHT
         public void OnEnable()
         {
             LifeCycleControl.Instance().OnEnable(this);
-        }
-
-        // Use this for initialization
-        void Start()
-        {
-            LifeCycleControl.Instance().Start(this);
         }
 
         // Update is called once per frame

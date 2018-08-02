@@ -74,7 +74,7 @@ namespace THEDARKKNIGHT.TcpSocket {
                 {
                     Send(item.Value.workSocket, msg);
                 }
-                catch (Exception ex)
+                catch
                 {
                     CloseClients.Add(item.Key);
                 }
