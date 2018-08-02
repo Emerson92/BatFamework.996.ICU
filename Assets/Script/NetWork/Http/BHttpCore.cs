@@ -37,7 +37,7 @@ namespace THEDARKKNIGHT
             {
                 priority = 0,
                 Icycle = this
-            }.SetLifeCycle(LifeCycleTool.LifeType.Start, true));
+            }.SetLifeCycle(LifeCycleTool.LifeType.Start, true)).SetLifeCycle(LifeCycleTool.LifeType.FixedUpdate,true);
 
         }
 
@@ -113,20 +113,14 @@ namespace THEDARKKNIGHT
             }
         }
 
-        protected virtual void HttpRequsetDone(T donwnloadHelper,K uploadloadHelper)
-        {
-            
-        }
+        protected abstract void HttpRequsetDone(T donwnloadHelper, K uploadloadHelper);
 
-        protected virtual void HttpErrorHappen()
-        {
-            
-        }
 
-        protected virtual void NetworkErrorHappen()
-        {
-           
-        }
+        protected abstract void HttpErrorHappen();
+
+        protected abstract void NetworkErrorHappen();
+
+        protected abstract void ProgressUpdate(T );
 
         public virtual void RecycleTrash(){
             this.Disable(tool);
@@ -144,7 +138,7 @@ namespace THEDARKKNIGHT
 
         void ILifeCycle.BFixedUpdate(MonoBehaviour main)
         {
-
+            ProgressUpdate(DownloadOperate.GetProgress());
         }
 
         void ILifeCycle.BLateUpdate(MonoBehaviour main)

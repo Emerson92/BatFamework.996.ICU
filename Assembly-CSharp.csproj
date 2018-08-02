@@ -71,6 +71,7 @@
     <Compile Include="Assets\Script\Interface\ILifeCycle.cs" />
     <Compile Include="Assets\Script\Interface\IMessagerParseSolver.cs" />
     <Compile Include="Assets\Script\NetWork\Http\BHttpCore.cs" />
+    <Compile Include="Assets\Script\NetWork\Http\DownloadHelper.cs" />
     <Compile Include="Assets\Script\NetWork\TcpSocket\Client\TcpSocketClient.cs" />
     <Compile Include="Assets\Script\NetWork\TcpSocket\Client\TcpSocketClientMgr.cs" />
     <Compile Include="Assets\Script\NetWork\TcpSocket\HeartbeatMode\HeartbeatSolver.cs" />
