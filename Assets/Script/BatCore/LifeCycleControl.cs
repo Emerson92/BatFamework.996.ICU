@@ -94,12 +94,7 @@ namespace THEDARKKNIGHT
         {
             LoopSend((LifeCycleTool i) =>
             {
-                if(i.Frame == 0){
-                    Awake(enter);
-                    Start(enter);
-                    i.Frame++;
-                }
-                if (i.GetLifeCycleState(LifeCycleTool.LifeType.Update))
+                if (i.GetLifeCycleState(LifeCycleTool.LifeType.Update) && i.Frame > 0)
                     i.Icycle.BUpdate(enter);
             });
         }
@@ -107,7 +102,12 @@ namespace THEDARKKNIGHT
         public void FixedUpdate(MonoBehaviour enter) {
             LoopSend((LifeCycleTool i) =>
             {
-                
+                if (i.Frame == 0)
+                {
+                    Awake(enter);
+                    Start(enter);
+                    i.Frame++;
+                }
                 if (i.GetLifeCycleState(LifeCycleTool.LifeType.FixedUpdate) && i.Frame > 0)
                     i.Icycle.BFixedUpdate(enter);
             });

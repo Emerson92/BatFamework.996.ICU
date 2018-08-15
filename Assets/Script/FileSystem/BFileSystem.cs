@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using UnityEngine;
 namespace THEDARKKNIGHT.FileSystem
 {
@@ -86,6 +87,55 @@ namespace THEDARKKNIGHT.FileSystem
             }
             catch (Exception ex) {
                 BLog.Instance().Log(ex.Message);
+            }
+        }
+
+        public void WriteFileToDiskAsync(byte[] data,string path,string fileName,bool IsForceWriter = false){
+            try{
+                string filePath = path + "/" + fileName;
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path); 
+                if(File.Exists(filePath)){
+                    if (IsForceWriter)
+                        DeleteFile(filePath); 
+                }
+                ;
+                using(FileStream steam = CreateFile(path, fileName)){
+                    new Thread(()=>{
+                        steam.Write(data,0,data.Length);
+                        steam.Flush();
+                        steam.Dispose();
+                    }).Start();
+                }
+            }catch(Exception ex){
+                BLog.Instance().Log(ex.Message);
+            }
+        }
+
+        public byte[] ReadFileFromDisk(string path, string fileName)
+        {
+            string filePath = path + "/" + fileName;
+            return ReadFileFromDisk(filePath);
+        }
+
+        public byte[] ReadFileFromDisk(string filePath)
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    FileStream stream = new FileStream(filePath, FileMode.Open);
+                    using (BinaryReader read = new BinaryReader(stream))
+                    {
+                        byte[] data = read.ReadBytes((int)stream.Length);
+                        return data;
+                    }
+                }
+                return null;
+            }catch (Exception ex)
+            {
+                BLog.Instance().Log(ex.Message);
+                return null;
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio for Mac
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BatFamework", "Assembly-CSharp.csproj", "{22E11C48-1E08-98F6-7D77-B82724830585}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{22E11C48-1E08-98F6-7D77-B82724830585}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
