@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using UnityEngine;
 namespace THEDARKKNIGHT.FileSystem
 {
     public class BFileSystem : BatSingletion<BFileSystem>
@@ -99,7 +96,6 @@ namespace THEDARKKNIGHT.FileSystem
                     if (IsForceWriter)
                         DeleteFile(filePath); 
                 }
-                ;
                 using(FileStream steam = CreateFile(path, fileName)){
                     new Thread(()=>{
                         steam.Write(data,0,data.Length);

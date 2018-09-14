@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using THEDARKKNIGHT.Interface;
 using THEDARKKNIGHT.ThreadHelper;
 using UnityEngine;
 

@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT;
+using THEDARKKNIGHT.HTTP;
+using THEDARKKNIGHT.ResourceSystem;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -10,6 +12,7 @@ public class Http : MonoBehaviour {
     DownloadOperater operater;
     // Use this for initialization
     void Start () {
+        BResourceMgr.Instance().Init();
         operater = new DownloadOperater();
         operater.Init();
         operater.HttpStatusCallback += (float downSpeed, float uploadSpeed, float progress) =>

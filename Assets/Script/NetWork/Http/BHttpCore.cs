@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using THEDARKKNIGHT.Interface;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace THEDARKKNIGHT
+namespace THEDARKKNIGHT.HTTP
 {
     public abstract class BHttpCore<T,K> : ILifeCycle where T : DownloadHandler where K :UploadHandler
     {
@@ -169,12 +170,12 @@ namespace THEDARKKNIGHT
 
         void ILifeCycle.BAwake(MonoBehaviour main)
         {
+            Debug.Log("BAwake");
             this.mono = main;
             LifeCycleTool tool = this.GetLifeCycleTool();
             tool.SetLifeCycle(LifeCycleTool.LifeType.Start, true)
-                .SetLifeCycle(LifeCycleTool.LifeType.FixedUpdate,true)
-                .SetLifeCycle(LifeCycleTool.LifeType.OnApplicationQuit, true)
-                ;
+                .SetLifeCycle(LifeCycleTool.LifeType.Update,true)
+                .SetLifeCycle(LifeCycleTool.LifeType.OnApplicationQuit, true);
         }
 
         void ILifeCycle.BDisable(MonoBehaviour main)
@@ -184,13 +185,7 @@ namespace THEDARKKNIGHT
 
         void ILifeCycle.BFixedUpdate(MonoBehaviour main)
         {
-            if (Statue == HttpStatus.Working) {
-                DownloadSpeed = request != null ? (request.downloadedBytes - LastDownloadData) / Time.fixedDeltaTime : 0;
-                UploadSpeed = request != null ? (request.uploadedBytes - LastUploadData) / Time.fixedDeltaTime : 0;
-                LastDownloadData = request.downloadedBytes;
-                LastUploadData = request.uploadedBytes;
-                if (HttpStatusCallback != null) HttpStatusCallback(GetDownloadSpeed(), GetUploadSpeed(), ProgressUpdate());
-            }
+
         }
 
         void ILifeCycle.BLateUpdate(MonoBehaviour main)
@@ -235,7 +230,14 @@ namespace THEDARKKNIGHT
 
         void ILifeCycle.BUpdate(MonoBehaviour main)
         {
-
+            if (Statue == HttpStatus.Working)
+            {
+                DownloadSpeed = request != null ? (request.downloadedBytes - LastDownloadData) / Time.fixedDeltaTime : 0;
+                UploadSpeed = request != null ? (request.uploadedBytes - LastUploadData) / Time.fixedDeltaTime : 0;
+                LastDownloadData = request.downloadedBytes;
+                LastUploadData = request.uploadedBytes;
+                if (HttpStatusCallback != null) HttpStatusCallback(GetDownloadSpeed(), GetUploadSpeed(), ProgressUpdate());
+            }
         }
 
         public class RequsetOperater{

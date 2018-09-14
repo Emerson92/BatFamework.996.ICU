@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using THEDARKKNIGHT;
-using UnityEngine;
+using THEDARKKNIGHT.HTTP;
 using UnityEngine.Networking;
 
 namespace THEDARKKNIGHT
@@ -56,12 +53,12 @@ namespace THEDARKKNIGHT
         }
 
         protected void ReConnectionAgain(RequsetOperater oprater){
-            
-            if(oprater.ConnectionCount < ConnectedCountLimit){
+
+            if (oprater.ConnectionCount < ConnectedCountLimit)
+            {
                 StartSendResquest();
                 oprater.ConnectionCount++;
             }
-                
         }
     }
 }

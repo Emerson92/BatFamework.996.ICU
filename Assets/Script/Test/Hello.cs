@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT;
+using THEDARKKNIGHT.Interface;
 using UnityEngine;
 
 public class Hello : ILifeCycle {
