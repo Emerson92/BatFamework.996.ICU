@@ -67,6 +67,7 @@
     <Compile Include="Assets\Script\EvenManager\EventManager.cs" />
     <Compile Include="Assets\Script\ExtendMethod\ExtendMethod.cs" />
     <Compile Include="Assets\Script\FileSystem\BFileSystem.cs" />
+    <Compile Include="Assets\Script\Interface\ICacheFileSystem.cs" />
     <Compile Include="Assets\Script\Interface\ILifeCycle.cs" />
     <Compile Include="Assets\Script\Interface\IMessagerParseSolver.cs" />
     <Compile Include="Assets\Script\NetWork\Http\BHttpCore.cs" />
@@ -81,7 +82,13 @@
     <Compile Include="Assets\Script\NetWork\TcpSocket\Server\TcpSocketServer.cs" />
     <Compile Include="Assets\Script\NetWork\TcpSocket\Server\TcpSocketServerMgr.cs" />
     <Compile Include="Assets\Script\NetWork\TcpSocket\StatePool\StateObjectPool.cs" />
+    <Compile Include="Assets\Script\ResourceManager\BCacheFileMgr.cs" />
+    <Compile Include="Assets\Script\ResourceManager\BResourceMgr.cs" />
+    <Compile Include="Assets\Script\SceneManager\SceneMgr.cs" />
     <Compile Include="Assets\Script\Test\Hello.cs" />
+    <Compile Include="Assets\Script\Test\Http.cs" />
+    <Compile Include="Assets\Script\Test\LoadTest.cs" />
+    <Compile Include="Assets\Script\Utility\BFameWorkDefine.cs" />
     <Compile Include="Assets\Script\Utility\BLog.cs" />
     <Compile Include="Assets\Script\Utility\CodeWatcher.cs" />
     <Compile Include="Assets\Script\Utility\SortArithmetic.cs" />

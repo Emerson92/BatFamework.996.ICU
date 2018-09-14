@@ -15,7 +15,6 @@ namespace THEDARKKNIGHT.ResourceSystem {
 
         private ICacheFileSystem CacheSystem = new BCacheFileMgr();
 
-
         private BResourceMgr() { }
 
         public void Init() {
@@ -36,6 +35,7 @@ namespace THEDARKKNIGHT.ResourceSystem {
             tool.SetLifeCycle(LifeCycleTool.LifeType.Update,true)
                 .SetLifeCycle(LifeCycleTool.LifeType.OnApplicationQuit,true);
         }
+
         public void BDisable(MonoBehaviour main){}
         public void BFixedUpdate(MonoBehaviour main){}
         public void BLateUpdate(MonoBehaviour main){}
@@ -97,8 +97,40 @@ namespace THEDARKKNIGHT.ResourceSystem {
         public void LoadCacheResAsync(string resPath, Action<AssetBundleCreateRequest> LoadFinishCallback) {
             mainMono.StartCoroutine(LoadRes(resPath, LoadFinishCallback));
         }
+        /// <summary>
+        /// Loads the local res.
+        /// </summary>
+        public System.Object loadLocalRes(string resPath){
+            System.Object assert = Resources.Load(resPath);
+            return assert;
+        }
+        /// <summary>
+        /// Loads the local res async.
+        /// </summary>
+        /// <param name="resPath">Res path.</param>
+        /// <param name="LoadFinishCallback">Load finish callback.</param>
+        public void loadLocalResAsync(string resPath,Action<ResourceRequest> LoadFinishCallback)
+        {
+            mainMono.StartCoroutine(loadloaclRes(resPath,LoadFinishCallback));
+        }
 
-
+        private IEnumerator loadloaclRes(string resPath,Action<ResourceRequest> LoadFinishCallback)
+        {
+            ResourceRequest assert = Resources.LoadAsync(resPath);
+            yield return assert;
+            if (assert.isDone)
+            {
+                if (LoadFinishCallback != null)
+                    LoadFinishCallback(assert);
+            }
+            else
+                BLog.Instance().Warn("加载本地文件" + resPath + "失败!");
+        }
+        /// <summary>
+        /// Loads the res async.
+        /// </summary>
+        /// <param name="resName">Res name.</param>
+        /// <param name="LoadFinishCallback">Load finish callback.</param>
         public void LoadResAsync(string resName, Action<AssetBundleCreateRequest> LoadFinishCallback)
         {
             AssetBaseInfo asset = null;
@@ -107,7 +139,13 @@ namespace THEDARKKNIGHT.ResourceSystem {
                 mainMono.StartCoroutine(LoadRes(asset.urlPath, LoadFinishCallback));
         }
 
-
+        /// <summary>
+        /// Loads the res async.
+        /// </summary>
+        /// <param name="resName">Res name.</param>
+        /// <param name="data">Data.</param>
+        /// <param name="version">Version.</param>
+        /// <param name="LoadFinishCallback">Load finish callback.</param>
         public void LoadResAsync(string resName,byte[] data, float version, Action<AssetBundleCreateRequest> LoadFinishCallback) {
             mainMono.StartCoroutine(LoadRes(resName, data, version, LoadFinishCallback));
         }
@@ -184,25 +222,6 @@ namespace THEDARKKNIGHT.ResourceSystem {
 
                     if (LoadFinishCallback != null)
                         LoadFinishCallback(rRequest);
-                    //AssetBundleRequest rABReq = rRequest.assetBundle.LoadAllAssetsAsync();
-                    //yield return rABReq;
-                    //if (rABReq.isDone)
-                    //{
-                    //    if (LoadFinishCallback != null)
-                    //        LoadFinishCallback(rABReq);
-                    //    //AssetBundleManifest rManifest = rABReq.asset as AssetBundleManifest;
-                    //    //string[] rAllAssetNames = rManifest.GetAllAssetBundles();
-                    //    //for (int asset_index = 0; asset_index < rAllAssetNames.Length; asset_index++)
-                    //    //{
-                    //    //    string[] rDependencsName = rManifest.GetAllDependencies(rAllAssetNames[asset_index]);
-                    //    //    for (int i = 0; i < rDependencsName.Length; i++)
-                    //    //    {
-                    //    //        Debug.LogError(rDependencsName[i]);
-                    //    //    }
-                    //    //    AssetReqBaseInfo rBaseInfo = new AssetReqBaseInfo(rAllAssetNames[asset_index], rDependencsName, rVersion);
-                    //    //    mAssetBundleInfoDic.Add(rAllAssetNames[asset_index], rBaseInfo);
-                    //    //}
-                    //}
                 }
                 else
                 {

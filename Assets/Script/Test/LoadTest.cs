@@ -15,10 +15,12 @@ public class LoadTest : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown(KeyCode.P)) {
             Debug.Log(BFameWorkDefine.BFameDataPath + "/dungouji.sdf");
-            BResourceMgr.Instance().LoadCacheResAsync(BFameWorkDefine.BFameDataPath + "/dungouji.sdf", (AssetBundleCreateRequest request) => {
-                GameObject DunGunJI = request.assetBundle.LoadAsset<GameObject>("dungouji") as GameObject;
-                Instantiate(DunGunJI);
-            });
+            GameObject ob = Resources.Load("dungouji.sdf") as GameObject;
+            Instantiate(ob);
+            //BResourceMgr.Instance().LoadCacheResAsync(BFameWorkDefine.BFameDataPath + "/dungouji.sdf", (AssetBundleCreateRequest request) => {
+            //    GameObject DunGunJI = request.assetBundle.LoadAsset<GameObject>("dungouji") as GameObject;
+            //    Instantiate(DunGunJI);
+            //});
 
         }
     }
