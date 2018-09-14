@@ -17,8 +17,14 @@ namespace THEDARKKNIGHT
 
         public bool OpenReConnected = false;
 
+        /// <summary>
+        /// 设置重连次数
+        /// </summary>
         public int ConnectedCountLimit = 0;
 
+        /// <summary>
+        /// 设置重连时间
+        /// </summary>
         public float DelayTimeReConnected = 0;
 
         public void Init(){

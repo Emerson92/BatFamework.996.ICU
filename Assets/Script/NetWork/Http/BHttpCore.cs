@@ -36,11 +36,25 @@ namespace THEDARKKNIGHT
 
         private RequsetOperater operater;
 
+        /// <summary>
+        /// 下载速度，上传速度，下载进度 
+        /// </summary>
+        public Action<float, float, float> HttpStatusCallback;
+
+        private enum HttpStatus {
+            None,
+            Start,
+            Working,
+            Done,
+        }
+
         public enum RequsetMethod{
             GET,
             POST,
             PUT
         };
+
+        private HttpStatus Statue;
 
         private RequsetMethod RequestMethod;
 
@@ -75,8 +89,10 @@ namespace THEDARKKNIGHT
         }
 
         public void StartSendResquest(){
-            if(operater != null) operater = new RequsetOperater();
+            Statue = HttpStatus.Start;
+            if (operater == null) operater = new RequsetOperater();
             operater.RequestOperate = PerpareTransportComponent();
+            Statue = HttpStatus.Working;
             mono.StartCoroutine(SendRequest(operater));
         }
 
@@ -102,6 +118,8 @@ namespace THEDARKKNIGHT
             }
             request.downloadHandler = DownloadOperate;
             request.uploadHandler = UploadOperate;
+            if (request.downloadHandler == null) BLog.Instance().Warn("下载器为空对象!");
+            if (request.uploadHandler == null) BLog.Instance().Warn("上传器为空对象!");
             request.certificateHandler = CertHelper;
             return request;
         }
@@ -110,13 +128,16 @@ namespace THEDARKKNIGHT
             yield return oprater.RequestOperate.SendWebRequest();
             if(oprater.RequestOperate.isNetworkError){
                 NetworkErrorHappen(oprater);
+                Statue = HttpStatus.Done;
             }
             if(oprater.RequestOperate.isHttpError){
                 HttpErrorHappen(oprater);
+                Statue = HttpStatus.Done;
             }
             if(oprater.RequestOperate.isDone){
                 HttpRequsetDone((T)oprater.RequestOperate.downloadHandler, (K)oprater.RequestOperate.uploadHandler);
-
+                Statue = HttpStatus.Done;
+                if (HttpStatusCallback != null) HttpStatusCallback(DownloadSpeed, UploadSpeed, ProgressUpdate());
             }
         }
 
@@ -148,7 +169,12 @@ namespace THEDARKKNIGHT
 
         void ILifeCycle.BAwake(MonoBehaviour main)
         {
-
+            this.mono = main;
+            LifeCycleTool tool = this.GetLifeCycleTool();
+            tool.SetLifeCycle(LifeCycleTool.LifeType.Start, true)
+                .SetLifeCycle(LifeCycleTool.LifeType.FixedUpdate,true)
+                .SetLifeCycle(LifeCycleTool.LifeType.OnApplicationQuit, true)
+                ;
         }
 
         void ILifeCycle.BDisable(MonoBehaviour main)
@@ -158,8 +184,13 @@ namespace THEDARKKNIGHT
 
         void ILifeCycle.BFixedUpdate(MonoBehaviour main)
         {
-            DownloadSpeed = request != null ? (request.downloadedBytes - LastDownloadData)/Time.fixedDeltaTime : 0;
-            UploadSpeed   = request != null ? (request.uploadedBytes   - LastUploadData) / Time.fixedDeltaTime : 0;
+            if (Statue == HttpStatus.Working) {
+                DownloadSpeed = request != null ? (request.downloadedBytes - LastDownloadData) / Time.fixedDeltaTime : 0;
+                UploadSpeed = request != null ? (request.uploadedBytes - LastUploadData) / Time.fixedDeltaTime : 0;
+                LastDownloadData = request.downloadedBytes;
+                LastUploadData = request.uploadedBytes;
+                if (HttpStatusCallback != null) HttpStatusCallback(GetDownloadSpeed(), GetUploadSpeed(), ProgressUpdate());
+            }
         }
 
         void ILifeCycle.BLateUpdate(MonoBehaviour main)
@@ -199,7 +230,7 @@ namespace THEDARKKNIGHT
 
         void ILifeCycle.BStart(MonoBehaviour main)
         {
-            this.mono = main;
+            Debug.Log("BHttpCore BStart");
         }
 
         void ILifeCycle.BUpdate(MonoBehaviour main)
