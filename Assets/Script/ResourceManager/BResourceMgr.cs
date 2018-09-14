@@ -234,7 +234,7 @@ namespace THEDARKKNIGHT.ResourceSystem {
         [Serializable]
         private class AssetInfoGroup {
 
-            AssetBaseInfo[] info;
+            public AssetBaseInfo[] info;
 
             public AssetInfoGroup(AssetBaseInfo[] info) {
                 this.info = info;
