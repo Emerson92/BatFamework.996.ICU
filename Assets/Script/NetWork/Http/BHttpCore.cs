@@ -59,9 +59,7 @@ namespace THEDARKKNIGHT.HTTP
 
         private RequsetMethod RequestMethod;
 
-        public virtual void InitBHttpCore(){
-            this.Enable();
-        }
+        public BHttpCore() { this.Enable(); }
 
         public void SetCertificate(CertificateHandler handler){
 

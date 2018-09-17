@@ -12,9 +12,7 @@ public class Http : MonoBehaviour {
     DownloadOperater operater;
     // Use this for initialization
     void Start () {
-        BResourceMgr.Instance().Init();
         operater = new DownloadOperater();
-        operater.Init();
         operater.HttpStatusCallback += (float downSpeed, float uploadSpeed, float progress) =>
         {
             Debug.Log("downSpeed :" + downSpeed +"/MB "+ " uploadSpeed :" + uploadSpeed + "progress :" + progress);

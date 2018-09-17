@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT.ConstDefine;
+using THEDARKKNIGHT.InputOperate;
 using THEDARKKNIGHT.ResourceSystem;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ public class LoadTest : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        BResourceMgr.Instance().Init();
+        BInputOperateEngine.Instance();
     }
 	
 	// Update is called once per frame

@@ -15,11 +15,7 @@ namespace THEDARKKNIGHT.ResourceSystem {
 
         private ICacheFileSystem CacheSystem = new BCacheFileMgr();
 
-        private BResourceMgr() { }
-
-        public void Init() {
-            this.Enable();
-        }
+        private BResourceMgr() { this.Enable(); }
 
         /// <summary>
         ///  设置文件缓存器

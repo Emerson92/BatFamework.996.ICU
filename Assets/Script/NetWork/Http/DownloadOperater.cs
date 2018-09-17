@@ -24,10 +24,6 @@ namespace THEDARKKNIGHT
         /// </summary>
         public float DelayTimeReConnected = 0;
 
-        public void Init(){
-            InitBHttpCore();
-        }
-
         protected override void HttpErrorHappen(RequsetOperater oprater)
         {
             if (HttpErrorHappenCallback != null)
