@@ -8,7 +8,7 @@ namespace THEDARKKNIGHT.InputOperate
     public class BInputOperateEngine :BatSingletion<BInputOperateEngine> ,ILifeCycle
     {
 
-        private InputParser InputParser;
+        private IInputParser InputParser;
 
         private BInputOperateEngine() {
             this.Enable();
