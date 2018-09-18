@@ -25,15 +25,15 @@ namespace THEDARKKNIGHT.InputOperate.DataStruct {
 
         public InputOperateType OperateType;
 
-        public T Value;
+        public T[] Value;
 
-        public T DeltaValue;
+        public T[] DeltaValue;
 
         public bool IsOverUI;
 
         public RayInfo Info;
 
-        public InputDataPacket(InputOperateType type, T value, T deltaValue, bool isOverUI, RayInfo info)
+        public InputDataPacket(InputOperateType type, T[] value, T[] deltaValue, bool isOverUI, RayInfo info)
         {
             this.OperateType = type;
             this.Value = value;

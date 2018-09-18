@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace THEDARKKNIGHT.EventSystem {
-    public class EventManager :BatSingletion<EventManager>{
+    public class BEventManager : BatSingletion<BEventManager>
+    {
 
         Dictionary<string, List<EventParam>> EventManagerDic = new Dictionary<string, List<EventParam>>();
 
-        private EventManager() { }
+        private BEventManager() { }
 
         /// <summary>
         /// 添加监听事件
@@ -15,8 +16,8 @@ namespace THEDARKKNIGHT.EventSystem {
         /// <param name="methodName"></param>
         /// <param name="dispatchEvent"></param>
         /// <param name="priority"></param>
-        public void AddListener(string methodName,Func<object,object> dispatchEvent,object data ,int priority = 0) {
-            EventParam param = new EventParam(dispatchEvent, data, priority);
+        public void AddListener(string methodName,Func<object,object> dispatchEvent,int priority = 0) {
+            EventParam param = new EventParam(dispatchEvent, priority);
             if (!EventManagerDic.ContainsKey(methodName))
             {
                 List<EventParam> receviers = new List<EventParam>();
@@ -77,12 +78,12 @@ namespace THEDARKKNIGHT.EventSystem {
         /// </summary>
         /// <param name="methodName"></param>
         /// <param name="resultCallback"></param>
-        public void DispatchEvent(string methodName,Action<object> resultCallback = null) {
+        public void DispatchEvent(string methodName,object data, Action<object> resultCallback = null) {
             if (EventManagerDic.ContainsKey(methodName)) {
                 List <EventParam> receviers = EventManagerDic[methodName];
                 receviers.ForEach((EventParam param) => {
                     if (param.DispatchEvent != null) {
-                        object result = param.DispatchEvent(param.Data);
+                        object result = param.DispatchEvent(data);
                         if (resultCallback != null)
                             resultCallback(result);
                     }
@@ -94,13 +95,10 @@ namespace THEDARKKNIGHT.EventSystem {
 
             public Func<object,object> DispatchEvent;
 
-            public object Data;
-
             public int Priority;
 
-            public EventParam(Func<object, object> dispatchEvent,object data ,int priority) {
+            public EventParam(Func<object, object> dispatchEvent,int priority) {
                 this.DispatchEvent = dispatchEvent;
-                this.Data = data;
                 this.Priority = priority;
             }
         }
