@@ -102,15 +102,14 @@ namespace THEDARKKNIGHT.InputOperate
                     if (CheckIsZoom(deltaVectorOne, deltaVectorTwo))//Zoom function callback;
                     {
                         float distance = deltaVectorOne.magnitude < deltaVectorTwo.magnitude ? deltaVectorOne.magnitude : deltaVectorTwo.magnitude;
-                        DataStruct.InputDataPacket<float> data = InputParser.GetZoomEvent(distance/ DiagonalLenght, hit);
-                        BEventManager.Instance().DispatchEvent(BatEventDefine.ZOOMEVENT, data);
+                        DataStruct.InputDataPacket<float> zoomData = InputParser.GetZoomEvent(distance/ DiagonalLenght, hit);
+                        BEventManager.Instance().DispatchEvent(BatEventDefine.ZOOMEVENT, zoomData);
                     }
-                    else//MultiFinger Drag Event;
-                    {
-                        Vector3[] pos = GetLastPosValue(touchCount);
-                        DataStruct.InputDataPacket<Vector3> data = InputParser.GetMultiDragEvent(pos, TempInputValue, hit);
-                        BEventManager.Instance().DispatchEvent(BatEventDefine.MULTIDRAGEVENT, data);
-                    }
+                    //MultiFinger Drag Event;
+                    Vector3[] pos = GetLastPosValue(touchCount);
+                    DataStruct.InputDataPacket<Vector3> data = InputParser.GetMultiDragEvent(pos, TempInputValue, hit);
+                    BEventManager.Instance().DispatchEvent(BatEventDefine.MULTIDRAGEVENT, data);
+                    
                     SaveInputValue(touchCount);
                 }
                 else if (Input.GetTouch(touchCount - 1).phase == TouchPhase.Ended && touchCount < 5)//MultiFinger Releas Event
