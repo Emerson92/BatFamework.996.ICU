@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine;
+using THEDARKKNIGHT.Log;
 namespace THEDARKKNIGHT.TcpSocket
 {
 

@@ -16,8 +16,6 @@ namespace THEDARKKNIGHT.InputOperate
           private IInputParser InputParser = new BGestureInputParser();
 #endif
 
-
-
         private readonly float DiagonalLenght = Mathf.Sqrt(Mathf.Pow(Screen.width, 2) + Mathf.Pow(Screen.height, 2));
 
         /// <summary>
@@ -139,6 +137,7 @@ namespace THEDARKKNIGHT.InputOperate
         {
             if (Input.GetMouseButtonDown(0))
             {
+                TempInputValue[0] = Input.mousePosition;
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetLeftPressEvent(Input.mousePosition,hit);
                 BEventManager.Instance().DispatchEvent(BatEventDefine.LEFTPRESSEVENT, data);
             }
@@ -154,6 +153,7 @@ namespace THEDARKKNIGHT.InputOperate
             }
             if (Input.GetMouseButtonDown(1))
             {
+                TempInputValue[0] = Input.mousePosition;
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetRightPressEvent(Input.mousePosition, hit);
                 BEventManager.Instance().DispatchEvent(BatEventDefine.RIGHTPRESSEVENT, data);
             }
@@ -167,7 +167,7 @@ namespace THEDARKKNIGHT.InputOperate
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetRightReleasEvent(Input.mousePosition, TempInputValue[0], hit);
                 BEventManager.Instance().DispatchEvent(BatEventDefine.RIGHTRELEASEVENT, data);
             }
-            if (Input.GetMouseButton(2))
+            if (Input.GetAxis("Mouse ScrollWheel") != 0)
             {
                 DataStruct.InputDataPacket<float> data = InputParser.GetZoomEvent(Input.GetAxis("Mouse ScrollWheel"), hit);
                 BEventManager.Instance().DispatchEvent(BatEventDefine.ZOOMEVENT, data);

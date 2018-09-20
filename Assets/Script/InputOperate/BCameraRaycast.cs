@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace THEDARKKNIGHT.InputOperate {
@@ -9,9 +10,7 @@ namespace THEDARKKNIGHT.InputOperate {
 
         private Camera RaycastCamera = Camera.main;
 
-        private LayerMask mask ;
-
-        public const int EVERTHINGMASK = ~(1 << 0);
+        private LayerMask mask = LayerMask.NameToLayer("DefaultRaycastLayers");
 
         private float RayDistance = Mathf.Infinity;
 
@@ -23,9 +22,20 @@ namespace THEDARKKNIGHT.InputOperate {
             RaycastCamera = camera;
         }
 
+        public Camera GetCurrentCamera() {
+            return RaycastCamera;
+        }
+
         public RaycastHit ShootRaycast(Vector3 postion) {
             RaycastHit hit;
-            Physics.Raycast(RaycastCamera.ScreenPointToRay(Input.mousePosition), out hit, RayDistance, mask.value);
+            Ray shootRay = RaycastCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(shootRay, out hit, RayDistance, mask))
+            {
+                Debug.DrawLine(shootRay.origin, hit.point, Color.green);
+            }
+            else {
+                Debug.DrawRay(shootRay.origin, shootRay.direction * 10000, Color.red);
+            }
             return hit;
         }
 
