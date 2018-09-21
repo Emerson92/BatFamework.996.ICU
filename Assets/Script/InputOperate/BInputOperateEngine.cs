@@ -16,7 +16,7 @@ namespace THEDARKKNIGHT.InputOperate
           private IInputParser InputParser = new BGestureInputParser();
 #endif
 
-        private readonly float DiagonalLenght = Mathf.Sqrt(Mathf.Pow(Screen.width, 2) + Mathf.Pow(Screen.height, 2));
+        private readonly float ScalPelPixel = Mathf.Sqrt(Mathf.Pow(Screen.width, 2) + Mathf.Pow(Screen.height, 2))/12;
 
         /// <summary>
         /// 临时变量存储区域
@@ -82,7 +82,7 @@ namespace THEDARKKNIGHT.InputOperate
                 }
                 else if (Input.GetTouch(0).phase == TouchPhase.Ended)
                 {
-                    DataStruct.InputDataPacket<Vector3> data = InputParser.GetSingleDragEvent(Input.GetTouch(0).position, TempInputValue[0], hit);
+                    DataStruct.InputDataPacket<Vector3> data = InputParser.GetSingleReleasEvent(Input.GetTouch(0).position, TempInputValue[0], hit);
                     BEventManager.Instance().DispatchEvent(BatEventDefine.SINGLERELEASEVENT, data);
                     SaveInputValue(touchCount);
                 }
@@ -102,14 +102,17 @@ namespace THEDARKKNIGHT.InputOperate
                     if (CheckIsZoom(deltaVectorOne, deltaVectorTwo))//Zoom function callback;
                     {
                         float distance = deltaVectorOne.magnitude < deltaVectorTwo.magnitude ? deltaVectorOne.magnitude : deltaVectorTwo.magnitude;
-                        DataStruct.InputDataPacket<float> zoomData = InputParser.GetZoomEvent(distance/ DiagonalLenght, hit);
+                        if (!CheckTwoFingerGestureIsZoom((Input.GetTouch(0).position - Input.GetTouch(1).position).magnitude, (TempInputValue[0] - TempInputValue[1]).magnitude))
+                            distance = -distance;
+                        DataStruct.InputDataPacket<float> zoomData = InputParser.GetZoomEvent(distance / ScalPelPixel, hit);
                         BEventManager.Instance().DispatchEvent(BatEventDefine.ZOOMEVENT, zoomData);
                     }
-                    //MultiFinger Drag Event;
-                    Vector3[] pos = GetLastPosValue(touchCount);
-                    DataStruct.InputDataPacket<Vector3> data = InputParser.GetMultiDragEvent(pos, TempInputValue, hit);
-                    BEventManager.Instance().DispatchEvent(BatEventDefine.MULTIDRAGEVENT, data);
-                    
+                    else {
+                        //MultiFinger Drag Event;
+                        Vector3[] pos = GetLastPosValue(touchCount);
+                        DataStruct.InputDataPacket<Vector3> data = InputParser.GetMultiDragEvent(pos, TempInputValue, hit);
+                        BEventManager.Instance().DispatchEvent(BatEventDefine.MULTIDRAGEVENT, data);
+                    }
                     SaveInputValue(touchCount);
                 }
                 else if (Input.GetTouch(touchCount - 1).phase == TouchPhase.Ended && touchCount < 5)//MultiFinger Releas Event
@@ -144,11 +147,13 @@ namespace THEDARKKNIGHT.InputOperate
             {
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetLeftDragEvent(Input.mousePosition, TempInputValue[0], hit);
                 BEventManager.Instance().DispatchEvent(BatEventDefine.LEFTDRAGEVENT, data);
+                TempInputValue[0] = Input.mousePosition;
             }
             if (Input.GetMouseButtonUp(0))
             {
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetLeftReleasEvent(Input.mousePosition, TempInputValue[0], hit);
                 BEventManager.Instance().DispatchEvent(BatEventDefine.LEFTRELEASEVENT, data);
+                TempInputValue[0] = Input.mousePosition;
             }
             if (Input.GetMouseButtonDown(1))
             {
@@ -160,23 +165,34 @@ namespace THEDARKKNIGHT.InputOperate
             {
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetRightDragEvent(Input.mousePosition, TempInputValue[0], hit);
                 BEventManager.Instance().DispatchEvent(BatEventDefine.RIGHTDRAGEVENT, data);
+                TempInputValue[0] = Input.mousePosition;
             }
             if (Input.GetMouseButtonUp(1))
             {
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetRightReleasEvent(Input.mousePosition, TempInputValue[0], hit);
                 BEventManager.Instance().DispatchEvent(BatEventDefine.RIGHTRELEASEVENT, data);
+                TempInputValue[0] = Input.mousePosition;
             }
             if (Input.GetAxis("Mouse ScrollWheel") != 0)
             {
                 DataStruct.InputDataPacket<float> data = InputParser.GetZoomEvent(Input.GetAxis("Mouse ScrollWheel"), hit);
                 BEventManager.Instance().DispatchEvent(BatEventDefine.ZOOMEVENT, data);
+                TempInputValue[0] = Input.mousePosition;
             }
-            TempInputValue[0] = Input.mousePosition;
+            
+        }
+
+        private bool CheckTwoFingerGestureIsZoom(float nowLenght, float beforLenght) {
+            if (nowLenght > beforLenght)
+                return true;//Add
+            else
+                return false;//reduce
         }
 
         private bool CheckIsZoom(Vector3 vectorOne, Vector3 vectorTwo)
         {
-            if (Vector3.Dot(vectorOne, vectorTwo) < 0)
+            float angle = Vector3.Angle(vectorOne, vectorTwo);
+            if (135 <= angle && angle <= 180)
                 return true;
             else
                 return false;
