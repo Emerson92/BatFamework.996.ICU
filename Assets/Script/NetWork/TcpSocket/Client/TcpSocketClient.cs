@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
-
+using THEDARKKNIGHT.Log;
 namespace THEDARKKNIGHT.TcpSocket {
 
 

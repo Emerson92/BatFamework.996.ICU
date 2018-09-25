@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using THEDARKKNIGHT.Interface;
 using UnityEngine;
 using UnityEngine.Networking;
-
+using THEDARKKNIGHT.Log;
 namespace THEDARKKNIGHT.HTTP
 {
     public abstract class BHttpCore<T,K> : ILifeCycle where T : DownloadHandler where K :UploadHandler
@@ -59,9 +59,7 @@ namespace THEDARKKNIGHT.HTTP
 
         private RequsetMethod RequestMethod;
 
-        public virtual void InitBHttpCore(){
-            this.Enable();
-        }
+        public BHttpCore() { this.Enable(); }
 
         public void SetCertificate(CertificateHandler handler){
 

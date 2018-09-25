@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using THEDARKKNIGHT.Log;
 namespace THEDARKKNIGHT.FileSystem
 {
     public class BFileSystem : BatSingletion<BFileSystem>

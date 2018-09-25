@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using THEDARKKNIGHT.TcpSocket;
 using UnityEngine;
+using THEDARKKNIGHT.Log;
 namespace THEDARKKNIGHT.TcpSocket {
     public class TcpSocketClientMgr : TcpSocketClient
     {

@@ -5,6 +5,7 @@ using System.Text;
 using THEDARKKNIGHT.ConstDefine;
 using THEDARKKNIGHT.Interface;
 using UnityEngine;
+using THEDARKKNIGHT.Log;
 namespace THEDARKKNIGHT.ResourceSystem {
 
     public class BResourceMgr : BatSingletion<BResourceMgr>, ILifeCycle
@@ -15,11 +16,7 @@ namespace THEDARKKNIGHT.ResourceSystem {
 
         private ICacheFileSystem CacheSystem = new BCacheFileMgr();
 
-        private BResourceMgr() { }
-
-        public void Init() {
-            this.Enable();
-        }
+        private BResourceMgr() { this.Enable(); }
 
         /// <summary>
         ///  设置文件缓存器

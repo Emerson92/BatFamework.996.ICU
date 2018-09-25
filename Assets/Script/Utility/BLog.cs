@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace THEDARKKNIGHT
+namespace THEDARKKNIGHT.Log
 {
 
     public class BLog : BatSingletion<BLog>
