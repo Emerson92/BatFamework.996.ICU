@@ -64,16 +64,17 @@ public class CameraControl: BatSingletion<CameraControl>
             //ObCamera.transform.position = targePos;
             // Debug.DrawLine(targePos, CenterPos , Color.yellow, 10f);
             //ObCamera.transform.LookAt(CenterPos);
-            Vector3 axis = Vector3.Cross(detlaValue, ObCamera.transform.forward);
-            ObCamera.transform.RotateAround(CenterPos, axis, detlaValue.magnitude);
+            Vector3 worldDir = ObCamera.transform.TransformDirection(detlaValue);
+            Vector3 targetDir = (ObCamera.transform.forward * Radius + worldDir).normalized * Radius;
+            Vector3 targePos = CenterPos - targetDir;
+            Vector3 transEuler = Quaternion.FromToRotation(ObCamera.transform.forward, targetDir).eulerAngles;
+            Quaternion xTransQuaterion = Quaternion.Euler(transEuler.x, 0, 0);
+            Quaternion yTransQuaterion = Quaternion.Euler(0, transEuler.y, 0);
+            Quaternion zTransQuaterion = Quaternion.Euler(0, 0, transEuler.z);
+            Quaternion nowStatus = ObCamera.transform.rotation;
+            ObCamera.transform.rotation = nowStatus* xTransQuaterion* yTransQuaterion* zTransQuaterion;
+            ObCamera.transform.position = targePos;
         }
-    }
-
-    private float ClampAngle(float angle, float min, float max)
-    {
-        if (angle < -360) angle += 360;
-        if (angle > 360) angle -= 360;
-        return Mathf.Clamp(angle, min, max);
     }
 
     /// <summary>

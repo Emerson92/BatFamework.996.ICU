@@ -144,9 +144,9 @@ public class InputOperateTest : MonoBehaviour {
             //世界x轴投影到本地坐标，世界坐标x轴 换算 到本地旋转轴
             //Matrix4x4 localPointMartrix = new Matrix4x4();
             //localPointMartrix.SetTRS(Vector3.zero, preRotation, Vector3.one);
-            Vector3 localVecX = new Vector3();
             //localVecX = localPointMartrix.inverse.MultiplyPoint3x4(new Vector3(1, 0, 0)); 
-            localVecX = Operater.transform.InverseTransformDirection(new Vector3(1, 0, 0));
+            Vector3 localVecX = Operater.transform.InverseTransformDirection(Vector3.right);
+            //Vector3 localVecy = Operater.transform.InverseTransformDirection(Vector3.up);
             Quaternion final = preRotation;
             Quaternion qua = Quaternion.AngleAxis(angleX, localVecX.normalized);
             preRotation *= qua;
