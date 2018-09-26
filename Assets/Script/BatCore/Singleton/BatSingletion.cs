@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-namespace THEDARKKNIGHT
+namespace THEDARKKNIGHT.BatCore
 {
     public abstract class BatSingletion<T> where T : BatSingletion<T>
     {

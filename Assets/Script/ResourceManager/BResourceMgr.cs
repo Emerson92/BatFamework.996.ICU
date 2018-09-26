@@ -6,6 +6,8 @@ using THEDARKKNIGHT.ConstDefine;
 using THEDARKKNIGHT.Interface;
 using UnityEngine;
 using THEDARKKNIGHT.Log;
+using THEDARKKNIGHT.BatCore;
+
 namespace THEDARKKNIGHT.ResourceSystem {
 
     public class BResourceMgr : BatSingletion<BResourceMgr>, ILifeCycle

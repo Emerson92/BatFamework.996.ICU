@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using THEDARKKNIGHT.BatCore;
 using THEDARKKNIGHT.Log;
 namespace THEDARKKNIGHT.FileSystem
 {
