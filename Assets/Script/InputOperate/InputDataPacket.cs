@@ -33,13 +33,15 @@ namespace THEDARKKNIGHT.InputOperate.DataStruct {
 
         public RayInfo Info;
 
-        public InputDataPacket(InputOperateType type, T[] value, T[] deltaValue, bool isOverUI, RayInfo info)
+        public Camera camera;
+        public InputDataPacket(InputOperateType type, T[] value, T[] deltaValue, bool isOverUI, RayInfo info,Camera opCamera)
         {
             this.OperateType = type;
             this.Value = value;
             this.DeltaValue = deltaValue;
             this.IsOverUI = isOverUI;
             this.Info = info;
+            this.camera = opCamera;
         }
     }
 

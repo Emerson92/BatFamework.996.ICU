@@ -72,18 +72,21 @@ namespace THEDARKKNIGHT.InputOperate
                 if (Input.GetTouch(0).phase == TouchPhase.Began)
                 {
                     DataStruct.InputDataPacket<Vector3> data = InputParser.GetSingleTouchEvent(Input.GetTouch(0).position, hit);
+                    data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                     BEventManager.Instance().DispatchEvent(BatEventDefine.SINGLETOUCHEVENT, data);
                     SaveInputValue(touchCount);
                 }
                 else if (Input.GetTouch(0).phase == TouchPhase.Moved)
                 {
                     DataStruct.InputDataPacket<Vector3> data = InputParser.GetSingleDragEvent(Input.GetTouch(0).position, TempInputValue[0], hit);
+                    data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                     BEventManager.Instance().DispatchEvent(BatEventDefine.SINGLEDRAGEVENT, data);
                     SaveInputValue(touchCount);
                 }
                 else if (Input.GetTouch(0).phase == TouchPhase.Ended)
                 {
                     DataStruct.InputDataPacket<Vector3> data = InputParser.GetSingleReleasEvent(Input.GetTouch(0).position, TempInputValue[0], hit);
+                    data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                     BEventManager.Instance().DispatchEvent(BatEventDefine.SINGLERELEASEVENT, data);
                     SaveInputValue(touchCount);
                 }
@@ -94,6 +97,7 @@ namespace THEDARKKNIGHT.InputOperate
                 {
                     SaveInputValue(touchCount);
                     DataStruct.InputDataPacket<Vector3> data = InputParser.GetMultiTouchsEvent(TempInputValue, hit);
+                    data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                     BEventManager.Instance().DispatchEvent(BatEventDefine.MULTITOUCHEVENT, data);
                 }
                 else if (Input.GetTouch(touchCount - 1).phase == TouchPhase.Moved && touchCount < 5)
@@ -106,12 +110,14 @@ namespace THEDARKKNIGHT.InputOperate
                         if (!CheckTwoFingerGestureIsZoom((Input.GetTouch(0).position - Input.GetTouch(1).position).magnitude, (TempInputValue[0] - TempInputValue[1]).magnitude))
                             distance = -distance;
                         DataStruct.InputDataPacket<float> zoomData = InputParser.GetZoomEvent(distance / ScalPelPixel, hit);
+                        zoomData.camera = BCameraRaycast.Instance().GetCurrentCamera();
                         BEventManager.Instance().DispatchEvent(BatEventDefine.ZOOMEVENT, zoomData);
                     }
                     else {
                         //MultiFinger Drag Event;
                         Vector3[] pos = GetLastPosValue(touchCount);
                         DataStruct.InputDataPacket<Vector3> data = InputParser.GetMultiDragEvent(pos, TempInputValue, hit);
+                        data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                         BEventManager.Instance().DispatchEvent(BatEventDefine.MULTIDRAGEVENT, data);
                     }
                     SaveInputValue(touchCount);
@@ -120,6 +126,7 @@ namespace THEDARKKNIGHT.InputOperate
                 {
                     Vector3[] pos = GetLastPosValue(touchCount);
                     DataStruct.InputDataPacket<Vector3> data = InputParser.GetMultiReleasEvent(pos, TempInputValue, hit);
+                    data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                     BEventManager.Instance().DispatchEvent(BatEventDefine.MULTIRELEASEVENT, data);
                     SaveInputValue(touchCount);
                 }
@@ -142,17 +149,20 @@ namespace THEDARKKNIGHT.InputOperate
             {
                 TempInputValue[0] = Input.mousePosition;
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetLeftPressEvent(Input.mousePosition,hit);
+                data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                 BEventManager.Instance().DispatchEvent(BatEventDefine.LEFTPRESSEVENT, data);
             }
             if (Input.GetMouseButton(0))
             {
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetLeftDragEvent(Input.mousePosition, TempInputValue[0], hit);
+                data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                 BEventManager.Instance().DispatchEvent(BatEventDefine.LEFTDRAGEVENT, data);
                 TempInputValue[0] = Input.mousePosition;
             }
             if (Input.GetMouseButtonUp(0))
             {
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetLeftReleasEvent(Input.mousePosition, TempInputValue[0], hit);
+                data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                 BEventManager.Instance().DispatchEvent(BatEventDefine.LEFTRELEASEVENT, data);
                 TempInputValue[0] = Input.mousePosition;
             }
@@ -160,23 +170,27 @@ namespace THEDARKKNIGHT.InputOperate
             {
                 TempInputValue[0] = Input.mousePosition;
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetRightPressEvent(Input.mousePosition, hit);
+                data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                 BEventManager.Instance().DispatchEvent(BatEventDefine.RIGHTPRESSEVENT, data);
             }
             if (Input.GetMouseButton(1))
             {
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetRightDragEvent(Input.mousePosition, TempInputValue[0], hit);
+                data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                 BEventManager.Instance().DispatchEvent(BatEventDefine.RIGHTDRAGEVENT, data);
                 TempInputValue[0] = Input.mousePosition;
             }
             if (Input.GetMouseButtonUp(1))
             {
                 DataStruct.InputDataPacket<Vector3> data = InputParser.GetRightReleasEvent(Input.mousePosition, TempInputValue[0], hit);
+                data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                 BEventManager.Instance().DispatchEvent(BatEventDefine.RIGHTRELEASEVENT, data);
                 TempInputValue[0] = Input.mousePosition;
             }
             if (Input.GetAxis("Mouse ScrollWheel") != 0)
             {
                 DataStruct.InputDataPacket<float> data = InputParser.GetZoomEvent(Input.GetAxis("Mouse ScrollWheel"), hit);
+                data.camera = BCameraRaycast.Instance().GetCurrentCamera();
                 BEventManager.Instance().DispatchEvent(BatEventDefine.ZOOMEVENT, data);
                 TempInputValue[0] = Input.mousePosition;
             }

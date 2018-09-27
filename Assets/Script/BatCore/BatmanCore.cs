@@ -13,8 +13,6 @@ namespace THEDARKKNIGHT
     /// </summary>
     public class BatmanCore : BatMonoSingletion<BatmanCore>
     {
-        Hello hello;
-        TcpSocketClientMgr tcp;
         public void Awake()
         {
             CodeWatcher.Instance().Init();
