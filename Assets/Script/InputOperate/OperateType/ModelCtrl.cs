@@ -8,7 +8,7 @@ namespace THEDARKKNIGHT.InputOperate {
     public class ModelCtrl : BatSingletion<ModelCtrl>, ILifeCycle
     {
         private GameObject CurrentGB;
-        private bool IsNeedLerp = false; 
+        private bool IsNeedLerp = false;
         private float ScaleFactor = (1 / 5f);
         private Quaternion TargetRotation;
         private Vector3 TargetPosition;
@@ -34,6 +34,19 @@ namespace THEDARKKNIGHT.InputOperate {
             CurrentGB.transform.position = camera.ScreenToWorldPoint(finalPos);
             IsNeedLerp = false;
         }
+
+        public void MoveWithWorldVector(Vector3 detalValue) {
+            if (CurrentGB == null) return;
+            CurrentGB.transform.position += detalValue;
+            IsNeedLerp = false;
+        }
+
+        public void LerpMoveWithWorldVector(Vector3 detalValue) {
+            if (CurrentGB == null) return;
+            TargetPosition += detalValue;
+            IsNeedLerp = true;
+        }
+
 
         public void RotationWithScreenPixl(Vector3 detalValue) {
             if (CurrentGB == null) return;

@@ -95,7 +95,6 @@ namespace THEDARKKNIGHT.InputOperate
         public void RotateWithScreenPixl(Vector3 detlaValue)
         {
             //**************************************************************
-            //
             //             摄像机旋转问，需要进一步优化
             //              主要问题是摄像机的来回抖动
             //**************************************************************
@@ -108,7 +107,7 @@ namespace THEDARKKNIGHT.InputOperate
             //Quaternion transQuater = Quaternion.FromToRotation(ObCamera.transform.forward, -targetDir);
             //ObCamera.transform.forward = -targetDir;
             //ObCamera.transform.rotation *= transQuater;
-            if (ObCamera != null) return;
+            if (ObCamera == null) return;
             CurrentX += detlaValue.x * speedX * Time.deltaTime;
             CurrentY -= detlaValue.y * speedY * Time.deltaTime;
             CurrentY = ClampAngle(CurrentY, minLimitY, maxLimitY);
@@ -116,6 +115,7 @@ namespace THEDARKKNIGHT.InputOperate
             Vector3 position = rotation * new Vector3(0, 0, -Radius) + CenterPos;
             ObCamera.transform.rotation = rotation;
             ObCamera.transform.position = position;
+            IsNeedLerp = false;
         }
 
         public void LerpRotateWithScreenPixl(Vector3 detlaValue)
