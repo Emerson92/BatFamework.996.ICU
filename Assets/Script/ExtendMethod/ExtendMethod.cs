@@ -37,7 +37,7 @@ namespace THEDARKKNIGHT {
             LifeCycleTool tool = null;
             if (LifeCycleControl.ToolKeepDic.ContainsKey(i.GetHashCode()))
                 tool = LifeCycleControl.ToolKeepDic[i.GetHashCode()];
-            if(tool != null) LifeCycleControl.Remove(tool);
+            if(tool != null) LifeCycleControl.RecycleList.Add(tool);
         }
     }
 }

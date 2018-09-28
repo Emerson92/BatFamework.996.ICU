@@ -18,6 +18,8 @@ namespace THEDARKKNIGHT
 
         private static List<LifeCycleTool> ItemList = new List<LifeCycleTool>();
 
+        public static List<LifeCycleTool> RecycleList = new List<LifeCycleTool>();
+
         public static void Add(LifeCycleTool i)
         {
             ItemList.ForEach((LifeCycleTool item) =>
@@ -122,6 +124,7 @@ namespace THEDARKKNIGHT
                 if (i.GetLifeCycleState(LifeCycleTool.LifeType.LateUpdate) && i.Frame > 0)
                     i.Icycle.BLateUpdate(enter);
             });
+            RecyclegarbageTool();
         }
 
         public void OnEnable(MonoBehaviour enter) {
@@ -179,6 +182,17 @@ namespace THEDARKKNIGHT
                 fuction(i);
             });
         }
+
+        private void RecyclegarbageTool()
+        {
+            if(RecycleList.Count > 0 ){
+                for (int i = 0; i < RecycleList.Count;i++)
+                {
+                    Remove(RecycleList[i]);
+                }
+            }
+        }
+
     }
 
     public class LifeCycleTool

@@ -60,7 +60,6 @@ namespace THEDARKKNIGHT.InputOperate {
             angleX %= 360;
             Quaternion preRotation = CurrentGB.transform.rotation;
             Vector3 localVecX = CurrentGB.transform.InverseTransformDirection(Vector3.right);      
-            Quaternion final = preRotation;
             Quaternion quaternionX = Quaternion.AngleAxis(angleX, localVecX.normalized);
             Quaternion quaternionY = Quaternion.AngleAxis(-angleY, Vector3.up);
             CurrentGB.transform.rotation = preRotation* quaternionX* quaternionY;
@@ -98,7 +97,6 @@ namespace THEDARKKNIGHT.InputOperate {
             angleX %= 360;
             Quaternion preRotation = CurrentGB.transform.rotation;
             Vector3 localVecX = CurrentGB.transform.InverseTransformDirection(Vector3.right);
-            Quaternion final = preRotation;
             Quaternion quaternionX = Quaternion.AngleAxis(angleX, localVecX.normalized);
             Quaternion quaternionY = Quaternion.AngleAxis(-angleY, Vector3.up);
             TargetRotation = preRotation * quaternionX * quaternionY;

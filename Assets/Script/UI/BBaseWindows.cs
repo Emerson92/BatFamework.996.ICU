@@ -11,10 +11,10 @@ namespace THEDARKKNIGHT.UI {
     /// </summary>
     public abstract class BBaseWindows : ILifeCycle
     {
+        // Maybe we can use the hashTable to replace the Dictionary;
+        protected Dictionary<string,BBaseWindows> SubWindows = new Dictionary<string, BBaseWindows>();
 
-        protected List<BBaseWindows> WindowsList = new List<BBaseWindows>();
-
-        private LifeCycleTool tool;
+        LifeCycleTool tool;
 
         public bool WindowsStatus { set; get; }
 
@@ -40,15 +40,28 @@ namespace THEDARKKNIGHT.UI {
             tool.SetLifeCycle(type, statue);
         }
 
+        public BBaseWindows GetSubWindows(string windowsName){
+            BBaseWindows subwindows = null;
+            SubWindows.TryGetValue(windowsName,out subwindows);
+            return subwindows;
+        }
+
         public void BAwake(MonoBehaviour main)
         {
             Init();
             AddListener();
         }
 
-        public void RegisterWindows(BBaseWindows windows) {
-            WindowsList.Add(windows);
+        public void RegisterWindows(string subwindowsName,BBaseWindows windows) {
+            try{
+                SubWindows.Add(subwindowsName, windows);
+            }catch(Exception e){
+                RegisterErrorCallback(subwindowsName);
+            }
+         
         }
+
+        public virtual void RegisterErrorCallback(string subwindowsName){}
 
         public void BStart(MonoBehaviour main){}
 
@@ -71,10 +84,16 @@ namespace THEDARKKNIGHT.UI {
         public void BOnDestroy(MonoBehaviour main)
         {
             DestoryWindows();
-            WindowsList.Clear();
+            SubWindows.Clear();
         }
 
         public void BUpdate(MonoBehaviour main){}
+
+        //TODO The if the subWindows need to Tell the parent wnidows,how to do that??
+
+        //TODO Create the Windows Base Information
+
+
     }
 
 }
