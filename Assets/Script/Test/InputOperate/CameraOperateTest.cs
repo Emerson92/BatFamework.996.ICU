@@ -99,7 +99,7 @@ public class CameraOperateTest : MonoBehaviour {
 
     private object RightPressCallback(object data)
     {
-        InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
+        //InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
         BLog.Instance().Log("RightPressCallback");
         return null;
     }

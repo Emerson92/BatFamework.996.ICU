@@ -49,16 +49,16 @@ namespace THEDARKKNIGHT.ResourceSystem {
                 i++;
             }
             AssetInfoGroup group = new AssetInfoGroup(tempArray);
-            CacheSystem.SaveData("ResourceConfig",BFameWorkDefine.BFameDataPath+"/Config",Encoding.UTF8.GetBytes(JsonUtility.ToJson(group)));
-            BLog.Instance().Log("保存资源配置文件完毕! : "+ BFameWorkDefine.BFameDataPath + "/Config/ResourceConfig");
+            CacheSystem.SaveData("ResourceConfig", BFameWorkPathDefine.BFameDataPath+"/Config",Encoding.UTF8.GetBytes(JsonUtility.ToJson(group)));
+            BLog.Instance().Log("保存资源配置文件完毕! : "+ BFameWorkPathDefine.BFameDataPath + "/Config/ResourceConfig");
         }
 
         public void BOnDestory(MonoBehaviour main){}
         public void BOnDestroy(MonoBehaviour main){}
         public void BOnEnable(MonoBehaviour main){}
         public void BStart(MonoBehaviour main) {
-            CacheSystem.LoadData(BFameWorkDefine.BFameDataPath + "/Config/ResourceConfig");
-            BLog.Instance().Log("成功读取资源配置文件完毕! : "+ BFameWorkDefine.BFameDataPath + "/Config/ResourceConfig");
+            CacheSystem.LoadData(BFameWorkPathDefine.BFameDataPath + "/Config/ResourceConfig");
+            BLog.Instance().Log("成功读取资源配置文件完毕! : "+ BFameWorkPathDefine.BFameDataPath + "/Config/ResourceConfig");
         }
         public void BUpdate(MonoBehaviour main){}
 
@@ -186,7 +186,7 @@ namespace THEDARKKNIGHT.ResourceSystem {
         private void CacheAssetInfo(string resName, byte[] data, float version, AssetBundle asset)
         {
             AssetBundleManifest manifest = (AssetBundleManifest)asset.LoadAsset("AssetBundleManifest");
-            string SaveUrl = BFameWorkDefine.BFameDataPath + "/" + resName;
+            string SaveUrl = BFameWorkPathDefine.BFameDataPath + "/" + resName;
             if (ResMgrDic.ContainsKey(resName))
             {
                 AssetBaseInfo oldAsset = ResMgrDic[resName];

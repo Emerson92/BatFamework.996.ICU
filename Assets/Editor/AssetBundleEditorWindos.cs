@@ -159,7 +159,7 @@ public class AssetBundleEditorWindos : EditorWindow
         {
             System.Diagnostics.Process.Start(@OutputPath);
         }
-        catch (Exception e)
+        catch
         {
             Debug.LogError(" 打开路径错误 " + @OutputPath);
         }
