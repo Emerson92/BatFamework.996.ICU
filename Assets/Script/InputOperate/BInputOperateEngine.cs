@@ -14,7 +14,7 @@ namespace THEDARKKNIGHT.InputOperate
 #if UNITY_STANDALONE_WIN||UNITY_EDITOR
         private IInputParser InputParser = new BMouseInputParser();
 #elif UNITY_IOS || UNITY_ANDROID
-          private IInputParser InputParser = new BGestureInputParser();
+        private IInputParser InputParser = new BGestureInputParser();
 #endif
 
         private readonly float ScalPelPixel = Mathf.Sqrt(Mathf.Pow(Screen.width, 2) + Mathf.Pow(Screen.height, 2))/12;

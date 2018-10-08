@@ -10,6 +10,7 @@ namespace THEDARKKNIGHT.Example.UI
         // Use this for initialization
         void Start()
         {
+            Debug.Log("UITest");
             RootWindows = new ParentWindows("RootWindows");
         }
 

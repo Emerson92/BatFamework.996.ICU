@@ -100,8 +100,8 @@ namespace THEDARKKNIGHT
             {
                 if (i.Frame == 0)
                 {
-                    i.Icycle.BAwake(enter);
-                    i.Icycle.BStart(enter);
+                    try{i.Icycle.BAwake(enter);}catch(Exception e){ Debug.LogError(e.Message); }
+                    try{i.Icycle.BStart(enter);}catch(Exception e){ Debug.LogError(e.Message); }
                     i.Frame++;
                 }
                 if (i.GetLifeCycleState(LifeCycleTool.LifeType.Update) && i.Frame > 0)
@@ -112,7 +112,6 @@ namespace THEDARKKNIGHT
         public void FixedUpdate(MonoBehaviour enter) {
             LoopSend((LifeCycleTool i) =>
             {
-
                 if (i.GetLifeCycleState(LifeCycleTool.LifeType.FixedUpdate) && i.Frame > 0)
                     i.Icycle.BFixedUpdate(enter);
             });
@@ -177,10 +176,10 @@ namespace THEDARKKNIGHT
 
         private void LoopSend(Action<LifeCycleTool> fuction)
         {
-            ItemList.ForEach((LifeCycleTool i) =>
+            for (int i = 0; i < ItemList.Count; i++)
             {
-                fuction(i);
-            });
+                fuction(ItemList[i]);
+            }
         }
 
         private void RecyclegarbageTool()

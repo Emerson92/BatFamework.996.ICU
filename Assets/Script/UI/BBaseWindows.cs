@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT.Interface;
 using UnityEngine;
-namespace THEDARKKNIGHT.UI {
+namespace THEDARKKNIGHT.UI
+{
     /// <summary>
     ///                           BaseWindos 
     ///   It is the class which contain base function about UI windos Control
@@ -11,19 +12,27 @@ namespace THEDARKKNIGHT.UI {
     /// </summary>
     public abstract class BBaseWindows : ILifeCycle
     {
+
+        public const string BROADCASTINFO = "*";
+
         /// <summary>
         /// The parent windos.
         /// </summary>
         protected BBaseWindows ParentWindows;
 
-        protected string WindowsAlias { set; get; }
+        public string WindowsAlias { set; get; }
+
+        /// <summary>
+        /// The UI element Root
+        /// </summary>
+        protected Transform UIRoot { set; get; }
 
         /// <summary>
         /// Gets or sets the windows identifier.
         /// </summary>
         /// <value>The windows identifier.</value>
         /// 
-        protected readonly int WindowsID;
+        public readonly int WindowsID;
 
         // Maybe we can use the hashTable to replace the Dictionary;
         protected Dictionary<string, BBaseWindows> SubWindows = new Dictionary<string, BBaseWindows>();
@@ -32,7 +41,9 @@ namespace THEDARKKNIGHT.UI {
 
         public bool WindowsStatus { set; get; }
 
-        public abstract void Init(MonoBehaviour main);
+        public abstract void DataInit();
+
+        public abstract Transform UIInit(Transform UIRoot);
 
         public abstract void AddListener();
 
@@ -64,7 +75,7 @@ namespace THEDARKKNIGHT.UI {
 
         public virtual void OnApplicationQuit(MonoBehaviour main) { }
 
-        public virtual void OnDestroy(MonoBehaviour main){}
+        public virtual void OnDestroy(MonoBehaviour main) { }
 
         public virtual void Update(MonoBehaviour main) { }
 
@@ -84,7 +95,17 @@ namespace THEDARKKNIGHT.UI {
             WindowsID = GetHashCode();
             this.Enable();
             tool = this.GetLifeCycleTool();
+            DataInit();
             SetLifeCycleType(LifeCycleTool.LifeType.OnDestroy, true);
+        }
+
+        private void SetUIRoot()
+        {
+            Transform UIEndNode = UIInit(UIRoot);
+            foreach (KeyValuePair<string, BBaseWindows> item in SubWindows)
+            {
+                item.Value.UIRoot = UIEndNode;
+            }
         }
 
         public void SetLifeCycleType(LifeCycleTool.LifeType type, bool statue)
@@ -99,13 +120,12 @@ namespace THEDARKKNIGHT.UI {
             return subwindows;
         }
 
-        public void BAwake(MonoBehaviour main)
-        {
-            Awake(main);
-            Init(main);
-        }
+
         /// <summary>
         /// Registers the SubWindows,It is a very Important way.
+        /// If you do not register the SubWindows,the SubWindows can not get the UIRoot
+        /// when this Windows Object Init UI on "UIInit" way.So Pleas Init and Register your 
+        /// SubWindows in your "DataInit" Function.
         /// </summary>
         /// <param name="subwindowsName">Subwindows name.</param>
         /// <param name="windows">Windows.</param>
@@ -125,13 +145,15 @@ namespace THEDARKKNIGHT.UI {
 
         public virtual void RegisterErrorCallback(string subwindowsName) { }
 
+        public void BAwake(MonoBehaviour main) { Awake(main); SetUIRoot(); AddListener(); }
+
         public void BStart(MonoBehaviour main) { Start(main); }
 
         public void BOnEnable(MonoBehaviour main) { OnEnable(main); }
 
         public void BDisable(MonoBehaviour main) { Disable(main); }
 
-        public void BOnDestory(MonoBehaviour main) { OnDestory( main); }
+        public void BOnDestory(MonoBehaviour main) { OnDestory(main); }
 
         public void BFixedUpdate(MonoBehaviour main) { FixedUpdate(main); }
 
@@ -145,6 +167,7 @@ namespace THEDARKKNIGHT.UI {
 
         public void BOnDestroy(MonoBehaviour main)
         {
+            RemoveListener();
             OnDestroy(main);
             DestoryWindows();
             SubWindows.Clear();
@@ -192,15 +215,24 @@ namespace THEDARKKNIGHT.UI {
         /// <param name="data">Data.</param>
         protected void PostMsgToWindows(string windowsAlias, object data)
         {
-            FindWindowsDownToSend(WindowsID, windowsAlias, data);
-            FindWindowUpToSend(WindowsID, WindowsID, windowsAlias, data);
+            FindWindowsDownToSend(WindowsID, WindowsID, windowsAlias, data);
+            FindWindowsUpToSend(WindowsID, WindowsID, windowsAlias, data);
         }
 
-        public void FindWindowUpToSend(int passWindowsID,int targetSourceID,string windowsAlias, object data)
+        protected void PostMsgToAllWindows(object data)
+        {
+            PostMsgToWindows("*", data);
+        }
+
+        public void FindWindowsUpToSend(int passWindowsID, int targetSourceID, string windowsAlias, object data)
         {
             if (ParentWindows != null)
             {
                 if (ParentWindows.WindowsAlias == windowsAlias)
+                {
+                    ParentWindows.GetWindowsMsg(targetSourceID, windowsAlias, data);
+                }
+                else if (windowsAlias == "*")
                 {
                     ParentWindows.GetWindowsMsg(targetSourceID, windowsAlias, data);
                 }
@@ -210,25 +242,68 @@ namespace THEDARKKNIGHT.UI {
                     {
                         if (item.Value.WindowsAlias == windowsAlias)
                             item.Value.GetWindowsMsg(targetSourceID, windowsAlias, data);
-                        item.Value.FindWindowsDownToSend(targetSourceID, windowsAlias, data);
+                        else if (windowsAlias == "*")
+                            item.Value.GetWindowsMsg(targetSourceID, windowsAlias, data);
+                        item.Value.FindWindowsDownToSend(passWindowsID, targetSourceID, windowsAlias, data);
                     }
                 }
                 if (ParentWindows.ParentWindows != null)
-                    ParentWindows.ParentWindows.FindWindowUpToSend(ParentWindows.WindowsID, targetSourceID, windowsAlias, data);
+                {
+                    if (windowsAlias == "*")
+                        ParentWindows.ParentWindows.GetWindowsMsg(targetSourceID, windowsAlias, data);
+                    ParentWindows.ParentWindows.FindWindowsUpToSend(ParentWindows.WindowsID, targetSourceID, windowsAlias, data);
+                    ParentWindows.ParentWindows.FindWindowsDownToSend(ParentWindows.WindowsID, targetSourceID, windowsAlias, data);
+                }
             }
         }
 
-        public void FindWindowsDownToSend(int windowsID,string windowsAlias, object data)
+        public void FindWindowsDownToSend(int passWindowsID, int windowsID, string windowsAlias, object data)
         {
             foreach (KeyValuePair<string, BBaseWindows> item in SubWindows)
             {
+
                 if (item.Value.WindowsAlias == windowsAlias)
                 {
                     item.Value.GetWindowsMsg(windowsID, windowsAlias, data);
                 }
-                item.Value.FindWindowsDownToSend(windowsID, windowsAlias, data);
+                else if (windowsAlias == "*")
+                    item.Value.GetWindowsMsg(windowsID, windowsAlias, data);
+                if (item.Value.WindowsID != passWindowsID)
+                    item.Value.FindWindowsDownToSend(passWindowsID, windowsID, windowsAlias, data);
             }
+        }
 
+        public void ShowWindows(string windowsName) {
+            BBaseWindows subwindows = null;
+            if (SubWindows.TryGetValue(windowsName, out subwindows)) {
+                if (subwindows.WindowsStatus)
+                    return;
+                subwindows.Show();
+                subwindows.WindowsStatus = true;
+            }
+        }
+
+        public void HideWindows(string windowsName) {
+            BBaseWindows subwindows = null;
+            if (SubWindows.TryGetValue(windowsName, out subwindows)) {
+                if (!subwindows.WindowsStatus)
+                    return;
+                subwindows.Hide();
+                subwindows.WindowsStatus = false;
+            }
+        }
+
+        public void ShowAllSubWindows() {
+            foreach (KeyValuePair<string, BBaseWindows> item in SubWindows) {
+                ShowWindows(item.Key);
+            }
+        }
+
+        public void HideAllSubWindows() {
+            foreach (KeyValuePair<string, BBaseWindows> item in SubWindows)
+            {
+                HideWindows(item.Key);
+            }
         }
     }
 
