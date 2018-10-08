@@ -96,33 +96,36 @@ namespace THEDARKKNIGHT
 
         public void Update(MonoBehaviour enter)
         {
-            LoopSend((LifeCycleTool i) =>
+            for (int i = 0; i < ItemList.Count; i++)
             {
-                if (i.Frame == 0)
+                LifeCycleTool item = ItemList[i];
+                if (item.Frame == 0)
                 {
-                    try{i.Icycle.BAwake(enter);}catch(Exception e){ Debug.LogError(e.Message); }
-                    try{i.Icycle.BStart(enter);}catch(Exception e){ Debug.LogError(e.Message); }
-                    i.Frame++;
+                    try { item.Icycle.BAwake(enter); } catch (Exception e) { Debug.LogError(e.Message); }
+                    try { item.Icycle.BStart(enter); } catch (Exception e) { Debug.LogError(e.Message); }
+                    item.Frame++;
                 }
-                if (i.GetLifeCycleState(LifeCycleTool.LifeType.Update) && i.Frame > 0)
-                    i.Icycle.BUpdate(enter);
-            });
+                if (item.GetLifeCycleState(LifeCycleTool.LifeType.Update) && item.Frame > 0)
+                    item.Icycle.BUpdate(enter);
+            }
         }
 
         public void FixedUpdate(MonoBehaviour enter) {
-            LoopSend((LifeCycleTool i) =>
+            for (int i = 0; i < ItemList.Count; i++)
             {
-                if (i.GetLifeCycleState(LifeCycleTool.LifeType.FixedUpdate) && i.Frame > 0)
-                    i.Icycle.BFixedUpdate(enter);
-            });
+                LifeCycleTool item = ItemList[i];
+                if (item.GetLifeCycleState(LifeCycleTool.LifeType.FixedUpdate) && item.Frame > 0)
+                    item.Icycle.BFixedUpdate(enter);
+            }
         }
 
         public void LateUpdate(MonoBehaviour enter) {
-            LoopSend((LifeCycleTool i) =>
+            for (int i = 0; i < ItemList.Count; i++)
             {
-                if (i.GetLifeCycleState(LifeCycleTool.LifeType.LateUpdate) && i.Frame > 0)
-                    i.Icycle.BLateUpdate(enter);
-            });
+                LifeCycleTool item = ItemList[i];
+                if (item.GetLifeCycleState(LifeCycleTool.LifeType.LateUpdate) && item.Frame > 0)
+                    item.Icycle.BLateUpdate(enter);
+            }
             RecyclegarbageTool();
         }
 
