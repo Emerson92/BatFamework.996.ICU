@@ -8,7 +8,7 @@ namespace THEDARKKNIGHT
 {
 
     /// <summary>
-    /// 程序生命周期控制器
+    ///  this is program life manage class
     /// </summary>
     public class LifeCycleControl : BatSingletion<LifeCycleControl>
     {

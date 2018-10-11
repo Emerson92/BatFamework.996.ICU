@@ -9,7 +9,7 @@ namespace THEDARKKNIGHT
 {
 
     /// <summary>
-    /// 程序主入口
+    /// Program mainly enter root
     /// </summary>
     public class BatmanCore : BatMonoSingletion<BatmanCore>
     {
