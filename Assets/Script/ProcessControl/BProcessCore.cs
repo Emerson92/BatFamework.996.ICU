@@ -20,6 +20,18 @@ namespace THEDARKKNIGHT.ProcessCore
 
         private int CurrentIndex = 0;
 
+        private Action<string> ProcessUnitStartCallback;
+
+        private Action<string> ProcessUnitFinishCallback;
+
+        public void SetProcessUnitStartCallback(Action<string> call) {
+            this.ProcessUnitStartCallback = call;
+        }
+        public void SetProcessUnitFinishCallback(Action<string> call)
+        {
+            this.ProcessUnitFinishCallback = call;
+        }
+
         public void AddProcessUnit(T unit) {
             ProcessList.AddLast(unit);
         }
@@ -123,6 +135,8 @@ namespace THEDARKKNIGHT.ProcessCore
                 CurrentNode = node;
             T processUnit = CurrentNode.Value;
             processUnit.AssetCheck();
+            if (ProcessUnitStartCallback != null)
+                ProcessUnitStartCallback(processUnit.UnitTagName);
             processUnit.ProcessUnitReadyToGO = ProcessUnitPrepareComplete;
             processUnit.ProcessUnitFinishExcution = ProcessUnitFinish;
         }
@@ -136,6 +150,8 @@ namespace THEDARKKNIGHT.ProcessCore
         {
             CurrentNode.Value.ProcessUnitReadyToGO -= ProcessUnitPrepareComplete;
             CurrentNode.Value.ProcessUnitFinishExcution -= ProcessUnitFinish;
+            if (ProcessUnitFinishCallback != null)
+                ProcessUnitFinishCallback(CurrentNode.Value.UnitTagName);
             if (CurrentNode.Next != null)
                 StartProcess(CurrentNode.Next);
             else

@@ -4,7 +4,10 @@ namespace THEDARKKNIGHT.ConstDefine {
 
     public static class BFameWorkPathDefine
     {
-        public static string BFameResourceTestUIPath = "Test/UIDemo";
+        /***********************************************************************/
+        public const string BFameResourceTestUIPath = "Test/UIDemo";
+        public const string BFameResourceTestProcessPath = "Test/ProcessDemo";
+        /***********************************************************************/
 
         public static string BFameDataPath = Application.persistentDataPath + "/Resources";
 

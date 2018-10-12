@@ -32,6 +32,11 @@ namespace THEDARKKNIGHT.EventSystem {
             SortEventOrder(EventManagerDic[methodName]);
         }
 
+        internal void AddListener(string lEFTPRESSEVENT, object leftPressCallback)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// 更据事件优先级排序
         /// </summary>

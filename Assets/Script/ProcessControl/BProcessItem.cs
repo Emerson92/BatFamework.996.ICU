@@ -41,6 +41,8 @@ namespace THEDARKKNIGHT.ProcessCore
 
         public string TaskName;
 
+        public MonoBehaviour mono;
+
         public Action ProcessItemFinishExcution;
 
         public Action ProcessItemAssetAlready;
@@ -55,7 +57,11 @@ namespace THEDARKKNIGHT.ProcessCore
 
         public abstract void FixedUpdate();
 
+        public abstract void OnDestory();
+
+
         public virtual void ProcessFinish() {
+            Status = PROCESSSTATUS.Finish;
             FinishCallback();
         }
 
@@ -66,7 +72,7 @@ namespace THEDARKKNIGHT.ProcessCore
             tool.SetLifeCycle(LifeCycleTool.LifeType.FixedUpdate, true);
         }
 
-        public void BAwake(MonoBehaviour main){}
+        public void BAwake(MonoBehaviour main){ mono = main; }
 
         public void BStart(MonoBehaviour main){}
 
