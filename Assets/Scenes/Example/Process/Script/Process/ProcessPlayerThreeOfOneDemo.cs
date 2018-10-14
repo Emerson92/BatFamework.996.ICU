@@ -20,10 +20,15 @@ namespace THEDARKKNIGHT.Example
         }
 
         // Use this for initialization
-        public override void AssetCheck()
+        public override void AssetInit(object data)
         {
-            GameObject PlayerTwo_2 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayerThree_2") as GameObject;
-            PlayerThree = GameObject.Instantiate(PlayerTwo_2);
+            GameObject PlayerThree_1 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayerThree_1") as GameObject;
+            PlayerThree = GameObject.Instantiate(PlayerThree_1);
+            ReadyToExcute();
+        }
+
+        public override void DataInit(object data)
+        {
             BEventManager.Instance().AddListener(BatEventDefine.LEFTPRESSEVENT, LeftPressCallback);
         }
 
@@ -31,7 +36,7 @@ namespace THEDARKKNIGHT.Example
         {
             InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
             if (packet.Info.CastGameObject == PlayerThree) {
-                ProcessFinish();
+                ForceToFinishProcess();
             }
             return null;
         }
@@ -56,5 +61,7 @@ namespace THEDARKKNIGHT.Example
         public override void Update()
         {
         }
+
+
     }
 }

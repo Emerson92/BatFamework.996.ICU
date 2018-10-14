@@ -5,11 +5,12 @@ using THEDARKKNIGHT.Interface;
 using UnityEngine;
 namespace THEDARKKNIGHT.ProcessCore
 {
-    public abstract class BProcessItem :ILifeCycle
+    public abstract class BProcessItem : ILifeCycle
     {
 
         public enum PROCESSSTATUS {
             None,
+            Start,
             Ready,
             Excuting,
             Finish
@@ -36,18 +37,28 @@ namespace THEDARKKNIGHT.ProcessCore
         private void FinishCallback()
         {
             if (ProcessItemFinishExcution != null)
-                ProcessItemFinishExcution();
+                ProcessItemFinishExcution(Data,false);
         }
+
+        protected void ForceToFinishProcess(){
+            if (ProcessItemFinishExcution != null)
+                ProcessItemFinishExcution(Data, true);
+        }
+
+        public object Data { set; get; }
 
         public string TaskName;
 
-        public MonoBehaviour mono;
+        public MonoBehaviour mono { private set;get;}
 
-        public Action ProcessItemFinishExcution;
 
-        public Action ProcessItemAssetAlready;
+        public Action<object,bool> ProcessItemFinishExcution;
 
-        public abstract void AssetCheck();
+        public Action<BProcessItem,object> ProcessItemAssetAlready;
+
+        public abstract void AssetInit(object data);
+
+        public abstract void DataInit(object data);
 
         public abstract void ProcessExcute();
 
@@ -70,6 +81,20 @@ namespace THEDARKKNIGHT.ProcessCore
             tool = this.GetLifeCycleTool();
             tool.SetLifeCycle(LifeCycleTool.LifeType.Update, true);
             tool.SetLifeCycle(LifeCycleTool.LifeType.FixedUpdate, true);
+        }
+
+        public void ProcessStart(object data)
+        {
+            ProcessStatus = PROCESSSTATUS.Start;
+            this.Data = data;
+            AssetInit(Data);
+        }
+
+        public void ReadyToExcute(){
+            if (ProcessItemAssetAlready !=null)
+                ProcessItemAssetAlready(this, Data);
+            ProcessItemAssetAlready = null;
+            ProcessStatus = PROCESSSTATUS.Ready;
         }
 
         public void BAwake(MonoBehaviour main){ mono = main; }

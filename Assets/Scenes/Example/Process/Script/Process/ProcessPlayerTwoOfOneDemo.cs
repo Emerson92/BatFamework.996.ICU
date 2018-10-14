@@ -18,10 +18,15 @@ namespace THEDARKKNIGHT.Example
             this.TaskName = name;
         }
 
-        public override void AssetCheck()
+        public override void AssetInit(object data)
         {
             GameObject PlayerTwo_1 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayerTwo_1") as GameObject;
             PlayerOne = GameObject.Instantiate(PlayerTwo_1);
+            ReadyToExcute();
+        }
+
+        public override void DataInit(object data)
+        {
             BEventManager.Instance().AddListener(BatEventDefine.LEFTPRESSEVENT, LeftPressCallback);
         }
 

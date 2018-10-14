@@ -14,15 +14,23 @@ namespace THEDARKKNIGHT.Example
     {
         public GameObject PlayerTwo { get; private set; }
 
+        private Vector3 TargetScale;
+        private float Timer = 0;
+        private bool StartToExcute = false;
 
         public ProcessPlayerTwoOfTwoDemo(string name) {
             this.TaskName = name;
         }
 
-        public override void AssetCheck()
+        public override void AssetInit(object data)
         {
             GameObject playerTwo_2 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/playerTwo_2") as GameObject;
             PlayerTwo = GameObject.Instantiate(playerTwo_2);
+            ReadyToExcute();
+        }
+
+        public override void DataInit(object data)
+        {
             BEventManager.Instance().AddListener(BatEventDefine.LEFTPRESSEVENT, LeftPressCallback);
         }
 
@@ -31,16 +39,10 @@ namespace THEDARKKNIGHT.Example
             InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
 
             if (packet.Info.CastGameObject == PlayerTwo) {
-                PlayerTwo.transform.localScale *= 0.5f;
-                mono.StartCoroutine(DelayToExcuteFinish());
+                TargetScale = PlayerTwo.transform.localScale * 0.5f;
+                StartToExcute = true;
             }
             return null;
-        }
-
-        IEnumerator  DelayToExcuteFinish()
-        {
-            yield return new WaitForSecondsRealtime(8f);
-            ProcessFinish();
         }
 
         public override void FixedUpdate()
@@ -60,7 +62,16 @@ namespace THEDARKKNIGHT.Example
 
         public override void Update()
         {
-
+            if(StartToExcute){
+                Timer += Time.deltaTime;
+                PlayerTwo.transform.localScale = Vector3.Lerp(PlayerTwo.transform.localScale, TargetScale, Timer/ 5);
+                if(PlayerTwo.transform.localScale == TargetScale){
+                    StartToExcute = false;
+                    Timer = 0;
+                    ProcessFinish();
+                }
+            }
+           
         }
 
         public override void OnDestory()

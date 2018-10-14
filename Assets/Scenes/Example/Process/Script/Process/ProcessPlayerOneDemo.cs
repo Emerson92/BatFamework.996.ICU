@@ -13,8 +13,6 @@ namespace THEDARKKNIGHT.ProcessCore {
     {
         GameObject PlayerOne;
 
-        PlayerMove moveScript;
-
         public bool IsNeedToMove = false;
 
         private Vector3 MovePosition;
@@ -25,17 +23,16 @@ namespace THEDARKKNIGHT.ProcessCore {
             this.TaskName = name;
         }
 
-        public override void AssetCheck()
+        public override void AssetInit(object data)
         {
             GameObject Player = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayerOne") as GameObject;
             PlayerOne  = GameObject.Instantiate(Player);
-            moveScript  = PlayerOne.GetComponent<PlayerMove>();
-            AddListerner();
-            DataPerpare();
+            ReadyToExcute();
         }
 
-        private void DataPerpare()
+        public override void DataInit(object data)
         {
+            AddListerner();
             MovePosition = PlayerOne.transform.position + PlayerOne.transform.forward * 3;
         }
 

@@ -125,7 +125,7 @@ namespace THEDARKKNIGHT.ProcessCore
             }
         }
 
-        public void StartProcess(LinkedListNode<T> node = null) {
+        public void StartProcess(object data = null ,LinkedListNode<T> node = null) {
             if (node == null)
             {
                 LinkedListNode<T> firstNode = ProcessList.First;
@@ -134,7 +134,7 @@ namespace THEDARKKNIGHT.ProcessCore
             else
                 CurrentNode = node;
             T processUnit = CurrentNode.Value;
-            processUnit.AssetCheck();
+            processUnit.DataInit(data);
             if (ProcessUnitStartCallback != null)
                 ProcessUnitStartCallback(processUnit.UnitTagName);
             processUnit.ProcessUnitReadyToGO = ProcessUnitPrepareComplete;
@@ -146,14 +146,14 @@ namespace THEDARKKNIGHT.ProcessCore
             CurrentNode.Value.ProcessExcute();
         }
 
-        private void ProcessUnitFinish()
+        private void ProcessUnitFinish(object data)
         {
             CurrentNode.Value.ProcessUnitReadyToGO -= ProcessUnitPrepareComplete;
             CurrentNode.Value.ProcessUnitFinishExcution -= ProcessUnitFinish;
             if (ProcessUnitFinishCallback != null)
                 ProcessUnitFinishCallback(CurrentNode.Value.UnitTagName);
             if (CurrentNode.Next != null)
-                StartProcess(CurrentNode.Next);
+                StartProcess(data, CurrentNode.Next);
             else
                 CurrentNode = null;
             CurrentIndex++;

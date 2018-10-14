@@ -14,7 +14,7 @@ namespace THEDARKKNIGHT.ProcessCore {
         /// </summary>
         private List<T> ProcessItem = new List<T>();
 
-        public Action ProcessUnitFinishExcution;
+        public Action<object> ProcessUnitFinishExcution;
 
         public Action ProcessUnitReadyToGO;
 
@@ -36,19 +36,20 @@ namespace THEDARKKNIGHT.ProcessCore {
             ProcessItem.RemoveAt(index);
         }
 
-        public virtual void AssetCheck()
+        public virtual void DataInit(object data)
         {
             for (int i = 0; i < ProcessItem.Count; i++)
             {
                 ProcessItem[i].Init();
-                ProcessItem[i].AssetCheck();
                 ProcessItem[i].ProcessItemFinishExcution += ProcessFinish;
                 ProcessItem[i].ProcessItemAssetAlready += ProcessReady;
+                ProcessItem[i].ProcessStart(data);
             }
         }
 
-        private void ProcessReady()
+        private void ProcessReady(BProcessItem item,object data)
         {
+            item.DataInit(data);
             for (int i = 0; i < ProcessItem.Count; i++)
             {
                 if (ProcessItem[i].ProcessStatus != BProcessItem.PROCESSSTATUS.Ready)
@@ -66,19 +67,23 @@ namespace THEDARKKNIGHT.ProcessCore {
             }
         }
 
-        public virtual void ProcessFinish()
+        public virtual void ProcessFinish(object data,bool IsForceToEnd)
         {
+            if(IsForceToEnd){
+                AllTaskFinish(data);
+                return;
+            }
             for (int i = 0;i< ProcessItem.Count;i++) {
                 if (ProcessItem[i].ProcessStatus != BProcessItem.PROCESSSTATUS.Finish)
                     return;
             }
-            AllTaskFinish();
+            AllTaskFinish(data);
         }
 
-        private void AllTaskFinish()
+        private void AllTaskFinish(object data)
         {
             if (ProcessUnitFinishExcution != null)
-                ProcessUnitFinishExcution();
+                ProcessUnitFinishExcution(data);
 
             for (int i = 0; i < ProcessItem.Count; i++) {
                 ProcessItem[i].OnDestory();
