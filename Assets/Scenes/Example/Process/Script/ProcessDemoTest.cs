@@ -58,28 +58,32 @@ namespace THEDARKKNIGHT.Example
             Debug.Log("ProcessUnitStart :"+ name);
             switch (name) {
                 case "PlayerOneUnit":
-                    if (PlayerAreaOne != null)
-                        return;
-                    GameObject PlayerArea1 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaOne") as GameObject;
-                    PlayerAreaOne = GameObject.Instantiate(PlayerArea1);
+                    if (!PlayerAreaOne){
+                        GameObject PlayerArea1 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaOne") as GameObject;
+                        PlayerAreaOne = GameObject.Instantiate(PlayerArea1);
+                    }
                     CameraCtrl.Instance().LerpFocusCenter(PlayerAreaOne.transform.position);
                     break;
                 case "PlayerTwoUnit":
-                    if (PlayerAreaTwo!=null)
-                        return;
-                    GameObject PlayerArea2 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaTwo") as GameObject;
-                    PlayerAreaTwo = GameObject.Instantiate(PlayerArea2);
+                    if (!PlayerAreaTwo){
+                        GameObject PlayerArea2 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaTwo") as GameObject;
+                        PlayerAreaTwo = GameObject.Instantiate(PlayerArea2);
+                    }
                     CameraCtrl.Instance().SetObserverRadius(8f);
                     CameraCtrl.Instance().LerpFocusCenter(PlayerAreaTwo.transform.position);
                     break;
                 case "PlayerThreeUnit":
-                    GameObject PlayerArea3 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaThree") as GameObject;
-                    PlayerAreaThree = GameObject.Instantiate(PlayerArea3);
+                    if(!PlayerAreaThree){
+                        GameObject PlayerArea3 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaThree") as GameObject;
+                        PlayerAreaThree = GameObject.Instantiate(PlayerArea3);
+                    }
                     CameraCtrl.Instance().LerpFocusCenter(PlayerAreaThree.transform.position);
                     break;
                 case "PlayerFourUnit":
-                    GameObject PlayerArea4 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaFour") as GameObject;
-                    PlayAreaFour = GameObject.Instantiate(PlayerArea4);
+                    if(!PlayAreaFour){
+                        GameObject PlayerArea4 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaFour") as GameObject;
+                        PlayAreaFour = GameObject.Instantiate(PlayerArea4);
+                    }
                     CameraCtrl.Instance().LerpFocusCenter(PlayAreaFour.transform.position);
                     break;
             }
@@ -97,10 +101,6 @@ namespace THEDARKKNIGHT.Example
                     if ((string)data == "B")
                     {
                         ProcessControl.RemoveProcessUnitOnIndex(3);
-
-                        ProcessPlayerOneDemo PlayerOne = new ProcessPlayerOneDemo("PlayerOne");
-                        BProcessUnit<BProcessItem> PlayerOneUnit = new BProcessUnit<BProcessItem>(PlayerOne);
-                        PlayerOneUnit.SetUnitTagName("PlayerOneUnit");
                         ProcessControl.AddProcessUnitOnIndex(2, ProcessControl.GetProcessUnitAtIndex(0));
                     }
                     break;

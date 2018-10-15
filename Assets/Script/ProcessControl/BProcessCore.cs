@@ -33,7 +33,7 @@ namespace THEDARKKNIGHT.ProcessCore
         }
 
         public BProcessUnit<K> GetProcessUnitAtIndex(int index) {
-            LinkedListNode<T> tempNode = CurrentNode;
+            LinkedListNode<T> tempNode = ProcessList.First;
             for (int i = 0; i < index ; i++)
             {
                 tempNode = tempNode.Next;
@@ -89,6 +89,15 @@ namespace THEDARKKNIGHT.ProcessCore
             }
             ProcessList.AddAfter(tempNode, newUnit);
         }
+
+        public void AddProcessUnitOnIndex(int index, LinkedListNode<T> newUnit)
+        {
+            LinkedListNode<T> tempNode = ProcessList.First;
+            for (int i = 0; i < index; i++){
+                tempNode = tempNode.Next;
+            }
+            ProcessList.AddAfter(tempNode, newUnit);
+       }
 
         public void AddProcessLinkOnIndex(int index, LinkedList<T> newUnit)
         {
