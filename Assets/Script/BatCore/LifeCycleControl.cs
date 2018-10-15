@@ -126,7 +126,7 @@ namespace THEDARKKNIGHT
                 if (item.GetLifeCycleState(LifeCycleTool.LifeType.LateUpdate) && item.Frame > 0)
                     item.Icycle.BLateUpdate(enter);
             }
-            RecyclegarbageTool();
+            //RecycleGarbageTool();
         }
 
         public void OnEnable(MonoBehaviour enter) {
@@ -185,7 +185,7 @@ namespace THEDARKKNIGHT
             }
         }
 
-        private void RecyclegarbageTool()
+        public void RecycleGarbageTool()
         {
             if(RecycleList.Count > 0 ){
                 for (int i = 0; i < RecycleList.Count;i++)

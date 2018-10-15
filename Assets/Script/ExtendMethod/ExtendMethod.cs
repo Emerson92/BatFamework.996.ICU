@@ -6,7 +6,7 @@ namespace THEDARKKNIGHT {
     public static class ExtendMethod{
         
         /// <summary>
-        /// 启用生命周期
+        /// Set up Life Cycle 
         /// </summary>
         /// <param name="i"></param>
         public static LifeCycleTool Enable(this ILifeCycle i) {
@@ -15,7 +15,8 @@ namespace THEDARKKNIGHT {
                 priority = 0,
                 Icycle = i,
             }.SetLifeCycle(LifeCycleTool.LifeType.Awake, true);
-            LifeCycleControl.ToolKeepDic.Add(i.GetHashCode(), tool);
+            if (LifeCycleControl.ToolKeepDic.ContainsKey(i.GetHashCode())) LifeCycleControl.ToolKeepDic.Remove(i.GetHashCode());
+             LifeCycleControl.ToolKeepDic.Add(i.GetHashCode(), tool);
             LifeCycleControl.Add(tool);
             return tool;
         }
@@ -30,14 +31,16 @@ namespace THEDARKKNIGHT {
         }
 
         /// <summary>
-        /// 关闭生命周期
+        /// Close the life cycle tool
         /// </summary>
         /// <param name="i"></param>
         public static void Disable(this ILifeCycle i) {
             LifeCycleTool tool = null;
-            if (LifeCycleControl.ToolKeepDic.ContainsKey(i.GetHashCode()))
-                tool = LifeCycleControl.ToolKeepDic[i.GetHashCode()];
-            if(tool != null) LifeCycleControl.RecycleList.Add(tool);
+            int index = i.GetHashCode();
+            if (LifeCycleControl.ToolKeepDic.TryGetValue(index,out tool)) {
+                LifeCycleControl.ToolKeepDic.Remove(index);
+            }
+            if (tool != null) LifeCycleControl.RecycleList.Add(tool);
         }
     }
 }

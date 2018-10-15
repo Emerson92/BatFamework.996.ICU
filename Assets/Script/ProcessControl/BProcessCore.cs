@@ -32,6 +32,15 @@ namespace THEDARKKNIGHT.ProcessCore
             this.ProcessUnitFinishCallback = call;
         }
 
+        public BProcessUnit<K> GetProcessUnitAtIndex(int index) {
+            LinkedListNode<T> tempNode = CurrentNode;
+            for (int i = 0; i < index ; i++)
+            {
+                tempNode = tempNode.Next;
+            }
+            return tempNode.Value;
+        }
+
         public void AddProcessUnit(T unit) {
             ProcessList.AddLast(unit);
         }

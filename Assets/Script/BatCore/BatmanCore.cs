@@ -32,6 +32,7 @@ namespace THEDARKKNIGHT
         public void LateUpdate()
         {
             LifeCycleControl.Instance().LateUpdate(this);
+            LifeCycleControl.Instance().RecycleGarbageTool();
         }
 
         public void OnApplicationFocus(bool focus)

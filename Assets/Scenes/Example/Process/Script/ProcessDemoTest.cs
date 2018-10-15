@@ -94,15 +94,15 @@ namespace THEDARKKNIGHT.Example
                 case "PlayerTwoUnit":
                     break;
                 case "PlayerThreeUnit":
-                    Debug.Log("data :"+ (string)data);
-                    //if ((string)data == "B") {
-                        //ProcessControl.RemoveProcessUnitOnIndex(3);
+                    if ((string)data == "B")
+                    {
+                        ProcessControl.RemoveProcessUnitOnIndex(3);
 
-                        //ProcessPlayerOneDemo PlayerOne = new ProcessPlayerOneDemo("PlayerOne");
-                        //BProcessUnit<BProcessItem> PlayerOneUnit = new BProcessUnit<BProcessItem>(PlayerOne);
-                        //PlayerOneUnit.SetUnitTagName("PlayerOneUnit");
-                        //ProcessControl.AddProcessUnitOnIndex(2, PlayerOneUnit);
-                    //}
+                        ProcessPlayerOneDemo PlayerOne = new ProcessPlayerOneDemo("PlayerOne");
+                        BProcessUnit<BProcessItem> PlayerOneUnit = new BProcessUnit<BProcessItem>(PlayerOne);
+                        PlayerOneUnit.SetUnitTagName("PlayerOneUnit");
+                        ProcessControl.AddProcessUnitOnIndex(2, ProcessControl.GetProcessUnitAtIndex(0));
+                    }
                     break;
                 case "PlayerFourUnit":
                     break;

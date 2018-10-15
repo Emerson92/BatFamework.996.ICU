@@ -34,15 +34,15 @@ namespace THEDARKKNIGHT.ProcessCore
             }
         }
 
-        private void FinishCallback()
+        private IEnumerator FinishCallback(bool forceQuit = false)
         {
+            yield return new WaitForEndOfFrame();
             if (ProcessItemFinishExcution != null)
-                ProcessItemFinishExcution(ProcessData,false);
+                ProcessItemFinishExcution(ProcessData, forceQuit);
         }
 
         protected void ForceToFinishProcess(){
-            if (ProcessItemFinishExcution != null)
-                ProcessItemFinishExcution(ProcessData, true);
+            mono.StartCoroutine(FinishCallback(true));
         }
 
         public object ProcessData { set; get; }
@@ -73,7 +73,7 @@ namespace THEDARKKNIGHT.ProcessCore
 
         public virtual void ProcessFinish() {
             Status = PROCESSSTATUS.Finish;
-            FinishCallback();
+            mono.StartCoroutine(FinishCallback());
         }
 
         public virtual void Init() {
