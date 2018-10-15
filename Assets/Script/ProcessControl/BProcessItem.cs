@@ -37,15 +37,15 @@ namespace THEDARKKNIGHT.ProcessCore
         private void FinishCallback()
         {
             if (ProcessItemFinishExcution != null)
-                ProcessItemFinishExcution(Data,false);
+                ProcessItemFinishExcution(ProcessData,false);
         }
 
         protected void ForceToFinishProcess(){
             if (ProcessItemFinishExcution != null)
-                ProcessItemFinishExcution(Data, true);
+                ProcessItemFinishExcution(ProcessData, true);
         }
 
-        public object Data { set; get; }
+        public object ProcessData { set; get; }
 
         public string TaskName;
 
@@ -68,7 +68,7 @@ namespace THEDARKKNIGHT.ProcessCore
 
         public abstract void FixedUpdate();
 
-        public abstract void OnDestory();
+        public abstract void Destory();
 
 
         public virtual void ProcessFinish() {
@@ -86,15 +86,22 @@ namespace THEDARKKNIGHT.ProcessCore
         public void ProcessStart(object data)
         {
             ProcessStatus = PROCESSSTATUS.Start;
-            this.Data = data;
-            AssetInit(Data);
+            this.ProcessData = data;
+            AssetInit(ProcessData);
         }
 
         public void ReadyToExcute(){
             if (ProcessItemAssetAlready !=null)
-                ProcessItemAssetAlready(this, Data);
+                ProcessItemAssetAlready(this, ProcessData);
             ProcessItemAssetAlready = null;
             ProcessStatus = PROCESSSTATUS.Ready;
+        }
+
+        public void ProcessDestory() {
+            Debug.Log("ProcessDestory :"+ TaskName);
+            this.Disable();
+            Destory();
+            ProcessData = null;
         }
 
         public void BAwake(MonoBehaviour main){ mono = main; }

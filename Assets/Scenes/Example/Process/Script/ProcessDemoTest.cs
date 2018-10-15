@@ -42,7 +42,8 @@ namespace THEDARKKNIGHT.Example
             BProcessUnit<BProcessItem>  PlayerThreeUnit = new BProcessUnit<BProcessItem>(ProcessPlayerThreeOfOne, ProcessPlayerThreeOfTwo);
             PlayerThreeUnit.SetUnitTagName("PlayerThreeUnit");
 
-            BProcessUnit<BProcessItem> PlayerFourUnit = new BProcessUnit<BProcessItem>();
+            ProcessPlayerFourDemo ProcessPlayerFour = new ProcessPlayerFourDemo("PlayerFour");
+            BProcessUnit<BProcessItem> PlayerFourUnit = new BProcessUnit<BProcessItem>(ProcessPlayerFour);
             PlayerFourUnit.SetUnitTagName("PlayerFourUnit");
 
             ProcessControl.AddProcessUnit(PlayerOneUnit);
@@ -52,7 +53,7 @@ namespace THEDARKKNIGHT.Example
             ProcessControl.StartProcess();
         }
 
-        private void ProcessUnitStart(string name)
+        private void ProcessUnitStart(string name, object data)
         {
             Debug.Log("ProcessUnitStart :"+ name);
             switch (name) {
@@ -84,7 +85,7 @@ namespace THEDARKKNIGHT.Example
             }
         }
 
-        private void ProcessUnitFinish(string name)
+        private void ProcessUnitFinish(string name, object data)
         {
             switch (name)
             {
@@ -93,6 +94,15 @@ namespace THEDARKKNIGHT.Example
                 case "PlayerTwoUnit":
                     break;
                 case "PlayerThreeUnit":
+                    Debug.Log("data :"+ (string)data);
+                    //if ((string)data == "B") {
+                        //ProcessControl.RemoveProcessUnitOnIndex(3);
+
+                        //ProcessPlayerOneDemo PlayerOne = new ProcessPlayerOneDemo("PlayerOne");
+                        //BProcessUnit<BProcessItem> PlayerOneUnit = new BProcessUnit<BProcessItem>(PlayerOne);
+                        //PlayerOneUnit.SetUnitTagName("PlayerOneUnit");
+                        //ProcessControl.AddProcessUnitOnIndex(2, PlayerOneUnit);
+                    //}
                     break;
                 case "PlayerFourUnit":
                     break;

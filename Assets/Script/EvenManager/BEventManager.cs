@@ -32,6 +32,22 @@ namespace THEDARKKNIGHT.EventSystem {
             SortEventOrder(EventManagerDic[methodName]);
         }
 
+        public void RemoveListener(string methodName, Func<object, object> dispatchEvent) {
+            if (EventManagerDic.ContainsKey(methodName))
+            {
+                List<EventParam> CallbackList = EventManagerDic[methodName];
+                int index = -1;
+                for (int i = 0; i < CallbackList.Count; i++) {
+                    if (CallbackList[i].DispatchEvent == dispatchEvent) {
+                        index = i;
+                    }
+                }
+                if(index != -1)
+                    CallbackList.RemoveAt(index);
+            }
+        }
+
+
         internal void AddListener(string lEFTPRESSEVENT, object leftPressCallback)
         {
             throw new NotImplementedException();

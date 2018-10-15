@@ -38,6 +38,7 @@ namespace THEDARKKNIGHT.ProcessCore {
 
         public virtual void DataInit(object data)
         {
+            Debug.Log(UnitTagName + " : DataInit");
             for (int i = 0; i < ProcessItem.Count; i++)
             {
                 ProcessItem[i].Init();
@@ -84,9 +85,8 @@ namespace THEDARKKNIGHT.ProcessCore {
         {
             if (ProcessUnitFinishExcution != null)
                 ProcessUnitFinishExcution(data);
-
             for (int i = 0; i < ProcessItem.Count; i++) {
-                ProcessItem[i].OnDestory();
+                ProcessItem[i].ProcessDestory();
                 ProcessItem[i].ProcessItemFinishExcution -= ProcessFinish;
                 ProcessItem[i].ProcessItemAssetAlready -= ProcessReady;
             }

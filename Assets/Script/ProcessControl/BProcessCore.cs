@@ -20,14 +20,14 @@ namespace THEDARKKNIGHT.ProcessCore
 
         private int CurrentIndex = 0;
 
-        private Action<string> ProcessUnitStartCallback;
+        private Action<string, object> ProcessUnitStartCallback;
 
-        private Action<string> ProcessUnitFinishCallback;
+        private Action<string, object> ProcessUnitFinishCallback;
 
-        public void SetProcessUnitStartCallback(Action<string> call) {
+        public void SetProcessUnitStartCallback(Action<string, object> call) {
             this.ProcessUnitStartCallback = call;
         }
-        public void SetProcessUnitFinishCallback(Action<string> call)
+        public void SetProcessUnitFinishCallback(Action<string, object> call)
         {
             this.ProcessUnitFinishCallback = call;
         }
@@ -106,9 +106,11 @@ namespace THEDARKKNIGHT.ProcessCore
             LinkedListNode<T> tempNode = ProcessList.First;
             for (int i = 0; i < index; i++)
             {
+                Debug.Log(tempNode.Next.Value.UnitTagName);
                 tempNode = tempNode.Next;
             }
-            ProcessList.Remove(tempNode);
+            if (tempNode != null)
+                ProcessList.Remove(tempNode);
         }
 
         public void RemoveAllProcessUnitOnIndex(int index) {
@@ -126,6 +128,7 @@ namespace THEDARKKNIGHT.ProcessCore
         }
 
         public void StartProcess(object data = null ,LinkedListNode<T> node = null) {
+            Debug.Log("StartProcess");
             if (node == null)
             {
                 LinkedListNode<T> firstNode = ProcessList.First;
@@ -136,7 +139,7 @@ namespace THEDARKKNIGHT.ProcessCore
             T processUnit = CurrentNode.Value;
             processUnit.DataInit(data);
             if (ProcessUnitStartCallback != null)
-                ProcessUnitStartCallback(processUnit.UnitTagName);
+                ProcessUnitStartCallback(processUnit.UnitTagName, data);
             processUnit.ProcessUnitReadyToGO = ProcessUnitPrepareComplete;
             processUnit.ProcessUnitFinishExcution = ProcessUnitFinish;
         }
@@ -148,10 +151,12 @@ namespace THEDARKKNIGHT.ProcessCore
 
         private void ProcessUnitFinish(object data)
         {
+           
             CurrentNode.Value.ProcessUnitReadyToGO -= ProcessUnitPrepareComplete;
             CurrentNode.Value.ProcessUnitFinishExcution -= ProcessUnitFinish;
             if (ProcessUnitFinishCallback != null)
-                ProcessUnitFinishCallback(CurrentNode.Value.UnitTagName);
+                ProcessUnitFinishCallback(CurrentNode.Value.UnitTagName, data);
+            Debug.Log("ProcessUnitFinish");
             if (CurrentNode.Next != null)
                 StartProcess(data, CurrentNode.Next);
             else

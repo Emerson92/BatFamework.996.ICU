@@ -36,7 +36,8 @@ namespace THEDARKKNIGHT.Example
             InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
             if (packet.Info.CastGameObject == PlayerThree)
             {
-                ProcessFinish();
+                ProcessData = "B";
+                ForceToFinishProcess();
             }
             return null;
         }
@@ -45,8 +46,10 @@ namespace THEDARKKNIGHT.Example
         {
         }
 
-        public override void OnDestory()
+        public override void Destory()
         {
+
+            ///BEventManager.Instance().RemoveListener(BatEventDefine.LEFTPRESSEVENT, LeftPressCallback);
             GameObject.Destroy(PlayerThree);
         }
 

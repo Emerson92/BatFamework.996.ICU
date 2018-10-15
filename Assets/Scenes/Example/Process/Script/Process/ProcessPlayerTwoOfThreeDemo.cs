@@ -65,8 +65,9 @@ namespace THEDARKKNIGHT.Example
 
         }
 
-        public override void OnDestory()
+        public override void Destory()
         {
+            BEventManager.Instance().RemoveListener(BatEventDefine.LEFTPRESSEVENT, LeftPressCallback);
             GameObject.Destroy(PlayerThree);
         }
     }
