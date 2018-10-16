@@ -16,7 +16,6 @@ namespace THEDARKKNIGHT {
                 Icycle = i,
             }.SetLifeCycle(LifeCycleTool.LifeType.Awake, true);
             int index = i.GetHashCode();
-            Debug.Log(" Enable " + index);
             if (LifeCycleControl.ToolKeepDic.ContainsKey(index)) LifeCycleControl.ToolKeepDic.Remove(index);
             LifeCycleControl.ToolKeepDic.Add(index, tool);
             LifeCycleControl.Add(tool);
@@ -39,7 +38,6 @@ namespace THEDARKKNIGHT {
         public static void Disable(this ILifeCycle i) {
             LifeCycleTool tool = null;
             int index = i.GetHashCode();
-            Debug.Log(" Disable " + index);
             if (LifeCycleControl.ToolKeepDic.TryGetValue(index,out tool)) {
                 LifeCycleControl.ToolKeepDic.Remove(index);
             }

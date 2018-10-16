@@ -63,6 +63,7 @@ namespace THEDARKKNIGHT.InputOperate
         public void FocusCenter(Vector3 center)
         {
             if (ObCamera == null) return;
+            IsNeedLerp = false;
             CenterPos = center;
             Vector3 dir = -ObCamera.transform.forward * Radius;
             Vector3 targetPos = center + dir;
@@ -70,8 +71,7 @@ namespace THEDARKKNIGHT.InputOperate
             ObCamera.transform.forward = -dir;
             Vector3 angle = ObCamera.transform.eulerAngles;
             CurrentX = angle.y;
-            CurrentY = angle.x;
-            IsNeedLerp = false;
+            CurrentY = angle.x; 
         }
 
         public void LerpFocusCenter(Vector3 center)
@@ -160,17 +160,21 @@ namespace THEDARKKNIGHT.InputOperate
         {
             if (ObCamera == null) return;
             Radius += value;
-            Vector3 dir = -ObCamera.transform.forward * Radius;
-            Vector3 targetPos = CenterPos + dir;
+            Vector3 dir = ObCamera.transform.position - CenterPos;
+            Vector3 targetPos = (dir).normalized * Radius + CenterPos;
+            TargetRotation = Quaternion.LookRotation(-dir);
+            IsNeedLerp = false;
             ObCamera.transform.position = targetPos;
+            ObCamera.transform.rotation = TargetRotation;
         }
 
         public void LerpScale(float value)
         {
             if (ObCamera == null) return;
             Radius += value;
-            Vector3 dir = -ObCamera.transform.forward * Radius;
-            Vector3 targetPos = CenterPos + dir;
+            Vector3 dir = ObCamera.transform.position - CenterPos;
+            Vector3 targetPos = dir.normalized* Radius+ CenterPos;
+            TargetRotation = Quaternion.LookRotation(-dir);
             TargetPosition = targetPos;
             IsNeedLerp = true;
         }
@@ -220,8 +224,9 @@ namespace THEDARKKNIGHT.InputOperate
             {
                 ObCamera.transform.rotation = Quaternion.Lerp(ObCamera.transform.rotation, TargetRotation, Time.deltaTime * LerpValue);
                 ObCamera.transform.position = Vector3.Lerp(ObCamera.transform.position, TargetPosition, Time.deltaTime * LerpValue);
-                if (ObCamera.transform.rotation == TargetRotation && ObCamera.transform.position == TargetPosition)
-                    IsNeedLerp = false;
+                if (ObCamera.transform.rotation == TargetRotation && ObCamera.transform.position == TargetPosition) {
+                    IsNeedLerp = false;               
+                }
             }
         }
 

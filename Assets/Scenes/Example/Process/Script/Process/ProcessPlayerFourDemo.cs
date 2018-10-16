@@ -2,10 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT.ConstDefine;
+using THEDARKKNIGHT.EventDefine;
+using THEDARKKNIGHT.EventSystem;
+using THEDARKKNIGHT.InputOperate.DataStruct;
 using THEDARKKNIGHT.ProcessCore;
 using UnityEngine;
 namespace THEDARKKNIGHT.Example {
-
+    [Serializable]
     public class ProcessPlayerFourDemo : BProcessItem
     {
         public GameObject PlayerFour { get; private set; }
@@ -24,12 +27,23 @@ namespace THEDARKKNIGHT.Example {
 
         public override void DataInit(object data)
         {
+            BEventManager.Instance().AddListener(BatEventDefine.LEFTPRESSEVENT, LeftPressCallback);
+        }
 
+        private object LeftPressCallback(object data)
+        {
+            InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
+            if (packet.Info.CastGameObject == PlayerFour)
+            {
+                ProcessFinish();
+            }
+            return null;
         }
 
         public override void Destory()
         {
-
+            BEventManager.Instance().RemoveListener(BatEventDefine.LEFTPRESSEVENT, LeftPressCallback);
+            GameObject.Destroy(PlayerFour);
         }
 
         public override void FixedUpdate()
@@ -44,6 +58,7 @@ namespace THEDARKKNIGHT.Example {
 
         public override void StopExcute()
         {
+
         }
 
         public override void Update()

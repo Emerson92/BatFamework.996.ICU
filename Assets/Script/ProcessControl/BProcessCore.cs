@@ -22,12 +22,12 @@ namespace THEDARKKNIGHT.ProcessCore
 
         private Action<string, object> ProcessUnitStartCallback;
 
-        private Action<string, object> ProcessUnitFinishCallback;
+        private Func<string, object,bool> ProcessUnitFinishCallback;
 
         public void SetProcessUnitStartCallback(Action<string, object> call) {
             this.ProcessUnitStartCallback = call;
         }
-        public void SetProcessUnitFinishCallback(Action<string, object> call)
+        public void SetProcessUnitFinishCallback(Func<string, object,bool> call)
         {
             this.ProcessUnitFinishCallback = call;
         }
@@ -146,11 +146,14 @@ namespace THEDARKKNIGHT.ProcessCore
         }
 
         public void StartProcess(object data = null ,LinkedListNode<T> node = null) {
-            Debug.Log("StartProcess");
+            
             if (node == null)
             {
                 LinkedListNode<T> firstNode = ProcessList.First;
                 CurrentNode = firstNode;
+                CurrentIndex = 0;
+                Debug.Log("StartProcess"+CurrentNode.Value.UnitTagName);
+                Debug.Log("StartProcess next"+CurrentNode.Next.Value.UnitTagName);
             }
             else
                 CurrentNode = node;
@@ -169,17 +172,16 @@ namespace THEDARKKNIGHT.ProcessCore
 
         private void ProcessUnitFinish(object data)
         {
-           
+            bool moveNext = true;
             CurrentNode.Value.ProcessUnitReadyToGO -= ProcessUnitPrepareComplete;
             CurrentNode.Value.ProcessUnitFinishExcution -= ProcessUnitFinish;
             if (ProcessUnitFinishCallback != null)
-                ProcessUnitFinishCallback(CurrentNode.Value.UnitTagName, data);
+                moveNext = ProcessUnitFinishCallback(CurrentNode.Value.UnitTagName, data);
             Debug.Log("ProcessUnitFinish");
-            if (CurrentNode.Next != null)
+            if (CurrentNode.Next != null && moveNext) {
                 StartProcess(data, CurrentNode.Next);
-            else
-                CurrentNode = null;
-            CurrentIndex++;
+                CurrentIndex++;
+            }
         }
     }
 }

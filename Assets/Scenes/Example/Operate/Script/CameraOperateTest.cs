@@ -79,7 +79,6 @@ namespace THEDARKKNIGHT.Example {
 
         private object ZoomCallback(object data)
         {
-            BLog.Instance().Log("ZoomCallback");
             InputDataPacket<float> packet = (InputDataPacket<float>)data;
             //CameraCtrl.Instance().Scale(packet.Value[0]);
             CameraCtrl.Instance().LerpScale(packet.Value[0]);
@@ -88,14 +87,12 @@ namespace THEDARKKNIGHT.Example {
 
         private object RightReleaseCallback(object data)
         {
-            BLog.Instance().Log("RightReleaseCallback");
             return null;
         }
 
         private object RightDragCallback(object data)
         {
             InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
-            BLog.Instance().Log("RightDragCallback" + packet.DeltaValue[0]);
             CameraCtrl.Instance().RotateWithScreenPixl(packet.DeltaValue[0]);
             //CameraCtrl.Instance().LerpRotateWithScreenPixl(packet.DeltaValue[0]);
             return null;
@@ -104,7 +101,6 @@ namespace THEDARKKNIGHT.Example {
         private object RightPressCallback(object data)
         {
             //InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
-            BLog.Instance().Log("RightPressCallback");
             return null;
         }
 
@@ -117,15 +113,13 @@ namespace THEDARKKNIGHT.Example {
         {
             InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
             //CameraCtrl.Instance().MoveWithScreenPixl(packet.DeltaValue[0]);
-            CameraCtrl.Instance().LerpMoveWithScreenPixl(packet.DeltaValue[0]);
-            BLog.Instance().Log("LeftDragCallback :");
+            //CameraCtrl.Instance().LerpMoveWithScreenPixl(packet.DeltaValue[0]);
             return null;
         }
 
         private object LeftPressCallback(object data)
         {
             InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
-            BLog.Instance().Log("LeftReleaseCallback");
             if (packet.Info.CastGameObject != null && packet.Info.CastGameObject != CurrentGB)
             {
                 CameraCtrl.Instance().LerpFocusCenter(packet.Info.CastGameObject.transform.position);

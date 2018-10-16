@@ -12,8 +12,8 @@ namespace THEDARKKNIGHT.Example
 
         ProcessDemo ProcessControl;
 
-        GameObject PlayerAreaTwo { get;  set; }
-        GameObject PlayerAreaOne { get;  set; }
+        GameObject PlayerAreaTwo { get; set; }
+        GameObject PlayerAreaOne { get; set; }
         GameObject PlayerAreaThree { get; set; }
         GameObject PlayAreaFour { get; set; }
 
@@ -29,17 +29,17 @@ namespace THEDARKKNIGHT.Example
             BProcessUnit<BProcessItem> PlayerOneUnit = new BProcessUnit<BProcessItem>(PlayerOne);
             PlayerOneUnit.SetUnitTagName("PlayerOneUnit");
 
-            ProcessPlayerTwoOfOneDemo   PlayerTwoOfOne = new ProcessPlayerTwoOfOneDemo("PlayerTwoOfOne");
-            ProcessPlayerTwoOfTwoDemo   PlayerTwoOfTwo   = new ProcessPlayerTwoOfTwoDemo("PlayerTwoOfTwo");
+            ProcessPlayerTwoOfOneDemo PlayerTwoOfOne = new ProcessPlayerTwoOfOneDemo("PlayerTwoOfOne");
+            ProcessPlayerTwoOfTwoDemo PlayerTwoOfTwo = new ProcessPlayerTwoOfTwoDemo("PlayerTwoOfTwo");
             ProcessPlayerTwoOfThreeDemo PlayerTwoOfThree = new ProcessPlayerTwoOfThreeDemo("PlayerTwoOfThree");
 
-            BProcessUnit<BProcessItem>  PlayerTwoUnit   = new BProcessUnit<BProcessItem>(PlayerTwoOfOne, PlayerTwoOfTwo, PlayerTwoOfThree);
+            BProcessUnit<BProcessItem> PlayerTwoUnit = new BProcessUnit<BProcessItem>(PlayerTwoOfOne, PlayerTwoOfTwo, PlayerTwoOfThree);
             PlayerTwoUnit.SetUnitTagName("PlayerTwoUnit");
 
             ProcessPlayerThreeOfOneDemo ProcessPlayerThreeOfOne = new ProcessPlayerThreeOfOneDemo("PlayerThreeOfOne");
             ProcessPlayerThreeOfTwoDemo ProcessPlayerThreeOfTwo = new ProcessPlayerThreeOfTwoDemo("PlayerThreeOfTwo");
 
-            BProcessUnit<BProcessItem>  PlayerThreeUnit = new BProcessUnit<BProcessItem>(ProcessPlayerThreeOfOne, ProcessPlayerThreeOfTwo);
+            BProcessUnit<BProcessItem> PlayerThreeUnit = new BProcessUnit<BProcessItem>(ProcessPlayerThreeOfOne, ProcessPlayerThreeOfTwo);
             PlayerThreeUnit.SetUnitTagName("PlayerThreeUnit");
 
             ProcessPlayerFourDemo ProcessPlayerFour = new ProcessPlayerFourDemo("PlayerFour");
@@ -55,17 +55,19 @@ namespace THEDARKKNIGHT.Example
 
         private void ProcessUnitStart(string name, object data)
         {
-            Debug.Log("ProcessUnitStart :"+ name);
-            switch (name) {
+            switch (name)
+            {
                 case "PlayerOneUnit":
-                    if (!PlayerAreaOne){
+                    if (!PlayerAreaOne)
+                    {
                         GameObject PlayerArea1 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaOne") as GameObject;
                         PlayerAreaOne = GameObject.Instantiate(PlayerArea1);
                     }
                     CameraCtrl.Instance().LerpFocusCenter(PlayerAreaOne.transform.position);
                     break;
                 case "PlayerTwoUnit":
-                    if (!PlayerAreaTwo){
+                    if (!PlayerAreaTwo)
+                    {
                         GameObject PlayerArea2 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaTwo") as GameObject;
                         PlayerAreaTwo = GameObject.Instantiate(PlayerArea2);
                     }
@@ -73,14 +75,16 @@ namespace THEDARKKNIGHT.Example
                     CameraCtrl.Instance().LerpFocusCenter(PlayerAreaTwo.transform.position);
                     break;
                 case "PlayerThreeUnit":
-                    if(!PlayerAreaThree){
+                    if (!PlayerAreaThree)
+                    {
                         GameObject PlayerArea3 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaThree") as GameObject;
                         PlayerAreaThree = GameObject.Instantiate(PlayerArea3);
                     }
                     CameraCtrl.Instance().LerpFocusCenter(PlayerAreaThree.transform.position);
                     break;
                 case "PlayerFourUnit":
-                    if(!PlayAreaFour){
+                    if (!PlayAreaFour)
+                    {
                         GameObject PlayerArea4 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaFour") as GameObject;
                         PlayAreaFour = GameObject.Instantiate(PlayerArea4);
                     }
@@ -89,7 +93,7 @@ namespace THEDARKKNIGHT.Example
             }
         }
 
-        private void ProcessUnitFinish(string name, object data)
+        private bool ProcessUnitFinish(string name, object data)
         {
             switch (name)
             {
@@ -100,13 +104,18 @@ namespace THEDARKKNIGHT.Example
                 case "PlayerThreeUnit":
                     if ((string)data == "B")
                     {
-                        ProcessControl.RemoveProcessUnitOnIndex(3);
-                        ProcessControl.AddProcessUnitOnIndex(2, ProcessControl.GetProcessUnitAtIndex(0));
+                        ProcessControl.StartProcess();
+                        return false;
                     }
                     break;
                 case "PlayerFourUnit":
+                    {
+                        ProcessControl.StartProcess();
+                        return false;
+                    }
                     break;
             }
+            return true;
         }
 
 
