@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT.BatCore;
 using THEDARKKNIGHT.EventSystem;
+using THEDARKKNIGHT.Lua;
 using THEDARKKNIGHT.TcpSocket;
 using UnityEngine;
+
 namespace THEDARKKNIGHT
 {
 
@@ -13,15 +15,18 @@ namespace THEDARKKNIGHT
     /// </summary>
     public class BatmanCore : BatMonoSingletion<BatmanCore>
     {
+        
+
         public void Awake()
         {
             CodeWatcher.Instance().Init();
+            BLuaControl.Instance().Init();
         }
 
         // Use this for initialization
         void Start()
         {
-
+            DontDestroyOnLoad(this);
         }
 
         public void FixedUpdate()
@@ -65,7 +70,6 @@ namespace THEDARKKNIGHT
             LifeCycleControl.Instance().OnEnable(this);
         }
 
-        // Update is called once per frame
         void Update()
         {
             LifeCycleControl.Instance().Update(this);

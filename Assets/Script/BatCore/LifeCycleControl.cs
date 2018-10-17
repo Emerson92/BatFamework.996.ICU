@@ -126,7 +126,6 @@ namespace THEDARKKNIGHT
                 if (item.GetLifeCycleState(LifeCycleTool.LifeType.LateUpdate) && item.Frame > 0)
                     item.Icycle.BLateUpdate(enter);
             }
-            //RecycleGarbageTool();
         }
 
         public void OnEnable(MonoBehaviour enter) {
@@ -149,7 +148,7 @@ namespace THEDARKKNIGHT
             LoopSend((LifeCycleTool i) =>
             {
                 if (i.GetLifeCycleState(LifeCycleTool.LifeType.OnDestroy))
-                    i.Icycle.BOnDestory(enter);
+                    i.Icycle.BOnDestroy(enter);
             });
         }
 

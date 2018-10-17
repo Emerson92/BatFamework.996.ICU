@@ -9,6 +9,8 @@ namespace THEDARKKNIGHT.ConstDefine {
         public const string BFameResourceTestProcessPath = "Test/ProcessDemo";
         /***********************************************************************/
 
+        public static string BFameLuaLoadPath = Application.persistentDataPath + "/Lua";
+
         public static string BFameDataPath = Application.persistentDataPath + "/Resources";
 
         public static string BFameCachePath = Application.temporaryCachePath + "/CacheFile";

@@ -15,8 +15,6 @@ namespace THEDARKKNIGHT.Interface
 
         void BDisable(MonoBehaviour main);
 
-        void BOnDestory(MonoBehaviour main);
-
         void BFixedUpdate(MonoBehaviour main);
 
         void BLateUpdate(MonoBehaviour main);

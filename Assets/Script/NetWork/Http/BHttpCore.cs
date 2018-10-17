@@ -206,11 +206,6 @@ namespace THEDARKKNIGHT.HTTP
 
         }
 
-        void ILifeCycle.BOnDestory(MonoBehaviour main)
-        {
-
-        }
-
         void ILifeCycle.BOnDestroy(MonoBehaviour main)
         {
 
