@@ -18,7 +18,7 @@ namespace THEDARKKNIGHT.Lua
             LOCALFILE
         }
 
-        public LOADTYPE LoadFile = LOADTYPE.LOCALFILE;
+        public LOADTYPE LoadFileType = LOADTYPE.LOCALFILE;
 
         public LuaEnv LuaEnvRoot;
 
@@ -38,9 +38,31 @@ namespace THEDARKKNIGHT.Lua
             LuaEnvRoot.AddLoader(LuaFileLoad);
         }
 
+        public void LoadLuaFile(string fileName) {
+            LuaEnvRoot.DoString("require '"+ fileName + "'");
+        }
+
+        public LuaTable LoadFileWithCondition(string fileName)
+        {
+            LuaTable scriptEnv = LuaEnvRoot.NewTable();
+            // 为每个脚本设置一个独立的环境，可一定程度上防止脚本间全局变量、函数冲突
+            LuaTable meta = LuaEnvRoot.NewTable();
+            meta.Set("__index", LuaEnvRoot.Global);
+            scriptEnv.SetMetaTable(meta);
+            meta.Dispose();
+            string name = "require '" + fileName + "'";
+            Debug.Log(name);
+            LuaEnvRoot.DoString("require '" + fileName + "'", "chunk", scriptEnv);
+            return scriptEnv;
+        }
+
+        public void LoadFile(byte[] bytes, string fileName, LuaTable table) {
+            LuaEnvRoot.DoString(bytes, fileName, table);
+        }
+
         private byte[] LuaFileLoad(ref string fileName){
             //@"F:\5.6.1\FishingJoy\AssetBundles\" + fileName + ".lua.txt"
-            switch (LoadFile) {
+            switch (LoadFileType) {
                 case LOADTYPE.LOCALFILE:
                     string absPath = BFameWorkPathDefine.BFameLuaLoadPath + "/" + fileName + ".lua.txt";
                     Debug.Log(absPath);
@@ -72,10 +94,6 @@ namespace THEDARKKNIGHT.Lua
         public void BOnDestroy(MonoBehaviour main)
         {
             this.Disable();
-            if (LuaEnvRoot != null)
-            {
-                LuaEnvRoot.Dispose();
-            }
         }
     }
 

@@ -38,7 +38,6 @@ namespace THEDARKKNIGHT.ProcessCore {
 
         public virtual void DataInit(object data)
         {
-            Debug.Log(UnitTagName + " : DataInit");
             for (int i = 0; i < ProcessItem.Count; i++)
             {
                 ProcessItem[i].Init();

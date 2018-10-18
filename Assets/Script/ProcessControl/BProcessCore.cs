@@ -152,8 +152,6 @@ namespace THEDARKKNIGHT.ProcessCore
                 LinkedListNode<T> firstNode = ProcessList.First;
                 CurrentNode = firstNode;
                 CurrentIndex = 0;
-                Debug.Log("StartProcess"+CurrentNode.Value.UnitTagName);
-                Debug.Log("StartProcess next"+CurrentNode.Next.Value.UnitTagName);
             }
             else
                 CurrentNode = node;
