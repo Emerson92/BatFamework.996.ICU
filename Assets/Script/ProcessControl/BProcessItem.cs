@@ -91,10 +91,10 @@ namespace THEDARKKNIGHT.ProcessCore
         }
 
         public void ReadyToExcute(){
+            ProcessStatus = PROCESSSTATUS.Ready;
             if (ProcessItemAssetAlready !=null)
                 ProcessItemAssetAlready(this, ProcessData);
             ProcessItemAssetAlready = null;
-            ProcessStatus = PROCESSSTATUS.Ready;
         }
 
         public void ProcessDestory() {

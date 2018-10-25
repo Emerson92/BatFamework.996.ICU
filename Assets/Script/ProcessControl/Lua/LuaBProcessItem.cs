@@ -13,16 +13,16 @@ namespace THEDARKKNIGHT.ProcessCore.Lua {
         //private Action<object> LuaDataInit;
 
         [CSharpCallLua]
-        private delegate int LuaAssetInit(object data);
+        public delegate int LuaAssetInit(object data, LuaBProcessItem ob);
 
         [CSharpCallLua]
-        private delegate int LuaDataInit(object data);
+        public delegate int LuaDataInit(object data, LuaBProcessItem ob);
 
         [CSharpCallLua]
-        private LuaAssetInit AssetInitCallback;
+        public LuaAssetInit AssetInitCallback;
 
         [CSharpCallLua]
-        private LuaDataInit DataInitCallback;
+        public LuaDataInit DataInitCallback;
 
         private Action LuaDestory;
         private Action LuaFixedUpdate;
@@ -49,13 +49,13 @@ namespace THEDARKKNIGHT.ProcessCore.Lua {
         public override void AssetInit(object data)
         {
             if (AssetInitCallback != null)
-                AssetInitCallback(data);
+                AssetInitCallback(data,this);
         }
 
         public override void DataInit(object data)
         {
             if (DataInitCallback != null)
-                DataInitCallback(data);
+                DataInitCallback(data,this);
         }
 
         public override void Destory()

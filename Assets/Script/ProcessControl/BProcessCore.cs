@@ -156,11 +156,11 @@ namespace THEDARKKNIGHT.ProcessCore
             else
                 CurrentNode = node;
             T processUnit = CurrentNode.Value;
+            processUnit.ProcessUnitReadyToGO = ProcessUnitPrepareComplete;
+            processUnit.ProcessUnitFinishExcution = ProcessUnitFinish;
             processUnit.DataInit(data);
             if (ProcessUnitStartCallback != null)
                 ProcessUnitStartCallback(processUnit.UnitTagName, data);
-            processUnit.ProcessUnitReadyToGO = ProcessUnitPrepareComplete;
-            processUnit.ProcessUnitFinishExcution = ProcessUnitFinish;
         }
 
         private void ProcessUnitPrepareComplete()
