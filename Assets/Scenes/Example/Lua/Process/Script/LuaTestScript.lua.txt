@@ -1,0 +1,61 @@
+-- Tencent is pleased to support the open source community by making xLua available.
+-- Copyright (C) 2016 THL A29 Limited, a Tencent company. All rights reserved.
+-- Licensed under the MIT License (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+-- http://opensource.org/licenses/MIT
+-- Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+local Gobal = nil;
+local PlayerOne = nil;
+
+function AssetInit(data,ob)
+       print("lua AssetInit")
+	Player = CS.UnityEngine.Resources.Load(CS.THEDARKKNIGHT.ConstDefine.BFameWorkPathDefine.BFameResourceTestProcessPath .. "/PlayerOne")
+	PlayerOne = CS.UnityEngine.GameObject.Instantiate(Player)
+	Gobal = ob
+	Gobal:ReadyToExcute()
+end
+
+function DataInit(data,ob)
+    print("lua DataInit")
+	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():AddListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,
+	function()
+		print("Click me")
+	end
+	)
+end
+
+function Destory()
+    print("lua Destory")
+end
+
+function FixedUpdate()
+    --print("lua FixedUpdate")
+end
+
+function ProcessExcute()
+    print("lua ProcessExcute")
+end
+
+function StopExcute()
+    print("lua StopExcute")
+end
+
+function Update()
+	--if(Gobal ~= nil)
+	--then
+		--print(Gobal.TaskName)
+	--else
+		--print(" Update Empty!")
+	--end
+end
+
+function LeftPressCallback(data)
+	--[[ 
+    local packet = data;
+    if (packet.Info.CastGameObject == PlayerOne)
+	then
+		IsNeedToMove = true;
+    end
+	]]--
+	return nuil;
+end
