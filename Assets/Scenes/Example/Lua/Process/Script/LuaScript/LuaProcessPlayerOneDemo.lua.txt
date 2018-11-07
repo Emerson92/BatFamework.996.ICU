@@ -4,24 +4,24 @@
 -- http://opensource.org/licenses/MIT
 -- Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-local Gobal = nil;
-local PlayerOne = nil;
+local Self = nil
+local PlayerOne = nil
+local Time = 0
+local IsNeedToMove = false
+local MovePosition 
 
-function AssetInit(data,ob)
-       print("lua AssetInit")
+function AssetInit(data,target)
+    print("lua AssetInit")
 	Player = CS.UnityEngine.Resources.Load(CS.THEDARKKNIGHT.ConstDefine.BFameWorkPathDefine.BFameResourceTestProcessPath .. "/PlayerOne")
 	PlayerOne = CS.UnityEngine.GameObject.Instantiate(Player)
-	Gobal = ob
-	Gobal:ReadyToExcute()
+	Self = target
+	Self:ReadyToExcute()
 end
 
-function DataInit(data,ob)
+function DataInit(data,target)
     print("lua DataInit")
-	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():AddListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,
-	function()
-		print("Click me")
-	end
-	)
+	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():AddListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,LeftPressCallback)
+	MovePosition = PlayerOne.transform.position + PlayerOne.transform.forward * 3;
 end
 
 function Destory()
@@ -41,21 +41,25 @@ function StopExcute()
 end
 
 function Update()
-	--if(Gobal ~= nil)
-	--then
-		--print(Gobal.TaskName)
-	--else
-		--print(" Update Empty!")
-	--end
+    if (IsNeedToMove)
+	    then
+        PlayerOne.transform.position = CS.UnityEngine.Vector3.Lerp(PlayerOne.transform.position, MovePosition, Time / 10);
+        if (Time > 3)
+        then
+            Time = 0;
+            Self:ProcessFinish();
+            IsNeedToMove = false;
+		else
+			Time = Time + CS.UnityEngine.Time.deltaTime
+		end
+	end
 end
 
 function LeftPressCallback(data)
-	--[[ 
     local packet = data;
     if (packet.Info.CastGameObject == PlayerOne)
 	then
 		IsNeedToMove = true;
     end
-	]]--
 	return nuil;
 end

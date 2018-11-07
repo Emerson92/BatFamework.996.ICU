@@ -19,6 +19,8 @@ public static class ExampleGenConfig
     //lua中要使用到C#库的配置，比如C#标准库，或者Unity API，第三方库等。
     [LuaCallCSharp]
     public static List<Type> LuaCallCSharp = new List<Type>() {
+                typeof(THEDARKKNIGHT.ProcessCore.BProcessItem),
+                typeof(THEDARKKNIGHT.ProcessCore.Lua.LuaBProcessItem),
                 typeof(System.Object),
                 typeof(UnityEngine.Object),
                 typeof(Vector2),
@@ -56,6 +58,9 @@ public static class ExampleGenConfig
     public static List<Type> CSharpCallLua = new List<Type>() {
                 typeof(Action),
                 typeof(Func<double, double, double>),
+                typeof(Func<object, object>),
+                typeof(Action<object, object>),
+                typeof(Func<object>),
                 typeof(Action<string>),
                 typeof(Action<double>),
                 typeof(UnityEngine.Events.UnityAction),

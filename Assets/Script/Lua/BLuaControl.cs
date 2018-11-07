@@ -42,17 +42,18 @@ namespace THEDARKKNIGHT.Lua
             LuaEnvRoot.DoString("require '"+ fileName + "'");
         }
 
-        public LuaTable LoadFileWithCondition(string fileName)
+        public LuaTable LoadFileWithCondition(string fileName,Action<LuaTable> callBack = null)
         {
             LuaTable scriptEnv = LuaEnvRoot.NewTable();
             // 为每个脚本设置一个独立的环境，可一定程度上防止脚本间全局变量、函数冲突
             LuaTable meta = LuaEnvRoot.NewTable();
+            Debug.Log("LuaEnvRoot.Global :" + LuaEnvRoot.Global);
             meta.Set("__index", LuaEnvRoot.Global);
             scriptEnv.SetMetaTable(meta);
             meta.Dispose();
-            string name = "require '" + fileName + "'";
-            Debug.Log(name);
-            LuaEnvRoot.DoString("require '" + fileName + "'", "chunk", scriptEnv);
+            if (callBack != null)
+                callBack(scriptEnv);
+            LuaEnvRoot.DoString("require '" + fileName + "'", fileName, scriptEnv);
             return scriptEnv;
         }
 

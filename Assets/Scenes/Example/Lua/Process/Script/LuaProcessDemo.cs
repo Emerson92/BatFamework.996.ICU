@@ -12,6 +12,7 @@ namespace THEDARKKNIGHT.Example {
         ProcessDemo ProcessControl;
 
         public GameObject PlayerAreaOne { get; private set; }
+        public GameObject PlayerAreaTwo { get; private set; }
 
         // Use this for initialization
         void Start()
@@ -22,12 +23,21 @@ namespace THEDARKKNIGHT.Example {
             ProcessControl.SetProcessUnitFinishCallback(ProcessUnitFinish);
 
 
-            LuaBProcessItem PlayerOne = new LuaBProcessItem("LuaTestScript", "PlayerOne");
+            LuaBProcessItem PlayerOne = new LuaBProcessItem("LuaProcessPlayerOneDemo", "PlayerOne");
 
             BProcessUnit<BProcessItem> PlayerOneUnit = new BProcessUnit<BProcessItem>(PlayerOne);
             PlayerOneUnit.SetUnitTagName("PlayerOneUnit");
 
+            LuaBProcessItem PlayerTwo_One = new LuaBProcessItem("ProcessPlayerTwoOfOneDemo", "PlayerTwo_One");
+            LuaBProcessItem PlayerTwo_Two = new LuaBProcessItem("ProcessPlayerTwoOfTwoDemo", "PlayerTwo_Two");
+            BProcessUnit<BProcessItem> PlayerTwoUnit = new BProcessUnit<BProcessItem>(PlayerTwo_One, PlayerTwo_Two);
+            PlayerTwoUnit.SetUnitTagName("PlayerTwoUnit");
+
+
+ 
+
             ProcessControl.AddProcessUnit(PlayerOneUnit);
+            ProcessControl.AddProcessUnit(PlayerTwoUnit);
             ProcessControl.StartProcess();
         }
 
@@ -68,31 +78,31 @@ namespace THEDARKKNIGHT.Example {
                     }
                     CameraCtrl.Instance().LerpFocusCenter(PlayerAreaOne.transform.position);
                     break;
-                //case "PlayerTwoUnit":
-                //    if (!PlayerAreaTwo)
-                //    {
-                //        GameObject PlayerArea2 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaTwo") as GameObject;
-                //        PlayerAreaTwo = GameObject.Instantiate(PlayerArea2);
-                //    }
-                //    CameraCtrl.Instance().SetObserverRadius(8f);
-                //    CameraCtrl.Instance().LerpFocusCenter(PlayerAreaTwo.transform.position);
-                //    break;
-                //case "PlayerThreeUnit":
-                //    if (!PlayerAreaThree)
-                //    {
-                //        GameObject PlayerArea3 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaThree") as GameObject;
-                //        PlayerAreaThree = GameObject.Instantiate(PlayerArea3);
-                //    }
-                //    CameraCtrl.Instance().LerpFocusCenter(PlayerAreaThree.transform.position);
-                //    break;
-                //case "PlayerFourUnit":
-                //    if (!PlayAreaFour)
-                //    {
-                //        GameObject PlayerArea4 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaFour") as GameObject;
-                //        PlayAreaFour = GameObject.Instantiate(PlayerArea4);
-                //    }
-                //    CameraCtrl.Instance().LerpFocusCenter(PlayAreaFour.transform.position);
-                //    break;
+                case "PlayerTwoUnit":
+                    if (!PlayerAreaTwo)
+                    {
+                        GameObject PlayerArea2 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaTwo") as GameObject;
+                        PlayerAreaTwo = GameObject.Instantiate(PlayerArea2);
+                    }
+                    CameraCtrl.Instance().SetObserverRadius(8f);
+                    CameraCtrl.Instance().LerpFocusCenter(PlayerAreaTwo.transform.position);
+               break;
+                    //case "PlayerThreeUnit":
+                    //    if (!PlayerAreaThree)
+                    //    {
+                    //        GameObject PlayerArea3 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaThree") as GameObject;
+                    //        PlayerAreaThree = GameObject.Instantiate(PlayerArea3);
+                    //    }
+                    //    CameraCtrl.Instance().LerpFocusCenter(PlayerAreaThree.transform.position);
+                    //    break;
+                    //case "PlayerFourUnit":
+                    //    if (!PlayAreaFour)
+                    //    {
+                    //        GameObject PlayerArea4 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaFour") as GameObject;
+                    //        PlayAreaFour = GameObject.Instantiate(PlayerArea4);
+                    //    }
+                    //    CameraCtrl.Instance().LerpFocusCenter(PlayAreaFour.transform.position);
+                    //    break;
             }
         }
 

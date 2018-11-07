@@ -8,36 +8,31 @@ using XLua;
 namespace THEDARKKNIGHT.ProcessCore.Lua {
     public class LuaBProcessItem : BProcessItem
     {
-
-        //private Action<object> LuaAssetInit;
-        //private Action<object> LuaDataInit;
-
-        [CSharpCallLua]
-        public delegate int LuaAssetInit(object data, LuaBProcessItem ob);
-
-        [CSharpCallLua]
-        public delegate int LuaDataInit(object data, LuaBProcessItem ob);
-
-        [CSharpCallLua]
-        public LuaAssetInit AssetInitCallback;
-
-        [CSharpCallLua]
-        public LuaDataInit DataInitCallback;
-
+        public Action<object,object> AssetInitCallback;
+   
+        public Action<object, object> DataInitCallback;
         private Action LuaDestory;
         private Action LuaFixedUpdate;
         private Action LuaProcessExcute;
         private Action LuaStopExcute;
         private Action LuaUpdate;
         private LuaTable scriptEnv;
-
-        public LuaBProcessItem(string luaPath, string name) {
+        private string LuaPathName;
+        public LuaBProcessItem(string luaPathName, string name)
+        {
             this.TaskName = name;
+            LuaPathName = luaPathName;
+        }
+
+        private void LuaInit(string luaPath)
+        {
             BLuaControl.Instance().LoadLuaFile(luaPath);
-            scriptEnv = BLuaControl.Instance().LoadFileWithCondition(luaPath);
-            AssetInitCallback = BLuaControl.Instance().LuaEnvRoot.Global.Get<LuaAssetInit>("AssetInit");
-            DataInitCallback  = BLuaControl.Instance().LuaEnvRoot.Global.Get<LuaDataInit> ("DataInit");
-            scriptEnv.Set("self", this);
+            scriptEnv = BLuaControl.Instance().LoadFileWithCondition(luaPath, (param) =>
+            {
+                param.Set("self", this);
+            });
+            scriptEnv.Get("AssetInit", out AssetInitCallback);
+            scriptEnv.Get("DataInit", out DataInitCallback);
             scriptEnv.Get("Destory", out LuaDestory);
             scriptEnv.Get("FixedUpdate", out LuaFixedUpdate);
             scriptEnv.Get("ProcessExcute", out LuaProcessExcute);
@@ -45,9 +40,9 @@ namespace THEDARKKNIGHT.ProcessCore.Lua {
             scriptEnv.Get("Update", out LuaUpdate);
         }
 
-
         public override void AssetInit(object data)
         {
+            LuaInit(LuaPathName);
             if (AssetInitCallback != null)
                 AssetInitCallback(data,this);
         }
