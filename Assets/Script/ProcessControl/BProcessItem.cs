@@ -70,6 +70,9 @@ namespace THEDARKKNIGHT.ProcessCore
 
         public abstract void Destory();
 
+        public virtual void OnDestroy() { }
+
+        public virtual void OnApplicationQuit() { }
 
         public virtual void ProcessFinish() {
             Debug.Log(this.TaskName + " ProcessFinish ");
@@ -82,6 +85,8 @@ namespace THEDARKKNIGHT.ProcessCore
             tool = this.GetLifeCycleTool();
             tool.SetLifeCycle(LifeCycleTool.LifeType.Update, true);
             tool.SetLifeCycle(LifeCycleTool.LifeType.FixedUpdate, true);
+            tool.SetLifeCycle(LifeCycleTool.LifeType.OnDestroy, true);
+            tool.SetLifeCycle(LifeCycleTool.LifeType.OnApplicationQuit,true);
         }
 
         public void ProcessStart(object data)
@@ -113,7 +118,7 @@ namespace THEDARKKNIGHT.ProcessCore
 
         public void BDisable(MonoBehaviour main){}
 
-        public void BOnDestory(MonoBehaviour main){}
+        public void BOnDestory(MonoBehaviour main){ OnDestroy(); }
 
         public void BFixedUpdate(MonoBehaviour main){ FixedUpdate(); }
 
@@ -123,7 +128,7 @@ namespace THEDARKKNIGHT.ProcessCore
 
         public void BOnApplicationPause(MonoBehaviour main){}
 
-        public void BOnApplicationQuit(MonoBehaviour main){}
+        public void BOnApplicationQuit(MonoBehaviour main){ OnApplicationQuit(); }
 
         public void BOnDestroy(MonoBehaviour main){}
 

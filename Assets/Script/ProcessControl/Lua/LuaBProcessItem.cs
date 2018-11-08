@@ -59,6 +59,13 @@ namespace THEDARKKNIGHT.ProcessCore.Lua {
                 LuaDestory();
             if (scriptEnv !=null)
                 scriptEnv.Dispose();
+            AssetInitCallback = null;
+            DataInitCallback = null;
+            LuaFixedUpdate = null;
+            LuaProcessExcute = null;
+            LuaStopExcute = null;
+            LuaUpdate = null;
+            LuaDestory = null;
         }
 
         public override void FixedUpdate()
@@ -83,6 +90,31 @@ namespace THEDARKKNIGHT.ProcessCore.Lua {
         {
             if (LuaUpdate != null)
                 LuaUpdate();
+        }
+
+        public override void OnApplicationQuit()
+        {
+            base.OnApplicationQuit();
+            base.OnDestroy();
+            Debug.Log(this.TaskName + " OnDestroy ");
+
+            if (LuaDestory != null)
+                LuaDestory();
+            if (scriptEnv != null)
+                scriptEnv.Dispose();
+            AssetInitCallback = null;
+            DataInitCallback = null;
+            LuaFixedUpdate = null;
+            LuaProcessExcute = null;
+            LuaStopExcute = null;
+            LuaUpdate = null;
+            LuaDestory = null;
+        }
+
+
+        public override void OnDestroy()
+        {
+
         }
     }
 }

@@ -35,6 +35,7 @@ namespace THEDARKKNIGHT.Lua
         {
             Tool.SetLifeCycle(LifeCycleTool.LifeType.Update, true);
             Tool.SetLifeCycle(LifeCycleTool.LifeType.OnDestroy, true);
+            Tool.SetLifeCycle(LifeCycleTool.LifeType.OnApplicationQuit, true);
             LuaEnvRoot.AddLoader(LuaFileLoad);
         }
 
@@ -94,6 +95,8 @@ namespace THEDARKKNIGHT.Lua
         public void BOnDestroy(MonoBehaviour main)
         {
             this.Disable();
+            if (LuaEnvRoot != null)
+                LuaEnvRoot.Dispose();
         }
     }
 
