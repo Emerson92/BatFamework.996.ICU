@@ -72,6 +72,7 @@ namespace THEDARKKNIGHT.ProcessCore
 
 
         public virtual void ProcessFinish() {
+            Debug.Log(this.TaskName + " ProcessFinish ");
             Status = PROCESSSTATUS.Finish;
             mono.StartCoroutine(FinishCallback());
         }

@@ -13,6 +13,7 @@ namespace THEDARKKNIGHT.Example {
 
         public GameObject PlayerAreaOne { get; private set; }
         public GameObject PlayerAreaTwo { get; private set; }
+        public GameObject PlayerAreaThree { get; private set; }
 
         // Use this for initialization
         void Start()
@@ -28,16 +29,19 @@ namespace THEDARKKNIGHT.Example {
             BProcessUnit<BProcessItem> PlayerOneUnit = new BProcessUnit<BProcessItem>(PlayerOne);
             PlayerOneUnit.SetUnitTagName("PlayerOneUnit");
 
-            LuaBProcessItem PlayerTwo_One = new LuaBProcessItem("ProcessPlayerTwoOfOneDemo", "PlayerTwo_One");
-            LuaBProcessItem PlayerTwo_Two = new LuaBProcessItem("ProcessPlayerTwoOfTwoDemo", "PlayerTwo_Two");
-            BProcessUnit<BProcessItem> PlayerTwoUnit = new BProcessUnit<BProcessItem>(PlayerTwo_One, PlayerTwo_Two);
+            LuaBProcessItem PlayerTwo_One = new LuaBProcessItem("LuaProcessPlayerTwoOfOneDemo", "PlayerTwo_One");
+            LuaBProcessItem PlayerTwo_Two = new LuaBProcessItem("LuaProcessPlayerTwoOfTwoDemo", "PlayerTwo_Two");
+            LuaBProcessItem PlayerTwo_Three = new LuaBProcessItem("LuaProcessPlayerTwoOfThreeDemo", "PlayerTwo_Three");
+            BProcessUnit<BProcessItem> PlayerTwoUnit = new BProcessUnit<BProcessItem>(PlayerTwo_One, PlayerTwo_Two, PlayerTwo_Three);
             PlayerTwoUnit.SetUnitTagName("PlayerTwoUnit");
 
-
- 
+            LuaBProcessItem PlayerThree_One = new LuaBProcessItem("LuaProcessPlayerThreeOfOneDemo", "PlayerThree_One");
+            BProcessUnit<BProcessItem> PlayerThreeUnit = new BProcessUnit<BProcessItem>(PlayerThree_One);
+            PlayerThreeUnit.SetUnitTagName("PlayerThreeUnit");
 
             ProcessControl.AddProcessUnit(PlayerOneUnit);
             ProcessControl.AddProcessUnit(PlayerTwoUnit);
+            ProcessControl.AddProcessUnit(PlayerThreeUnit);
             ProcessControl.StartProcess();
         }
 
@@ -87,14 +91,14 @@ namespace THEDARKKNIGHT.Example {
                     CameraCtrl.Instance().SetObserverRadius(8f);
                     CameraCtrl.Instance().LerpFocusCenter(PlayerAreaTwo.transform.position);
                break;
-                    //case "PlayerThreeUnit":
-                    //    if (!PlayerAreaThree)
-                    //    {
-                    //        GameObject PlayerArea3 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaThree") as GameObject;
-                    //        PlayerAreaThree = GameObject.Instantiate(PlayerArea3);
-                    //    }
-                    //    CameraCtrl.Instance().LerpFocusCenter(PlayerAreaThree.transform.position);
-                    //    break;
+                case "PlayerThreeUnit":
+                    if (!PlayerAreaThree)
+                    {
+                        GameObject PlayerArea3 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaThree") as GameObject;
+                        PlayerAreaThree = GameObject.Instantiate(PlayerArea3);
+                    }
+                    CameraCtrl.Instance().LerpFocusCenter(PlayerAreaThree.transform.position);
+                break;
                     //case "PlayerFourUnit":
                     //    if (!PlayAreaFour)
                     //    {

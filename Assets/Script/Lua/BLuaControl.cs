@@ -66,7 +66,6 @@ namespace THEDARKKNIGHT.Lua
             switch (LoadFileType) {
                 case LOADTYPE.LOCALFILE:
                     string absPath = BFameWorkPathDefine.BFameLuaLoadPath + "/" + fileName + ".lua.txt";
-                    Debug.Log(absPath);
                     return System.Text.Encoding.UTF8.GetBytes(File.ReadAllText(absPath));
                 case LOADTYPE.ASSETBUNDLE:
                     //TODO need to load the file from the AssetBundle
