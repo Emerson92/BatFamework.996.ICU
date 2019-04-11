@@ -13,8 +13,11 @@ namespace THEDARKKNIGHT.ProcessCore
     /// <typeparam name="K">it is subclass extend BProcessItem class</typeparam>
     public abstract class BProcessCore<T, K> where T : BProcessUnit<K> where K : BProcessItem
     {
+        public BranchProcessMgr<T, K> BranchMgr = new BranchProcessMgr<T, K>();
 
         private LinkedList<T> ProcessList = new LinkedList<T>();
+
+        private LinkedList<T> InitProcessList = new LinkedList<T>();
 
         private LinkedListNode<T> CurrentNode { set; get; }
 
@@ -27,9 +30,37 @@ namespace THEDARKKNIGHT.ProcessCore
         public void SetProcessUnitStartCallback(Action<string, object> call) {
             this.ProcessUnitStartCallback = call;
         }
+
         public void SetProcessUnitFinishCallback(Func<string, object,bool> call)
         {
             this.ProcessUnitFinishCallback = call;
+        }
+
+        /// <summary>
+        /// Inject the branch process into main process
+        /// </summary>
+        /// <param name="Current"></param>
+        /// <param name="branchName"></param> 
+        public void InjectBranchProcess(string Current,string branchName) {
+            LinkedList<T> branchList = BranchMgr.FindBranchProcess(Current, branchName);
+            if (branchList != null) {
+                foreach (T item in branchList)
+                {
+                    ProcessList.AddAfter(CurrentNode, new LinkedListNode<T>(item));
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// Reset the ProcessLinkList
+        /// </summary>
+        public void RebackLinkList() {
+            ProcessList.Clear();
+            foreach (T item in InitProcessList) {
+                ProcessList.AddLast(item);
+            }
         }
 
         public BProcessUnit<K> GetProcessUnitAtIndex(int index) {
@@ -43,6 +74,7 @@ namespace THEDARKKNIGHT.ProcessCore
 
         public void AddProcessUnit(T unit) {
             ProcessList.AddLast(unit);
+            InitProcessList.AddLast(unit);
         }
 
         public void AddProcessUnitAfter(T unitNode,T newUnit) {
@@ -180,6 +212,38 @@ namespace THEDARKKNIGHT.ProcessCore
                 StartProcess(data, CurrentNode.Next);
                 CurrentIndex++;
             }
+        }
+    }
+
+    /// <summary>
+    /// it is the Process branch Class which designs to help the main Process class to add branch process arrccoding to user choose result.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="K"></typeparam>
+    public class BranchProcessMgr<T, K> where T : BProcessUnit<K> where K : BProcessItem
+    {
+
+        private Dictionary<string, Dictionary<string,LinkedList<T>>> BranchProcessDic = new Dictionary<string, Dictionary<string,LinkedList<T>>>();
+
+
+        public void SetBranchProcessDic(string currentNodeName, Dictionary<string, LinkedList<T>> dic) {
+            BranchProcessDic.Add(currentNodeName, dic);
+        }
+
+        public LinkedList<T> FindBranchProcess(string currentNodeName,string branchName) {
+            Dictionary<string, LinkedList<T>> dic;
+            if (BranchProcessDic.TryGetValue(currentNodeName, out dic))
+            {
+                LinkedList<T> branchList;
+                if (dic.TryGetValue(branchName, out branchList))
+                {
+                    return branchList;
+                }
+                else
+                    return null;
+            }
+            else
+                return null;
         }
     }
 }
