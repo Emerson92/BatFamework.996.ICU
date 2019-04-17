@@ -223,8 +223,16 @@ namespace THEDARKKNIGHT.ProcessCore
     public class BranchProcessMgr<T, K> where T : BProcessUnit<K> where K : BProcessItem
     {
 
-        private Dictionary<string, Dictionary<string,LinkedList<T>>> BranchProcessDic = new Dictionary<string, Dictionary<string,LinkedList<T>>>();
+        private Dictionary<string, Dictionary<string, LinkedList<T>>> BranchProcessDic = new Dictionary<string, Dictionary<string, LinkedList<T>>>();
 
+
+        public LinkedList<T> CreateBranchLink(List<T> nodeList) {
+            LinkedList<T> subLinkedList = new LinkedList<T>();
+            nodeList.ForEach((T t) => {
+                subLinkedList.AddLast(t);
+            });
+            return subLinkedList;
+        }
 
         public void SetBranchProcessDic(string currentNodeName, Dictionary<string, LinkedList<T>> dic) {
             BranchProcessDic.Add(currentNodeName, dic);
