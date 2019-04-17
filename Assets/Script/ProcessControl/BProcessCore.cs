@@ -51,8 +51,6 @@ namespace THEDARKKNIGHT.ProcessCore
             }
         }
 
-
-
         /// <summary>
         /// Reset the ProcessLinkList
         /// </summary>
@@ -75,106 +73,6 @@ namespace THEDARKKNIGHT.ProcessCore
         public void AddProcessUnit(T unit) {
             ProcessList.AddLast(unit);
             InitProcessList.AddLast(unit);
-        }
-
-        public void AddProcessUnitAfter(T unitNode,T newUnit) {
-            LinkedListNode<T> node= ProcessList.Find(unitNode);
-            ProcessList.AddAfter(node, newUnit);
-        }
-
-        public void AddProcessUnitBefore(T unitNode, T newUnit) {
-            LinkedListNode<T> node = ProcessList.Find(unitNode);
-            ProcessList.AddBefore(node, newUnit);
-        }
-
-        public void AddProcessLinkedListAfter(T unitNode, LinkedList<T> newList) {
-            LinkedListNode<T> node = ProcessList.Find(unitNode);
-            ProcessList.AddBefore(node, newList.First);
-        }
-
-        public void AddProcessLinkOnCount(int num, LinkedList<T> newUnit) {
-            if (CurrentNode == null)
-                return;
-            LinkedListNode<T> tempNode = CurrentNode;
-            for (int i = 0; i < num; i++)
-            {
-                tempNode = tempNode.Next;
-            }
-            ProcessList.AddAfter(tempNode, newUnit.First);
-        }
-
-        public void AddProcessUnitOnCount(int num, T newUnit) {
-            if (CurrentNode == null)
-                return;
-            LinkedListNode<T> tempNode = CurrentNode;
-            for (int i = 0; i < num; i++) {
-                tempNode = tempNode.Next;
-            }
-            ProcessList.AddAfter(tempNode, newUnit);
-        }
-
-        public void AddProcessUnitOnIndex(int index, T newUnit) {
-            LinkedListNode<T> tempNode = ProcessList.First;
-            for (int i = 0; i < index; i++)
-            {
-                tempNode = tempNode.Next;
-            }
-            ProcessList.AddAfter(tempNode, newUnit);
-        }
-
-        public void AddProcessUnitOnIndex(int index, LinkedListNode<T> newUnit)
-        {
-            LinkedListNode<T> tempNode = ProcessList.First;
-            for (int i = 0; i < index; i++){
-                tempNode = tempNode.Next;
-            }
-            ProcessList.AddAfter(tempNode, newUnit);
-       }
-
-        public void AddProcessLinkOnIndex(int index, LinkedList<T> newUnit)
-        {
-            LinkedListNode<T> tempNode = ProcessList.First;
-            for (int i = 0; i < index; i++)
-            {
-                tempNode = tempNode.Next;
-            }
-            ProcessList.AddAfter(tempNode, newUnit.First);
-        }
-
-        public void RemoveProcessUnitOnCount(int num) {
-            if (CurrentNode == null)
-                return;
-            LinkedListNode<T> tempNode = CurrentNode;
-            for (int i = 0; i < num; i++)
-            {
-                tempNode = tempNode.Next;
-            }
-            ProcessList.Remove(tempNode);
-        }
-
-        public void RemoveProcessUnitOnIndex(int index) {
-            LinkedListNode<T> tempNode = ProcessList.First;
-            for (int i = 0; i < index; i++)
-            {
-                Debug.Log(tempNode.Next.Value.UnitTagName);
-                tempNode = tempNode.Next;
-            }
-            if (tempNode != null)
-                ProcessList.Remove(tempNode);
-        }
-
-        public void RemoveAllProcessUnitOnIndex(int index) {
-            for (int i = 0 ; i < ProcessList.Count - index +1; i++)
-            {
-                ProcessList.Remove(ProcessList.Last);
-            }
-        }
-
-        public void RemoveAllProcessUnitOnCount(int num) {
-            for (int i = 0; i < ProcessList.Count - (CurrentIndex+num) + 1; i++)
-            {
-                ProcessList.Remove(ProcessList.Last);
-            }
         }
 
         public void StartProcess(object data = null ,LinkedListNode<T> node = null) {
