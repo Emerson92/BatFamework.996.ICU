@@ -14,7 +14,7 @@ namespace THEDARKKNIGHT.ProcessCore.Interface
         /// <summary>
         /// Get Process item
         /// </summary>
-        void NextProcessItem();
+        T NextProcessItem();
 
         /// <summary>
         /// Set Process item

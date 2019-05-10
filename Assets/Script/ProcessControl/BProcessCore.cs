@@ -50,15 +50,7 @@ namespace THEDARKKNIGHT.ProcessCore
             IProcessForerunner<T, K> branchList = BranchMgr.FindBranchProcess(Current, branchName);
             if (branchList != null)
             {
-                T firstNode = branchList.GetFirstNode();
-                T CurrentNode = ProcessLink.GetCurrentProcessItem();
-                T tempNode = branchList.GetCurrentProcessItem();
-                ProcessLink.InsertNodeToLink(CurrentNode, tempNode);
-                while ( branchList.GetCurrentProcessItem() != null) {
-                    T tempNode = branchList.GetCurrentProcessItem();
-                    branchList.NextProcessItem();
-                    ProcessLink.InsertNodeToLink(CurrentNode, tempNode);
-                }
+                ProcessLink.InsertLinkAtNode(CurrentNode, branchList);
             }
         }
 

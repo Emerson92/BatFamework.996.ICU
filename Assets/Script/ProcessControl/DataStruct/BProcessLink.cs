@@ -44,9 +44,10 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct
         /// <summary>
         /// The index move to the next
         /// </summary>
-        public void NextProcessItem()
+        public T NextProcessItem()
         {
             currentItemData = currentItemData.NextItem;
+            return currentItemData.Value;
         }
 
         /// <summary>
@@ -277,13 +278,22 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct
             ProcessItemData<T, K> targetItem = null;
             SeachProcessItem(targetNode, out targetItem);
             if (targetItem !=null) {
-                // = link.GetFirstNode();
-                //targetItem.NextItem =
+                T firstNode = link.GetFirstNode();
+                ProcessItemData<T, K> item = new ProcessItemData<T, K>();
+                item.Value = firstNode;
+                targetItem.NextItem = item;
+                item.LastItem = targetItem;
+                ProcessItemData<T, K> tempItem = item;
                 while (link.GetCurrentProcessItem() != null)
                 {
-                    T tempNode = link.GetCurrentProcessItem();
-                    ProcessItemData<T, K> item = new ProcessItemData<T, K>();
-                    link.NextProcessItem();
+                    T tempNode = link.NextProcessItem();
+                    if (tempNode != null) {
+                        ProcessItemData<T, K> nodeItem = new ProcessItemData<T, K>();
+                        tempItem.Value = tempNode;
+                        tempItem.NextItem = nodeItem;
+                        nodeItem.LastItem = tempItem;
+                        tempItem = nodeItem;
+                    }
                 }
             }
    
