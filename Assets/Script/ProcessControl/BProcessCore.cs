@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using THEDARKKNIGHT.ProcessCore.DataStruct;
+using THEDARKKNIGHT.ProcessCore.Interface;
 using UnityEngine;
 namespace THEDARKKNIGHT.ProcessCore
 {
@@ -15,23 +17,25 @@ namespace THEDARKKNIGHT.ProcessCore
     {
         public BranchProcessMgr<T, K> BranchMgr = new BranchProcessMgr<T, K>();
 
-        private LinkedList<T> ProcessList = new LinkedList<T>();
+        private T CurrentNode;
 
-        private LinkedList<T> InitProcessList = new LinkedList<T>();
-
-        private LinkedListNode<T> CurrentNode { set; get; }
-
-        private int CurrentIndex = 0;
+        private IProcessForerunner<T, K> ProcessLink;
 
         private Action<string, object> ProcessUnitStartCallback;
 
-        private Func<string, object,bool> ProcessUnitFinishCallback;
+        private Func<string, object, bool> ProcessUnitFinishCallback;
 
-        public void SetProcessUnitStartCallback(Action<string, object> call) {
+        public BProcessCore()
+        {
+            ProcessLink = new BProcessLink<T, K>();
+        }
+
+        public void SetProcessUnitStartCallback(Action<string, object> call)
+        {
             this.ProcessUnitStartCallback = call;
         }
 
-        public void SetProcessUnitFinishCallback(Func<string, object,bool> call)
+        public void SetProcessUnitFinishCallback(Func<string, object, bool> call)
         {
             this.ProcessUnitFinishCallback = call;
         }
@@ -41,12 +45,19 @@ namespace THEDARKKNIGHT.ProcessCore
         /// </summary>
         /// <param name="Current"></param>
         /// <param name="branchName"></param> 
-        public void InjectBranchProcess(string Current,string branchName) {
-            LinkedList<T> branchList = BranchMgr.FindBranchProcess(Current, branchName);
-            if (branchList != null) {
-                foreach (T item in branchList)
-                {
-                    ProcessList.AddAfter(CurrentNode, new LinkedListNode<T>(item));
+        public void InjectBranchProcess(string Current, string branchName)
+        {
+            IProcessForerunner<T, K> branchList = BranchMgr.FindBranchProcess(Current, branchName);
+            if (branchList != null)
+            {
+                T firstNode = branchList.GetFirstNode();
+                T CurrentNode = ProcessLink.GetCurrentProcessItem();
+                T tempNode = branchList.GetCurrentProcessItem();
+                ProcessLink.InsertNodeToLink(CurrentNode, tempNode);
+                while ( branchList.GetCurrentProcessItem() != null) {
+                    T tempNode = branchList.GetCurrentProcessItem();
+                    branchList.NextProcessItem();
+                    ProcessLink.InsertNodeToLink(CurrentNode, tempNode);
                 }
             }
         }
@@ -54,38 +65,32 @@ namespace THEDARKKNIGHT.ProcessCore
         /// <summary>
         /// Reset the ProcessLinkList
         /// </summary>
-        public void RebackLinkList() {
-            ProcessList.Clear();
-            foreach (T item in InitProcessList) {
-                ProcessList.AddLast(item);
-            }
+        public void RebackLinkList()
+        {
+            ProcessLink.RebackData();
         }
 
-        public BProcessUnit<K> GetProcessUnitAtIndex(int index) {
-            LinkedListNode<T> tempNode = ProcessList.First;
-            for (int i = 0; i < index ; i++)
-            {
-                tempNode = tempNode.Next;
-            }
-            return tempNode.Value;
+        public BProcessUnit<K> GetProcessUnitAtIndex(int index)
+        {
+            return ProcessLink.GetProcessItemAtIndex(index);
         }
 
-        public void AddProcessUnit(T unit) {
-            ProcessList.AddLast(unit);
-            InitProcessList.AddLast(unit);
+        public void AddProcessUnit(T unit)
+        {
+            ProcessLink.SetProcessItem(unit);
         }
 
-        public void StartProcess(object data = null ,LinkedListNode<T> node = null) {
-            
+        public void StartProcess(object data = null, T node = null)
+        {
+
             if (node == null)
             {
-                LinkedListNode<T> firstNode = ProcessList.First;
+                T firstNode = ProcessLink.GetFirstNode();
                 CurrentNode = firstNode;
-                CurrentIndex = 0;
             }
             else
                 CurrentNode = node;
-            T processUnit = CurrentNode.Value;
+            T processUnit = CurrentNode;
             processUnit.ProcessUnitReadyToGO = ProcessUnitPrepareComplete;
             processUnit.ProcessUnitFinishExcution = ProcessUnitFinish;
             processUnit.DataInit(data);
@@ -95,20 +100,24 @@ namespace THEDARKKNIGHT.ProcessCore
 
         private void ProcessUnitPrepareComplete()
         {
-            CurrentNode.Value.ProcessExcute();
+            CurrentNode.ProcessExcute();
         }
 
         private void ProcessUnitFinish(object data)
         {
             bool moveNext = true;
-            CurrentNode.Value.ProcessUnitReadyToGO -= ProcessUnitPrepareComplete;
-            CurrentNode.Value.ProcessUnitFinishExcution -= ProcessUnitFinish;
+            CurrentNode.ProcessUnitReadyToGO -= ProcessUnitPrepareComplete;
+            CurrentNode.ProcessUnitFinishExcution -= ProcessUnitFinish;
             if (ProcessUnitFinishCallback != null)
-                moveNext = ProcessUnitFinishCallback(CurrentNode.Value.UnitTagName, data);
-            Debug.Log("ProcessUnitFinish");
-            if (CurrentNode.Next != null && moveNext) {
-                StartProcess(data, CurrentNode.Next);
-                CurrentIndex++;
+                moveNext = ProcessUnitFinishCallback(CurrentNode.UnitTagName, data);
+            if (moveNext)
+            {
+                Debug.Log("ProcessUnitFinish");
+                ProcessLink.NextProcessItem();
+                T currentNode = ProcessLink.GetCurrentProcessItem();
+                if (currentNode != null) {
+                    StartProcess(data, currentNode);
+                }
             }
         }
     }
@@ -121,26 +130,29 @@ namespace THEDARKKNIGHT.ProcessCore
     public class BranchProcessMgr<T, K> where T : BProcessUnit<K> where K : BProcessItem
     {
 
-        private Dictionary<string, Dictionary<string, LinkedList<T>>> BranchProcessDic = new Dictionary<string, Dictionary<string, LinkedList<T>>>();
+        private Dictionary<string, Dictionary<string, IProcessForerunner<T, K>>> BranchProcessDic = new Dictionary<string, Dictionary<string, IProcessForerunner<T, K>>>();
 
-
-        public LinkedList<T> CreateBranchLink(List<T> nodeList) {
-            LinkedList<T> subLinkedList = new LinkedList<T>();
-            nodeList.ForEach((T t) => {
-                subLinkedList.AddLast(t);
+        public IProcessForerunner<T, K> CreateBranchLink(List<T> nodeList)
+        {
+            IProcessForerunner<T, K> subLinkedList = new BProcessLink<T, K>();
+            nodeList.ForEach((T t) =>
+            {
+                subLinkedList.SetProcessItem(t);
             });
             return subLinkedList;
         }
 
-        public void SetBranchProcessDic(string currentNodeName, Dictionary<string, LinkedList<T>> dic) {
+        public void SetBranchProcessDic(string currentNodeName, Dictionary<string, IProcessForerunner<T, K>> dic)
+        {
             BranchProcessDic.Add(currentNodeName, dic);
         }
 
-        public LinkedList<T> FindBranchProcess(string currentNodeName,string branchName) {
-            Dictionary<string, LinkedList<T>> dic;
+        public IProcessForerunner<T, K> FindBranchProcess(string currentNodeName, string branchName)
+        {
+            Dictionary<string, IProcessForerunner<T, K>> dic;
             if (BranchProcessDic.TryGetValue(currentNodeName, out dic))
             {
-                LinkedList<T> branchList;
+                IProcessForerunner<T, K> branchList;
                 if (dic.TryGetValue(branchName, out branchList))
                 {
                     return branchList;
