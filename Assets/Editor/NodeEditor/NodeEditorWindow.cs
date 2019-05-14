@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using THEDARKKNIGHT.ProcessCore.Graph;
+using THEDARKKNIGHT.ProcessCore.Graph.Json;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -27,10 +29,11 @@ namespace XNodeEditor {
 
 
         partial void OnEnable();
+
         /// <summary> Create editor window </summary>
         public static NodeEditorWindow Init() {
             NodeEditorWindow w = CreateInstance<NodeEditorWindow>();
-            w.titleContent = new GUIContent("xNode");
+            w.titleContent = new GUIContent("ProcessGraph");
             w.wantsMouseMove = true;
             w.Show();
             return w;
@@ -43,9 +46,9 @@ namespace XNodeEditor {
             } else SaveAs();
         }
 
-        public void SaveAs() {
+        public string SaveAs() {
             string path = EditorUtility.SaveFilePanelInProject("Save NodeGraph", "NewNodeGraph", "asset", "");
-            if (string.IsNullOrEmpty(path)) return;
+            if (string.IsNullOrEmpty(path)) return null;
             else {
                 XNode.NodeGraph existingGraph = AssetDatabase.LoadAssetAtPath<XNode.NodeGraph>(path);
                 if (existingGraph != null) AssetDatabase.DeleteAsset(path);
@@ -53,6 +56,7 @@ namespace XNodeEditor {
                 EditorUtility.SetDirty(graph);
                 if (NodeEditorPreferences.GetSettings().autoSave) AssetDatabase.SaveAssets();
             }
+            return path;
         }
 
         private void DraggableWindow(int windowID) {
@@ -104,13 +108,10 @@ namespace XNodeEditor {
             XNode.NodeGraph nodeGraph = EditorUtility.InstanceIDToObject(instanceID) as XNode.NodeGraph;
             if (nodeGraph != null)
             {
-                NodeEditorWindow w = GetWindow(typeof(NodeEditorWindow), false, "xNode", true) as NodeEditorWindow;
+                NodeEditorWindow w = GetWindow(typeof(NodeEditorWindow), false, "ProcessGraph", true) as NodeEditorWindow;
                 w.wantsMouseMove = true;
                 w.graph = nodeGraph;
                 return true;
-            }
-            else {
-                Debug.Log(" nodeGraph :"+ nodeGraph);
             }
             return false;
 
@@ -122,6 +123,51 @@ namespace XNodeEditor {
             for (int i = 0; i < windows.Length; i++) {
                 windows[i].Repaint();
             }
+        }
+
+        /// <summary>
+        /// Save File as config of json
+        /// </summary>
+        public void SaveAsJson() {
+            string path = EditorUtility.OpenFolderPanel("Config","","");
+            if (graph != null) {
+                ProcessItem nextNode = null;
+                ProcessJson json = new ProcessJson();
+                List<ProcessUnit> dataArray= new List<ProcessUnit>();
+                ///////////////////////////////
+                //// Get the head process item
+                //////////////////////////////
+                for (int i= 0;i < graph.nodes.Count; i++ ) {
+                    ProcessItem item = graph.nodes[i] as ProcessItem;
+                    if (item.EnterProcess == null && item.OutPortProcess != null)
+                    {
+                        nextNode = item;
+                        break;
+                    }
+                }
+
+                while (nextNode != null)
+                {
+                    ProcessUnit unit = new ProcessUnit();
+                    List<SubProcess> subProcessList = new List<SubProcess>();
+                    for (int j = 0; j < nextNode.ProcessItems.Length ; j++) {
+                        SubProcess subClass = new SubProcess();
+                        subClass.Namespace = nextNode.ProcessItems[j].Namespace;
+                        subClass.ClassName = nextNode.ProcessItems[j].className;
+                        subProcessList.Add(subClass);
+                    }
+                    unit.SubProcessList = subProcessList;
+                    //unit.position = nextNode.position;
+                    unit.name = nextNode.name;
+                    dataArray.Add(unit);
+                    nextNode = nextNode.OutPortProcess;
+                }
+                json.ProcessList = dataArray;
+                string jsonData = JsonUtility.ToJson(json);
+                Debug.Log("SaveAsJson :" + jsonData);
+            }
+            
+           
         }
     }
 }

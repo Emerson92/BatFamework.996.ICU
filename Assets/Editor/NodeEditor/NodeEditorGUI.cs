@@ -11,6 +11,9 @@ namespace XNodeEditor {
         private List<UnityEngine.Object> selectionCache;
         private List<XNode.Node> culledNodes;
 
+        GUIStyle LableSytle;
+        string OutputPath = null;
+
         private void OnGUI() {
             Event e = Event.current;
             Matrix4x4 m = GUI.matrix;
@@ -19,16 +22,60 @@ namespace XNodeEditor {
             graphEditor.position = position;
 
             Controls();
-
+          
             DrawGrid(position, zoom, panOffset);
             DrawConnections();
             DrawDraggedConnection();
             DrawNodes();
+            DrawButtonGroup();
             DrawSelectionBox();
             DrawTooltip();
+            
             graphEditor.OnGUI();
 
             GUI.matrix = m;
+        }
+
+        public void DrawButtonGroup()
+        {
+            Rect windArea = current.position;
+            CreateStyle();
+
+            DrawPathArea();
+
+            DrawButtonGroup(windArea);
+        }
+
+        private void DrawButtonGroup(Rect windArea)
+        {
+            GUILayout.BeginArea(new Rect(windArea.width - 180, windArea.height - 30, 250, 150));
+            if (GUILayout.Button("ExportToJson", GUILayout.Width(150f), GUILayout.Height(20f)))
+            {
+                SaveAsJson();
+            };
+            GUILayout.EndArea();
+        }
+
+        private void DrawPathArea()
+        {
+            EditorGUILayout.BeginVertical();
+
+            if (GUILayout.Button("LoadFile", GUILayout.Width(80f), GUILayout.Height(20f)))
+            {
+                OutputPath = EditorUtility.OpenFilePanel("Choose your Config", "", "");
+            }
+            GUILayout.Label("Path: " + OutputPath, LableSytle, GUILayout.MaxWidth(450));
+            EditorGUILayout.EndVertical();
+        }
+
+        private void CreateStyle()
+        {
+            LableSytle = new GUIStyle();
+            //LableSytle.alignment = TextAnchor.UpperCenter;
+            LableSytle.normal.background = null;
+            LableSytle.normal.textColor = new Color(1, 0, 0);
+            LableSytle.fontSize = 12;
+            LableSytle.margin = new RectOffset(10, 10, 10, 10);
         }
 
         public static void BeginZoomed(Rect rect, float zoom) {
@@ -294,7 +341,6 @@ namespace XNodeEditor {
             BeginZoomed(position, zoom);
 
             Vector2 mousePos = Event.current.mousePosition;
-
             if (e.type != EventType.Layout) {
                 hoveredNode = null;
                 hoveredPort = null;

@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Name: ProcessGraph
   m_EditorClassIdentifier: 
   nodes:
-  - {fileID: 114958483540864442}
-  - {fileID: 114098818089445364}
---- !u!114 &114098818089445364
+  - {fileID: 114274504228918202}
+  - {fileID: 114146675187461154}
+  - {fileID: 114066790061191184}
+  - {fileID: 114117140449573038}
+  - {fileID: 114654767114814532}
+  - {fileID: 114133134168579100}
+--- !u!114 &114066790061191184
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -23,45 +27,108 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ddb488c0dda8794398af1b09ed56c80, type: 3}
-  m_Name: Process Item
+  m_Name: Third
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -88, y: -136}
+  position: {x: -680, y: 40}
   ports:
     keys:
     - EnterProcess
-    - outPortProcess
+    - OutPortProcess
+    - Branch
     values:
     - _fieldName: EnterProcess
-      _node: {fileID: 114098818089445364}
-      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessPort, Assembly-CSharp,
+      _node: {fileID: 114066790061191184}
+      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: OutPortProcess
-        node: {fileID: 114958483540864442}
-        reroutePoints: []
-      - fieldName: outPortProcess
-        node: {fileID: 114958483540864442}
+        node: {fileID: 114146675187461154}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
       _dynamic: 0
-    - _fieldName: outPortProcess
-      _node: {fileID: 114098818089445364}
-      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessPort, Assembly-CSharp,
+    - _fieldName: OutPortProcess
+      _node: {fileID: 114066790061191184}
+      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      connections: []
+      connections:
+      - fieldName: EnterProcess
+        node: {fileID: 114133134168579100}
+        reroutePoints: []
       _direction: 1
       _connectionType: 0
       _dynamic: 0
+    - _fieldName: Branch
+      _node: {fileID: 114066790061191184}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+  EnterProcess: {fileID: 114066790061191184}
+  Branch: 2
+  OutPortProcess: {fileID: 114133134168579100}
+  ProcessItems:
+  - className: ProcessPlayerThreeOfOneDemo
+    Namespace: THEDARKKNIGHT.ProcessCore
+--- !u!114 &114117140449573038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ddb488c0dda8794398af1b09ed56c80, type: 3}
+  m_Name: Four
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -424, y: -280}
+  ports:
+    keys:
+    - EnterProcess
+    - OutPortProcess
+    - Branch
+    values:
+    - _fieldName: EnterProcess
+      _node: {fileID: 114117140449573038}
+      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: OutPortProcess
+        node: {fileID: 114146675187461154}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+    - _fieldName: OutPortProcess
+      _node: {fileID: 114117140449573038}
+      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: EnterProcess
+        node: {fileID: 114654767114814532}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _dynamic: 0
+    - _fieldName: Branch
+      _node: {fileID: 114117140449573038}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+  EnterProcess: {fileID: 114117140449573038}
+  Branch: 1
+  OutPortProcess: {fileID: 114654767114814532}
   ProcessItems:
   - className: 
     Namespace: 
-  - className: ProcessPlayerOneDemo
-    Namespace: THEDARKKNIGHT.ProcessCore
-  - className: ProcessPlayerThreeOfOneDemo
-    Namespace: THEDARKKNIGHT.ProcessCore
---- !u!114 &114958483540864442
+--- !u!114 &114133134168579100
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -73,29 +140,209 @@ MonoBehaviour:
   m_Name: Process Item
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -424, y: -200}
+  position: {x: -184, y: 40}
   ports:
     keys:
     - EnterProcess
-    - outPortProcess
+    - Branch
+    - OutPortProcess
     values:
     - _fieldName: EnterProcess
-      _node: {fileID: 114958483540864442}
-      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessPort, Assembly-CSharp,
+      _node: {fileID: 114133134168579100}
+      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: OutPortProcess
+        node: {fileID: 114066790061191184}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+    - _fieldName: Branch
+      _node: {fileID: 114133134168579100}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+    - _fieldName: OutPortProcess
+      _node: {fileID: 114133134168579100}
+      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: EnterProcess
+        node: {fileID: 114654767114814532}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _dynamic: 0
+  EnterProcess: {fileID: 114133134168579100}
+  Branch: 2
+  OutPortProcess: {fileID: 114654767114814532}
+  ProcessItems: []
+--- !u!114 &114146675187461154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ddb488c0dda8794398af1b09ed56c80, type: 3}
+  m_Name: Second
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1080, y: -136}
+  ports:
+    keys:
+    - EnterProcess
+    - OutPortProcess
+    - Branch
+    values:
+    - _fieldName: EnterProcess
+      _node: {fileID: 114146675187461154}
+      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: OutPortProcess
+        node: {fileID: 114274504228918202}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+    - _fieldName: OutPortProcess
+      _node: {fileID: 114146675187461154}
+      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: EnterProcess
+        node: {fileID: 114066790061191184}
+        reroutePoints: []
+      - fieldName: EnterProcess
+        node: {fileID: 114117140449573038}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _dynamic: 0
+    - _fieldName: Branch
+      _node: {fileID: 114146675187461154}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+  EnterProcess: {fileID: 114146675187461154}
+  Branch: 0
+  OutPortProcess: {fileID: 114117140449573038}
+  ProcessItems:
+  - className: ProcessPlayerThreeOfOneDemo
+    Namespace: THEDARKKNIGHT.ProcessCore
+--- !u!114 &114274504228918202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ddb488c0dda8794398af1b09ed56c80, type: 3}
+  m_Name: First
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -1480, y: -136}
+  ports:
+    keys:
+    - EnterProcess
+    - OutPortProcess
+    - Branch
+    values:
+    - _fieldName: EnterProcess
+      _node: {fileID: 114274504228918202}
+      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections: []
       _direction: 0
       _connectionType: 0
       _dynamic: 0
-    - _fieldName: outPortProcess
-      _node: {fileID: 114958483540864442}
-      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessPort, Assembly-CSharp,
+    - _fieldName: OutPortProcess
+      _node: {fileID: 114274504228918202}
+      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem, Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
       - fieldName: EnterProcess
-        node: {fileID: 114098818089445364}
+        node: {fileID: 114146675187461154}
         reroutePoints: []
       _direction: 1
       _connectionType: 0
       _dynamic: 0
-  ProcessItems: []
+    - _fieldName: Branch
+      _node: {fileID: 114274504228918202}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+  EnterProcess: {fileID: 0}
+  Branch: 0
+  OutPortProcess: {fileID: 114146675187461154}
+  ProcessItems:
+  - className: ProcessPlayerOneDemo
+    Namespace: THEDARKKNIGHT.ProcessCore
+--- !u!114 &114654767114814532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ddb488c0dda8794398af1b09ed56c80, type: 3}
+  m_Name: Seven
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 280, y: -152}
+  ports:
+    keys:
+    - EnterProcess
+    - OutPortProcess
+    - Branch
+    values:
+    - _fieldName: EnterProcess
+      _node: {fileID: 114654767114814532}
+      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections:
+      - fieldName: OutPortProcess
+        node: {fileID: 114117140449573038}
+        reroutePoints: []
+      - fieldName: OutPortProcess
+        node: {fileID: 114133134168579100}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+    - _fieldName: OutPortProcess
+      _node: {fileID: 114654767114814532}
+      _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _dynamic: 0
+    - _fieldName: Branch
+      _node: {fileID: 114654767114814532}
+      _typeQualifiedName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _dynamic: 0
+  EnterProcess: {fileID: 114654767114814532}
+  Branch: 0
+  OutPortProcess: {fileID: 0}
+  ProcessItems:
+  - className: 
+    Namespace: 
