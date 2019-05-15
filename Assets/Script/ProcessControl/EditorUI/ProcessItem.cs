@@ -11,14 +11,34 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
         [Input]
         public ProcessItem EnterProcess;
 
-        [Input]
-        public int Branch= 0;
+        [SerializeField,SetProperty("RedefineNodeProproty")]
+        public string BranchID = null;
 
+        [SerializeField, SetProperty("RedefineNodeProproty")]
+        public string[] SubBranchID;
+
+        public string BranchParent;
 
         [Output]
         public ProcessItem OutPortProcess;
 
         public ClassType[] ProcessItems;
+
+        public object RedefineNodeProproty {
+            set {
+                UpdateBranchParent();
+            }
+        }
+
+        /// <summary>
+        /// Update all the Node branch Parent
+        /// </summary>
+        private void UpdateBranchParent()
+        {
+            ////TODO
+            
+        }
+
 
         // Use this for initialization
         protected override void Init()
@@ -57,11 +77,30 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
 
         public override void OnCreateConnection(NodePort from, NodePort to)
         {
+            Debug.Log(this.name+ "  OnCreateConnection "+ " from :"+ from.node.name + " to :" + to.node.name);
             base.OnCreateConnection(from ,to);
             if (from.node == this)
+            {
                 OutPortProcess = to.node as ProcessItem;
-            else
-                EnterProcess = to.node as ProcessItem;
+            }
+            else {
+
+                EnterProcess = from.node as ProcessItem;
+                CheckBranchParent(from);
+            }
+        }
+
+        private void CheckBranchParent(NodePort from)
+        {
+            if (((ProcessItem)(from.node)).BranchID != null)
+            {
+                BranchID = ((ProcessItem)(from.node)).BranchID;
+                BranchParent = ((ProcessItem)(from.node)).BranchParent;
+            }
+            else 
+            {
+                BranchParent = ((ProcessItem)(from.node)).name;
+            }
         }
 
         public override void OnRemoveConnection(NodePort port)

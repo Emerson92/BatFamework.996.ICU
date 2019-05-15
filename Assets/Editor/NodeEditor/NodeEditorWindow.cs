@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using THEDARKKNIGHT.FileSystem;
 using THEDARKKNIGHT.ProcessCore.Graph;
 using THEDARKKNIGHT.ProcessCore.Graph.Json;
 using UnityEditor;
@@ -157,6 +158,8 @@ namespace XNodeEditor {
                         subProcessList.Add(subClass);
                     }
                     unit.SubProcessList = subProcessList;
+                    unit.BranchID = nextNode.BranchID;
+                    unit.SubBranchID = nextNode.SubBranchID;
                     //unit.position = nextNode.position;
                     unit.name = nextNode.name;
                     dataArray.Add(unit);
@@ -164,10 +167,9 @@ namespace XNodeEditor {
                 }
                 json.ProcessList = dataArray;
                 string jsonData = JsonUtility.ToJson(json);
-                Debug.Log("SaveAsJson :" + jsonData);
+                byte[] data = System.Text.UTF8Encoding.UTF8.GetBytes(jsonData);
+                BFileSystem.Instance().WriteFileToDiskAsync(data, path,"ProcessConfig.Json",true);
             }
-            
-           
         }
     }
 }

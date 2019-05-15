@@ -17,7 +17,11 @@ namespace THEDARKKNIGHT.ProcessCore.Graph.Json {
 
         public List<SubProcess> SubProcessList;
 
-        //public Vector2 position;
+        public string BranchID;
+
+        public string BranchParentName;
+
+        public string[] SubBranchID;
     }
 
     [Serializable]

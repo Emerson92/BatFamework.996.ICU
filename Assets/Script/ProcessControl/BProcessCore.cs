@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using THEDARKKNIGHT.Log;
 using THEDARKKNIGHT.ProcessCore.DataStruct;
+using THEDARKKNIGHT.ProcessCore.Graph.Json;
 using THEDARKKNIGHT.ProcessCore.Interface;
 using UnityEngine;
 namespace THEDARKKNIGHT.ProcessCore
@@ -72,6 +74,41 @@ namespace THEDARKKNIGHT.ProcessCore
             ProcessLink.SetProcessItem(unit);
         }
 
+        /// <summary>
+        /// Parse Json Data to proceess unit
+        /// </summary>
+        /// <param name="data"></param>
+        public void AddProcessUnitByJson(string data) {
+            ProcessJson target = JsonUtility.FromJson<ProcessJson>(data);
+            for (int i = 0; i < target.ProcessList.Count;i++) {
+                T unit =  new BProcessUnit<K>() as T;
+                unit.SetUnitTagName(target.ProcessList[i].name);
+                target.ProcessList[i].SubProcessList.ForEach((SubProcess p)=> {
+                    try
+                    {
+                        Type t = Type.GetType(p.Namespace + "." + p.ClassName);
+                        K item = Activator.CreateInstance(t) as BProcessItem as K;
+                        unit.AddItem(item);
+                    }
+                    catch (Exception ex) {
+                        BLog.Instance().Error(ex.Message);
+                    }
+                });
+                if (string.IsNullOrEmpty(target.ProcessList[i].BranchID))
+                {
+                    AddProcessUnit(unit);
+                    if (target.ProcessList[i].SubBranchID.Length > 0)
+                    {
+                        BranchMgr.AddBranchProcess(target.ProcessList[i].BranchParentName, target.ProcessList[i].BranchID);
+                    }
+                }
+                else {
+                    BranchMgr.AddBranchProcess(target.ProcessList[i].BranchParentName, target.ProcessList[i].BranchID, unit);
+                }
+            }
+        }
+
+
         public void StartProcess(object data = null, T node = null)
         {
 
@@ -136,8 +173,42 @@ namespace THEDARKKNIGHT.ProcessCore
 
         public void SetBranchProcessDic(string currentNodeName, Dictionary<string, IProcessForerunner<T, K>> dic)
         {
-            BranchProcessDic.Add(currentNodeName, dic);
+            if (!BranchProcessDic.ContainsKey(currentNodeName)) {
+                BranchProcessDic.Add(currentNodeName, dic);
+            }
         }
+
+        /// <summary>
+        /// add the new branch Process into Dicnationary
+        /// </summary>
+        /// <param name="currentNodeName"></param>
+        /// <param name="branchName"></param>
+        /// <param name="branchUnit"></param>
+        public void AddBranchProcess(string currentNodeName,string branchName,T branchUnit = null) {
+            if (BranchProcessDic.ContainsKey(currentNodeName))
+            {
+                if (BranchProcessDic[currentNodeName].ContainsKey(branchName))
+                {
+                    if (branchUnit != null)
+                        BranchProcessDic[currentNodeName][branchName].SetProcessItem(branchUnit);
+                }
+                else {
+                    IProcessForerunner<T, K> processLink = new BProcessLink<T, K>();
+                    if(branchUnit != null)
+                        processLink.SetProcessItem(branchUnit);
+                    BranchProcessDic[currentNodeName].Add(branchName, processLink);
+                }
+
+            }
+            else {
+                Dictionary<string, IProcessForerunner<T, K>> branchDic = new Dictionary<string, IProcessForerunner<T, K>>();
+                IProcessForerunner<T, K> processLink = new BProcessLink<T, K>();
+                processLink.SetProcessItem(branchUnit);
+                branchDic.Add(branchName, processLink);
+                BranchProcessDic.Add(currentNodeName, branchDic);
+            }
+        }
+
 
         public IProcessForerunner<T, K> FindBranchProcess(string currentNodeName, string branchName)
         {

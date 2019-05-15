@@ -46,10 +46,11 @@ namespace THEDARKKNIGHT.FileSystem
             {
                 file = File.Open(fullPath, FileMode.Append);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 BLog.Instance().Log(ex.Message);
             }
-            
+
             return file;
         }
 
@@ -72,10 +73,11 @@ namespace THEDARKKNIGHT.FileSystem
             {
                 File.Move(targetPath, destinationPath);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 BLog.Instance().Log(ex.Message);
             }
-           
+
         }
 
         public void CopyFile(string targetPath, string destinationPath)
@@ -84,28 +86,46 @@ namespace THEDARKKNIGHT.FileSystem
             {
                 File.Copy(targetPath, destinationPath);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 BLog.Instance().Log(ex.Message);
             }
         }
 
-        public void WriteFileToDiskAsync(byte[] data,string path,string fileName,bool IsForceWriter = false){
-            try{
+        public void WriteFileToDiskAsync(byte[] data, string path, string fileName, bool IsForceWriter = false)
+        {
+            try
+            {
                 string filePath = path + "/" + fileName;
                 if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path); 
-                if(File.Exists(filePath)){
+                    Directory.CreateDirectory(path);
+                if (File.Exists(filePath))
+                {
                     if (IsForceWriter)
-                        DeleteFile(filePath); 
+                        DeleteFile(filePath);
                 }
-                using(FileStream steam = CreateFile(path, fileName)){
-                    new Thread(()=>{
-                        steam.Write(data,0,data.Length);
-                        steam.Flush();
-                        steam.Dispose();
-                    }).Start();
-                }
-            }catch(Exception ex){
+                new Thread(() =>
+                {
+                    using (FileStream steam = CreateFile(path, fileName))
+                    {
+
+                        try
+                        {
+                            steam.Write(data, 0, data.Length);
+                            steam.Flush();
+                            steam.Dispose();
+                            BLog.Instance().Log("<H>Write The File "+ fileName + " Finish!</H>");
+                        }
+                        catch (Exception ex)
+                        {
+                            BLog.Instance().Log(ex.Message);
+                        }
+
+                    }
+                }).Start();
+            }
+            catch (Exception ex)
+            {
                 BLog.Instance().Log(ex.Message);
             }
         }
@@ -130,7 +150,8 @@ namespace THEDARKKNIGHT.FileSystem
                     }
                 }
                 return null;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 BLog.Instance().Log(ex.Message);
                 return null;
