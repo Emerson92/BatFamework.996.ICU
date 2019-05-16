@@ -195,7 +195,7 @@ namespace XNode {
 
         /// <summary> Called after a connection is removed from this port </summary>
         /// <param name="port">Output or Input</param>
-        public virtual void OnRemoveConnection(NodePort port) { }
+        public virtual void OnRemoveConnection(NodePort from, NodePort to) { }
 
         /// <summary> Disconnect everything from this node </summary>
         public void ClearConnections() {

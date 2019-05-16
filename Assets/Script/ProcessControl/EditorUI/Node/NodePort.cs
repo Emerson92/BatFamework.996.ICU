@@ -248,8 +248,8 @@ namespace XNode {
                 }
             }
             // Trigger OnRemoveConnection
-            node.OnRemoveConnection(this);
-            if (port != null) port.node.OnRemoveConnection(port);
+            node.OnRemoveConnection(port,this);
+            if (port != null) port.node.OnRemoveConnection(port,this);
         }
 
         public void ClearConnections() {
