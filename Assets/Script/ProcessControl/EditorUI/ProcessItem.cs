@@ -17,10 +17,10 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
         [SerializeField, SetProperty("RedefineNodeProproty")]
         public string BranchID = null;
         
-        [SerializeField, SetProperty("RedefineNodeProproty")]
+        [SerializeField]
         public string[] SubBranchID;
 
-        public string BranchParent;
+        private string BranchParent;
 
         [Output]
         public ProcessItem[] OutPortProcess;
@@ -48,53 +48,40 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
         {
             ////TODO
             FindBranchParent();////Find Parent Branch 
-            //CheckBackwardChild();////Check Child Statues
+            CheckBackwardChild();////Check Child Statues
         }
 
         private void FindBranchParent()
         {
-            foreach (NodePort p in Inputs)
-            {
-                Debug.Log("p :"+ p.node.name);
-                //if(p.node != this)
-                   // CheckForwardNode(p,this);
-            }
-        }
-
-        private void CheckForwardNode(NodePort nodePort, ProcessItem lastNode)
-        {
-            if (string.IsNullOrEmpty(((ProcessItem)nodePort.node).BranchID) || ((ProcessItem)nodePort.node).BranchID != this.BranchID)
-            {
-                this.BranchParent = ((ProcessItem)nodePort.node).name;
-            }
-            else
-            {
-                foreach (NodePort p in ((ProcessItem)nodePort.node).Inputs)
+            for (int i = 0 ; i < EnterProcess.Length ; i++) {
+                if (EnterProcess[i] == null) continue; 
+                if (string.IsNullOrEmpty(EnterProcess[i].BranchID))
                 {
-                    if (p.node != lastNode)
-                        CheckForwardNode(p, ((ProcessItem)nodePort.node));
+                    this.BranchParent = EnterProcess[i].name;
+                }
+                else {
+                    if(EnterProcess[i].BranchID == this.BranchID)
+                    this.BranchParent = EnterProcess[i].BranchParent;
                 }
             }
         }
 
         private void CheckBackwardChild()
         {
-            foreach (NodePort p in Outputs)
+            for (int i = 0; i < OutPortProcess.Length;i++ )
             {
-                CheckBackwardNode(p,this);
+                if (OutPortProcess[i] == null) continue;
+                    CheckBackwardNode(OutPortProcess[i], this);
             }
         }
 
-        private void CheckBackwardNode(NodePort nodePort, ProcessItem lastNode)
+        private void CheckBackwardNode(ProcessItem node, ProcessItem lastNode)
         {
-            if (((ProcessItem)nodePort.node).BranchID != lastNode.BranchID)
-            {
-                ((ProcessItem)nodePort.node).BranchParent = lastNode.BranchParent;
-            }
-            else {
-                foreach (NodePort p in ((ProcessItem)nodePort.node).Outputs)
-                {
-                    CheckBackwardNode(p, ((ProcessItem)nodePort.node));
+            if (node == null || lastNode == null) return;
+            if (node.BranchID == lastNode.BranchID && !string.IsNullOrEmpty(node.BranchID)) {
+                node.BranchParent = lastNode.BranchParent;
+                foreach (ProcessItem item in node.OutPortProcess) {
+                    CheckBackwardNode(item, node);
                 }
             }
         }

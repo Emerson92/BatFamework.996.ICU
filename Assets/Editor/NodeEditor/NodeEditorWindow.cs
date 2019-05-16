@@ -147,24 +147,24 @@ namespace XNodeEditor {
                     }
                 }
 
-                while (nextNode != null)
-                {
-                    ProcessUnit unit = new ProcessUnit();
-                    List<SubProcess> subProcessList = new List<SubProcess>();
-                    for (int j = 0; j < nextNode.ProcessItems.Length ; j++) {
-                        SubProcess subClass = new SubProcess();
-                        subClass.Namespace = nextNode.ProcessItems[j].Namespace;
-                        subClass.ClassName = nextNode.ProcessItems[j].className;
-                        subProcessList.Add(subClass);
-                    }
-                    unit.SubProcessList = subProcessList;
-                    unit.BranchID = nextNode.BranchID;
-                    unit.SubBranchID = nextNode.SubBranchID;
-                    //unit.position = nextNode.position;
-                    unit.name = nextNode.name;
-                    dataArray.Add(unit);
-                    nextNode = nextNode.OutPortProcess;
-                }
+                //while (nextNode != null)
+                //{
+                //    ProcessUnit unit = new ProcessUnit();
+                //    List<SubProcess> subProcessList = new List<SubProcess>();
+                //    for (int j = 0; j < nextNode.ProcessItems.Length ; j++) {
+                //        SubProcess subClass = new SubProcess();
+                //        subClass.Namespace = nextNode.ProcessItems[j].Namespace;
+                //        subClass.ClassName = nextNode.ProcessItems[j].className;
+                //        subProcessList.Add(subClass);
+                //    }
+                //    unit.SubProcessList = subProcessList;
+                //    unit.BranchID = nextNode.BranchID;
+                //    unit.SubBranchID = nextNode.SubBranchID;
+                //    //unit.position = nextNode.position;
+                //    unit.name = nextNode.name;
+                //    dataArray.Add(unit);
+                //    nextNode = nextNode.OutPortProcess;
+                //}
                 json.ProcessList = dataArray;
                 string jsonData = JsonUtility.ToJson(json);
                 byte[] data = System.Text.UTF8Encoding.UTF8.GetBytes(jsonData);
