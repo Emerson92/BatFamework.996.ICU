@@ -8,22 +8,22 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
 
     public class ProcessItem : XNode.Node
     {
-        [Input]
-        public ProcessItem[] Test;
+        //[Input]
+        //public ProcessItem[] Test;
 
         [Input]
-        public ProcessItem EnterProcess;
+        public ProcessItem[] EnterProcess;
 
         [SerializeField, SetProperty("RedefineNodeProproty")]
         public string BranchID = null;
-
+        
         [SerializeField, SetProperty("RedefineNodeProproty")]
         public string[] SubBranchID;
 
         public string BranchParent;
 
         [Output]
-        public ProcessItem OutPortProcess;
+        public ProcessItem[] OutPortProcess;
 
         public ClassType[] ProcessItems;
 
@@ -32,6 +32,14 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
                 UpdateBranchParent();
             }
         }
+
+        public new void OnEnable()
+        {
+            base.OnEnable();
+            EnterProcess = new ProcessItem[1];
+            OutPortProcess = new ProcessItem[1];
+        }
+
 
         /// <summary>
         /// Update all the Node branch Parent
@@ -103,51 +111,52 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
             return OutPortProcess;
         }
 
-        private void RefreshStatue(NodePort port)
-        {
-            if (port.ConnectionCount > 0)
-            {
-                for (int i = 0; i < port.ConnectionCount; i++)
-                {
-                    NodePort nextPort = port.GetConnection(i);
-                    if (nextPort != port)
-                    {
-                        if (nextPort.IsConnected)
-                            OutPortProcess = nextPort.node as ProcessItem;
-                        else
-                            OutPortProcess = null;
-                    }
-                }
-            }
-            else
-            {
-                EnterProcess = null;
-                OutPortProcess = null;
-            }
-        }
-
         public override void OnCreateConnection(NodePort from, NodePort to)
         {
-            //Debug.Log(this.name+ "  OnCreateConnection "+ " from :"+ from.node.name + " to :" + to.node.name);
             base.OnCreateConnection(from ,to);
             if (from.node == this)
             {
-                OutPortProcess = to.node as ProcessItem;
-            }
-            else {
-                EnterProcess = from.node as ProcessItem;
-                for (int i = 0 ; i < Test.Length ; i++ ) {
-                    if (Test[i] == null)
+                if (OutPortProcess != null) {
+                    for (int i = 0; i < OutPortProcess.Length; i++)
                     {
-                        Test[i] = from.node as ProcessItem;
-                        break;
-                    }
-                    else if (i == Test.Length - 1) {
-                        ///端口已经连接的接口
-                        Test[i] = from.node as ProcessItem;
-                        break;
+                        if (OutPortProcess[i] == null)
+                        {
+                            OutPortProcess[i] = to.node as ProcessItem;
+                            break;
+                        }
+                        else if (i == OutPortProcess.Length - 1)
+                        {
+                            foreach (NodePort p in OutPortProcess[i].Outputs)
+                            {
+                                from.Disconnect(p);
+                            }
+                            OutPortProcess[i] = to.node as ProcessItem;
+                            break;
+                        }
                     }
                 }
+            }
+            else {
+                if (EnterProcess != null) {
+                    for (int i = 0; i < EnterProcess.Length; i++)
+                    {
+                        if (EnterProcess[i] == null)
+                        {
+                            EnterProcess[i] = from.node as ProcessItem;
+                            break;
+                        }
+                        else if (i == EnterProcess.Length - 1)
+                        {
+                            foreach (NodePort p in EnterProcess[i].Outputs)
+                            {
+                                p.Disconnect(to);
+                            }
+                            EnterProcess[i] = from.node as ProcessItem;
+                            break;
+                        }
+                    }
+                }
+
                 CheckBranchParent(from);
             }
             
@@ -168,39 +177,33 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
 
         public override void OnRemoveConnection(NodePort output, NodePort input)
         {
-            //Debug.Log(this.name + "  OnRemoveConnection " + " from :" + from.node.name + " to :" + to.node.name);
             base.OnRemoveConnection(output, input);
             if (output.node == this)
             {
-                OutPortProcess = null;
-            }
-            else {
-                EnterProcess = null;
-                for (int i = 0; i < Test.Length; i++)
+                if (OutPortProcess != null)
                 {
-                    if (Test[i] == output.node)
+                    for (int i = 0; i < OutPortProcess.Length; i++)
                     {
-                        Test[i] = null;
-                        break;
+                        if (OutPortProcess[i] == input.node)
+                        {
+                            OutPortProcess[i] = null;
+                            break;
+                        }
                     }
                 }
             }
-            //switch (port.fieldName) {
-            //    case "Test":
-            //        for (int i = 0; i < Test.Length;i++) {
-            //            if (Test[i] == port.node) {
-            //                Test[i] = null;
-            //                break;
-            //            }
-            //        }
-            //        break;
-            //    case "EnterProcess":
-            //        EnterProcess = null;
-            //        break;
-            //    case "OutPortProcess" :
-            //        OutPortProcess = null;
-            //        break;
-            //}
+            else {
+                if (EnterProcess != null) {
+                    for (int i = 0; i < EnterProcess.Length; i++)
+                    {
+                        if (EnterProcess[i] == output.node)
+                        {
+                            EnterProcess[i] = null;
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 

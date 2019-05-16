@@ -215,7 +215,7 @@ namespace XNode {
             /// <summary> Mark a serializable field as an input port. You can access this through <see cref="GetInputPort(string)"/> </summary>
             /// <param name="backingValue">Should we display the backing value for this port as an editor field? </param>
             /// <param name="connectionType">Should we allow multiple connections? </param>
-            public InputAttribute(ShowBackingValue backingValue = ShowBackingValue.Unconnected, ConnectionType connectionType = ConnectionType.Multiple) {
+            public InputAttribute(ShowBackingValue backingValue = ShowBackingValue.Always, ConnectionType connectionType = ConnectionType.Multiple) {
                 this.backingValue = backingValue;
                 this.connectionType = connectionType;
             }
@@ -230,7 +230,7 @@ namespace XNode {
             /// <summary> Mark a serializable field as an output port. You can access this through <see cref="GetOutputPort(string)"/> </summary>
             /// <param name="backingValue">Should we display the backing value for this port as an editor field? </param>
             /// <param name="connectionType">Should we allow multiple connections? </param>
-            public OutputAttribute(ShowBackingValue backingValue = ShowBackingValue.Never, ConnectionType connectionType = ConnectionType.Multiple) {
+            public OutputAttribute(ShowBackingValue backingValue = ShowBackingValue.Always, ConnectionType connectionType = ConnectionType.Multiple) {
                 this.backingValue = backingValue;
                 this.connectionType = connectionType;
             }
