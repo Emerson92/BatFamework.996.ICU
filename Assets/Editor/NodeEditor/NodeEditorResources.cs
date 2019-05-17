@@ -12,17 +12,28 @@ namespace XNodeEditor {
         private static Texture2D _nodeBody;
         public static Texture2D nodeHighlight { get { return _nodeHighlight != null ? _nodeHighlight : _nodeHighlight = Resources.Load<Texture2D>("xnode_node_highlight"); } }
         private static Texture2D _nodeHighlight;
+        public static Texture2D SubProcessBackground {get {return _SubProcessBackground != null ? _SubProcessBackground : Resources.Load<Texture2D>("SubProcessBackgroud");}}
+        private static Texture2D _SubProcessBackground;
+        public static Texture2D OpenFile { get { return _OpenFile != null ? _OpenFile : Resources.Load<Texture2D>("OpenFile"); } }
+        private static Texture2D _OpenFile;
 
         // Styles
         public static Styles styles { get { return _styles != null ? _styles : _styles = new Styles(); } }
         public static Styles _styles = null;
         public static GUIStyle OutputPort { get { return new GUIStyle(EditorStyles.label) { alignment = TextAnchor.UpperRight }; } }
         public class Styles {
-            public GUIStyle inputPort, nodeHeader, nodeBody, tooltip, nodeHighlight;
+            public GUIStyle inputPort, nodeHeader, nodeBody, tooltip, nodeHighlight,subProcessBG, subProcessItemBG;
+
+            public GUIStyle SubFontSytle;
 
             public Styles() {
                 GUIStyle baseStyle = new GUIStyle("Label");
                 baseStyle.fixedHeight = 18;
+
+                SubFontSytle = new GUIStyle();
+                SubFontSytle.normal.textColor = Color.blue;
+                SubFontSytle.fontSize = 12;
+                //SubFontSytle.fontStyle = FontStyle.Bold;
 
                 inputPort = new GUIStyle(baseStyle);
                 inputPort.alignment = TextAnchor.UpperLeft;
@@ -37,6 +48,17 @@ namespace XNodeEditor {
                 nodeBody.normal.background = NodeEditorResources.nodeBody;
                 nodeBody.border = new RectOffset(32, 32, 32, 32);
                 nodeBody.padding = new RectOffset(16, 16, 4, 16);
+
+                subProcessBG = new GUIStyle();
+                subProcessBG.normal.background = NodeEditorResources.SubProcessBackground;
+                subProcessBG.border = new RectOffset(32, 32, 32, 32);
+                subProcessBG.padding = new RectOffset(16, 16, 8, 16);
+
+                subProcessItemBG = new GUIStyle();
+                subProcessItemBG.normal.background = NodeEditorResources.nodeBody;
+                subProcessItemBG.normal.textColor = Color.red;
+                subProcessItemBG.border = new RectOffset(1, 1, 1, 1);
+                subProcessItemBG.padding = new RectOffset(2, 2, 2, 2);
 
                 nodeHighlight = new GUIStyle();
                 nodeHighlight.normal.background = NodeEditorResources.nodeHighlight;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using THEDARKKNIGHT.ProcessCore.Graph.NodeEditor;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,7 +33,10 @@ namespace XNodeEditor {
             if (property == null) throw new NullReferenceException();
 
             // If property is not a port, display a regular property field
-            if (port == null) EditorGUILayout.PropertyField(property, label, includeChildren, GUILayout.MinWidth(30));
+            if (port == null) {
+                NodeInspectorExtend.InpspectorPropertyFieldOnGUI(property, label, includeChildren);
+                //EditorGUILayout.PropertyField(property, label, includeChildren, GUILayout.Width(200));
+            }
             else {
                 Rect rect = new Rect();
 

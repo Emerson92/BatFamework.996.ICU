@@ -8,8 +8,6 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
 
     public class ProcessItem : XNode.Node
     {
-        //[Input]
-        //public ProcessItem[] Test;
 
         [Input]
         public ProcessItem[] EnterProcess;
@@ -20,7 +18,7 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
         [SerializeField]
         public string[] SubBranchID;
 
-        private string BranchParent;
+        public string BranchParent;
 
         [Output]
         public ProcessItem[] OutPortProcess;

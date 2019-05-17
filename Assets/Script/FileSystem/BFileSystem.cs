@@ -114,7 +114,7 @@ namespace THEDARKKNIGHT.FileSystem
                             steam.Write(data, 0, data.Length);
                             steam.Flush();
                             steam.Dispose();
-                            BLog.Instance().Log("<H>Write The File "+ fileName + " Finish!</H>");
+                            BLog.Instance().Log("Write The File "+ fileName + " Finish!");
                         }
                         catch (Exception ex)
                         {

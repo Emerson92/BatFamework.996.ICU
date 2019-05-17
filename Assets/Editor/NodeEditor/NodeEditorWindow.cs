@@ -131,44 +131,69 @@ namespace XNodeEditor {
         /// </summary>
         public void SaveAsJson() {
             string path = EditorUtility.OpenFolderPanel("Config","","");
-            if (graph != null) {
+            if (graph != null)
+            {
                 ProcessItem nextNode = null;
                 ProcessJson json = new ProcessJson();
-                List<ProcessUnit> dataArray= new List<ProcessUnit>();
+                List<ProcessUnit> dataArray = new List<ProcessUnit>();
                 ///////////////////////////////
                 //// Get the head process item
                 //////////////////////////////
-                for (int i= 0;i < graph.nodes.Count; i++ ) {
+                for (int i = 0; i < graph.nodes.Count; i++)
+                {
                     ProcessItem item = graph.nodes[i] as ProcessItem;
-                    if (item.EnterProcess == null && item.OutPortProcess != null)
+                    if ((item.EnterProcess == null ) && (item.OutPortProcess != null))
                     {
                         nextNode = item;
                         break;
                     }
                 }
+                if (nextNode != null)
+                {
+                    Debug.Log("nextNode :" + nextNode.name);
+                    SearchProcessUnit(nextNode, dataArray);
+                    json.ProcessList = dataArray;
+                    Debug.Log("json.ProcessList :" + json.ProcessList.Count);
+                    string jsonData = JsonUtility.ToJson(json);
+                    byte[] data = System.Text.UTF8Encoding.UTF8.GetBytes(jsonData);
+                    Debug.Log("jsonData :" + jsonData);
+                    BFileSystem.Instance().WriteFileToDiskAsync(data, path, "ProcessConfig.Json", true);
 
-                //while (nextNode != null)
-                //{
-                //    ProcessUnit unit = new ProcessUnit();
-                //    List<SubProcess> subProcessList = new List<SubProcess>();
-                //    for (int j = 0; j < nextNode.ProcessItems.Length ; j++) {
-                //        SubProcess subClass = new SubProcess();
-                //        subClass.Namespace = nextNode.ProcessItems[j].Namespace;
-                //        subClass.ClassName = nextNode.ProcessItems[j].className;
-                //        subProcessList.Add(subClass);
-                //    }
-                //    unit.SubProcessList = subProcessList;
-                //    unit.BranchID = nextNode.BranchID;
-                //    unit.SubBranchID = nextNode.SubBranchID;
-                //    //unit.position = nextNode.position;
-                //    unit.name = nextNode.name;
-                //    dataArray.Add(unit);
-                //    nextNode = nextNode.OutPortProcess;
-                //}
-                json.ProcessList = dataArray;
-                string jsonData = JsonUtility.ToJson(json);
-                byte[] data = System.Text.UTF8Encoding.UTF8.GetBytes(jsonData);
-                BFileSystem.Instance().WriteFileToDiskAsync(data, path,"ProcessConfig.Json",true);
+                }
+                else {
+                    Debug.Log("Save File,can not find the first node!");
+                }
+
+            }
+        }
+
+        private void SearchProcessUnit(ProcessItem nextNode, List<ProcessUnit> dataArray)
+        {
+            while (nextNode != null)
+            {
+                ProcessUnit unit = new ProcessUnit();
+                List<SubProcess> subProcessList = new List<SubProcess>();
+                for (int j = 0; j < nextNode.ProcessItems.Length; j++)
+                {
+                    SubProcess subClass = new SubProcess();
+                    subClass.Namespace = nextNode.ProcessItems[j].Namespace;
+                    subClass.ClassName = nextNode.ProcessItems[j].className;
+                    subProcessList.Add(subClass);
+                }
+                unit.SubProcessList = subProcessList;
+                unit.BranchID = nextNode.BranchID;
+                unit.BranchParentName = nextNode.BranchParent;
+                unit.SubBranchID = nextNode.SubBranchID;
+                unit.name = nextNode.name;
+                dataArray.Add(unit);
+                if (nextNode.OutPortProcess != null)
+                {
+                    for (int i = 0; i < nextNode.OutPortProcess.Length; i++)
+                    {
+                        nextNode = nextNode.OutPortProcess[i];
+                        SearchProcessUnit(nextNode, dataArray);
+                    }
+                }
             }
         }
     }
