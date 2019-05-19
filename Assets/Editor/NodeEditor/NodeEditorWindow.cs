@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using THEDARKKNIGHT.FileSystem;
 using THEDARKKNIGHT.ProcessCore.Graph;
 using THEDARKKNIGHT.ProcessCore.Graph.Json;
@@ -92,16 +93,16 @@ namespace XNodeEditor {
 
         public void SelectNode(XNode.Node node, bool add) {
             if (add) {
-                List<Object> selection = new List<Object>(Selection.objects);
+                List<UnityEngine.Object> selection = new List<UnityEngine.Object>(Selection.objects);
                 selection.Add(node);
-                Selection.objects = selection.ToArray();
-            } else Selection.objects = new Object[] { node };
+                Selection.objects = (UnityEngine.Object[])selection.ToArray();
+            } else Selection.objects = new UnityEngine.Object[] { node };
         }
 
         public void DeselectNode(XNode.Node node) {
-            List<Object> selection = new List<Object>(Selection.objects);
-            selection.Remove(node);
-            Selection.objects = selection.ToArray();
+            List<UnityEngine.Object> selection = new List<UnityEngine.Object>(Selection.objects);
+            selection.Remove((UnityEngine.Object)node);
+            Selection.objects = (UnityEngine.Object[])selection.ToArray();
         }
 
         [OnOpenAsset(0)]
@@ -142,7 +143,7 @@ namespace XNodeEditor {
                 for (int i = 0; i < graph.nodes.Count; i++)
                 {
                     ProcessItem item = graph.nodes[i] as ProcessItem;
-                    if ((item.EnterProcess == null ) && (item.OutPortProcess != null))
+                    if (!CheckArrayIsNotNull(item.EnterProcess) && CheckArrayIsNotNull(item.OutPortProcess))
                     {
                         nextNode = item;
                         break;
@@ -167,10 +168,31 @@ namespace XNodeEditor {
             }
         }
 
+        private bool CheckArrayIsNotNull(ProcessItem[] enterProcess)
+        {
+            bool flage = false;
+            if (enterProcess != null)
+            {
+
+                for (int i = 0; i < enterProcess.Length ;i ++)
+                {
+                    if (enterProcess[i] != null)
+                        return !flage;
+                }
+                return flage;
+            }
+            else
+                return flage;
+        }
+
         private void SearchProcessUnit(ProcessItem nextNode, List<ProcessUnit> dataArray)
         {
-            while (nextNode != null)
+            if (nextNode != null)
             {
+                for (int k = 0; k < dataArray.Count;k++){
+                    if(dataArray[k].name == nextNode.name)                   
+                        return ;
+                }
                 ProcessUnit unit = new ProcessUnit();
                 List<SubProcess> subProcessList = new List<SubProcess>();
                 for (int j = 0; j < nextNode.ProcessItems.Length; j++)
@@ -188,11 +210,19 @@ namespace XNodeEditor {
                 dataArray.Add(unit);
                 if (nextNode.OutPortProcess != null)
                 {
-                    for (int i = 0; i < nextNode.OutPortProcess.Length; i++)
+                    if(nextNode.OutPortProcess.Length > 0)
                     {
-                        nextNode = nextNode.OutPortProcess[i];
-                        SearchProcessUnit(nextNode, dataArray);
+                        for (int i = 0; i < nextNode.OutPortProcess.Length; i++)
+                        {
+                            if( nextNode.OutPortProcess[i] != null )
+                            {
+                                nextNode = nextNode.OutPortProcess[i];
+                                SearchProcessUnit(nextNode, dataArray);
+                            }
+                        }
+
                     }
+
                 }
             }
         }
