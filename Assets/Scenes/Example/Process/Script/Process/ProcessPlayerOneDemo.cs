@@ -6,8 +6,9 @@ using THEDARKKNIGHT.EventDefine;
 using THEDARKKNIGHT.EventSystem;
 using THEDARKKNIGHT.InputOperate;
 using THEDARKKNIGHT.InputOperate.DataStruct;
+using THEDARKKNIGHT.ProcessCore;
 using UnityEngine;
-namespace THEDARKKNIGHT.ProcessCore {
+namespace THEDARKKNIGHT.Example{
 
     public class ProcessPlayerOneDemo : BProcessItem
     {
@@ -25,8 +26,8 @@ namespace THEDARKKNIGHT.ProcessCore {
 
         public override void AssetInit(object data)
         {
-            GameObject Player = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayerOne") as GameObject;
-            PlayerOne  = GameObject.Instantiate(Player);
+            GameObject playerOne = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayerOne") as GameObject;
+            PlayerOne  = GameObject.Instantiate(playerOne);
             ReadyToExcute();
         }
 

@@ -87,7 +87,7 @@ namespace THEDARKKNIGHT.ProcessCore
                     try
                     {
                         Type t = Type.GetType(p.Namespace + "." + p.ClassName);
-                        K item = Activator.CreateInstance(t) as BProcessItem as K;
+                        K item = Activator.CreateInstance(t, p.Nickname) as BProcessItem as K;
                         unit.AddItem(item);
                     }
                     catch (Exception ex) {
@@ -97,10 +97,6 @@ namespace THEDARKKNIGHT.ProcessCore
                 if (string.IsNullOrEmpty(target.ProcessList[i].BranchID))
                 {
                     AddProcessUnit(unit);
-                    if (target.ProcessList[i].SubBranchID.Length > 0)
-                    {
-                        BranchMgr.AddBranchProcess(target.ProcessList[i].BranchParentName, target.ProcessList[i].BranchID);
-                    }
                 }
                 else {
                     BranchMgr.AddBranchProcess(target.ProcessList[i].BranchParentName, target.ProcessList[i].BranchID, unit);
@@ -115,6 +111,7 @@ namespace THEDARKKNIGHT.ProcessCore
             if (node == null)
             {
                 T firstNode = ProcessLink.GetFirstNode();
+                ProcessLink.ResetIndicatorToStart();
                 CurrentNode = firstNode;
             }
             else
@@ -132,13 +129,17 @@ namespace THEDARKKNIGHT.ProcessCore
             CurrentNode.ProcessExcute();
         }
 
-        private void ProcessUnitFinish(object data)
+        private void ProcessUnitFinish(object data, string branch)
         {
             bool moveNext = true;
             CurrentNode.ProcessUnitReadyToGO -= ProcessUnitPrepareComplete;
             CurrentNode.ProcessUnitFinishExcution -= ProcessUnitFinish;
             if (ProcessUnitFinishCallback != null)
                 moveNext = ProcessUnitFinishCallback(CurrentNode.UnitTagName, data);
+            if (!string.IsNullOrEmpty(branch)) {
+                ////TODO Merge Branch process into main process
+                ProcessLink.InsertLinkAtNode(CurrentNode, BranchMgr.FindBranchProcess(CurrentNode.UnitTagName, branch));
+            }
             if (moveNext)
             {
                 Debug.Log("ProcessUnitFinish");

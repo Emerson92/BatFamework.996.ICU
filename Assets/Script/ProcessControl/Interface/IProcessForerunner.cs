@@ -33,6 +33,8 @@ namespace THEDARKKNIGHT.ProcessCore.Interface
         /// <param name="index"></param>
         void RemoveProcessItem(int index);
 
+        void ResetIndicatorToStart();
+
         /// <summary>
         /// get the current process Item
         /// </summary>
@@ -70,6 +72,12 @@ namespace THEDARKKNIGHT.ProcessCore.Interface
         /// </summary>
         /// <returns></returns>
         T GetEndNode();
+
+        /// <summary>
+        /// Get the first point node
+        /// </summary>
+        /// <returns></returns>
+        ProcessItemData<T, K> GetFirstNodePoint();
 
         /// <summary>
         /// insert the new node to link

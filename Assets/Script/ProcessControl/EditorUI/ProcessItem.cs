@@ -197,7 +197,9 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
     [Serializable]
     public class ClassType {
 
-        public string className;
+        public string Nickname;
+
+        public string Classname;
 
         public string Namespace;
 

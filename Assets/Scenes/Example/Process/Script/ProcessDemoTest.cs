@@ -16,40 +16,18 @@ namespace THEDARKKNIGHT.Example
         GameObject PlayerAreaOne { get; set; }
         GameObject PlayerAreaThree { get; set; }
         GameObject PlayAreaFour { get; set; }
+        GameObject PlayAreaFive { get; set; }
+        GameObject PlayAreaSix { get; set; }
 
         // Use this for initialization
         void Start()
         {
             BInputOperateEngine.Instance();
+            TextAsset text = Resources.Load<TextAsset>("Test\\ProcessDemo\\ProcessConfig");
             ProcessControl = new ProcessDemo();
+            ProcessControl.AddProcessUnitByJson(text.text);
             ProcessControl.SetProcessUnitStartCallback(ProcessUnitStart);
             ProcessControl.SetProcessUnitFinishCallback(ProcessUnitFinish);
-            ProcessPlayerOneDemo PlayerOne = new ProcessPlayerOneDemo("PlayerOne");
-
-            BProcessUnit<BProcessItem> PlayerOneUnit = new BProcessUnit<BProcessItem>(PlayerOne);
-            PlayerOneUnit.SetUnitTagName("PlayerOneUnit");
-
-            ProcessPlayerTwoOfOneDemo PlayerTwoOfOne = new ProcessPlayerTwoOfOneDemo("PlayerTwoOfOne");
-            ProcessPlayerTwoOfTwoDemo PlayerTwoOfTwo = new ProcessPlayerTwoOfTwoDemo("PlayerTwoOfTwo");
-            ProcessPlayerTwoOfThreeDemo PlayerTwoOfThree = new ProcessPlayerTwoOfThreeDemo("PlayerTwoOfThree");
-
-            BProcessUnit<BProcessItem> PlayerTwoUnit = new BProcessUnit<BProcessItem>(PlayerTwoOfOne, PlayerTwoOfTwo, PlayerTwoOfThree);
-            PlayerTwoUnit.SetUnitTagName("PlayerTwoUnit");
-
-            ProcessPlayerThreeOfOneDemo ProcessPlayerThreeOfOne = new ProcessPlayerThreeOfOneDemo("PlayerThreeOfOne");
-            ProcessPlayerThreeOfTwoDemo ProcessPlayerThreeOfTwo = new ProcessPlayerThreeOfTwoDemo("PlayerThreeOfTwo");
-
-            BProcessUnit<BProcessItem> PlayerThreeUnit = new BProcessUnit<BProcessItem>(ProcessPlayerThreeOfOne, ProcessPlayerThreeOfTwo);
-            PlayerThreeUnit.SetUnitTagName("PlayerThreeUnit");
-
-            ProcessPlayerFourDemo ProcessPlayerFour = new ProcessPlayerFourDemo("PlayerFour");
-            BProcessUnit<BProcessItem> PlayerFourUnit = new BProcessUnit<BProcessItem>(ProcessPlayerFour);
-            PlayerFourUnit.SetUnitTagName("PlayerFourUnit");
-
-            ProcessControl.AddProcessUnit(PlayerOneUnit);
-            ProcessControl.AddProcessUnit(PlayerTwoUnit);
-            ProcessControl.AddProcessUnit(PlayerThreeUnit);
-            ProcessControl.AddProcessUnit(PlayerFourUnit);
             ProcessControl.StartProcess();
         }
 
@@ -90,6 +68,23 @@ namespace THEDARKKNIGHT.Example
                     }
                     CameraCtrl.Instance().LerpFocusCenter(PlayAreaFour.transform.position);
                     break;
+                case "PlayerFiveUnit":
+                    if (!PlayAreaFive)
+                    {
+                        GameObject PlayerArea5 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaFive") as GameObject;
+                        PlayAreaFive = GameObject.Instantiate(PlayerArea5);
+                    }
+                    CameraCtrl.Instance().LerpFocusCenter(PlayAreaFive.transform.position);
+                    break;
+                case "PlayerSixUnit":
+                    if (!PlayAreaSix)
+                    {
+                        GameObject PlayerArea6 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayAreaSix") as GameObject;
+                        PlayAreaSix = GameObject.Instantiate(PlayerArea6);
+                    }
+                    CameraCtrl.Instance().LerpFocusCenter(PlayAreaSix.transform.position);
+                    break;
+
             }
         }
 
@@ -103,12 +98,6 @@ namespace THEDARKKNIGHT.Example
                     break;
                 case "PlayerThreeUnit":
                     if ((string)data == "B")
-                    {
-                        ProcessControl.StartProcess();
-                        return false;
-                    }
-                    break;
-                case "PlayerFourUnit":
                     {
                         ProcessControl.StartProcess();
                         return false;

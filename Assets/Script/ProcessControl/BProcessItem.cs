@@ -5,6 +5,7 @@ using THEDARKKNIGHT.Interface;
 using UnityEngine;
 namespace THEDARKKNIGHT.ProcessCore
 {
+    [Serializable]
     public abstract class BProcessItem : ILifeCycle
     {
 
@@ -34,15 +35,15 @@ namespace THEDARKKNIGHT.ProcessCore
             }
         }
 
-        private IEnumerator FinishCallback(bool forceQuit = false)
+        private IEnumerator FinishCallback(string branchName = null,bool forceQuit = false)
         {
             yield return new WaitForEndOfFrame();
             if (ProcessItemFinishExcution != null)
-                ProcessItemFinishExcution(ProcessData, forceQuit);
+                ProcessItemFinishExcution(branchName,ProcessData, forceQuit);
         }
 
-        protected void ForceToFinishProcess(){
-            mono.StartCoroutine(FinishCallback(true));
+        protected void ForceToFinishProcess(string branchName = null){
+            mono.StartCoroutine(FinishCallback(branchName,true));
         }
 
         public object ProcessData { set; get; }
@@ -52,7 +53,7 @@ namespace THEDARKKNIGHT.ProcessCore
         public MonoBehaviour mono { private set;get;}
 
 
-        public Action<object,bool> ProcessItemFinishExcution;
+        public Action<string,object,bool> ProcessItemFinishExcution;
 
         public Action<BProcessItem,object> ProcessItemAssetAlready;
 
@@ -74,10 +75,10 @@ namespace THEDARKKNIGHT.ProcessCore
 
         public virtual void OnApplicationQuit() { }
 
-        public virtual void ProcessFinish() {
+        public virtual void ProcessFinish(string branch = null) {
             Debug.Log(this.TaskName + " ProcessFinish ");
             Status = PROCESSSTATUS.Finish;
-            mono.StartCoroutine(FinishCallback());
+            mono.StartCoroutine(FinishCallback(branch));
         }
 
         public virtual void Init() {

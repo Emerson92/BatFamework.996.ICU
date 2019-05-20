@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using THEDARKKNIGHT.ConstDefine;
 using THEDARKKNIGHT.EventDefine;
 using THEDARKKNIGHT.EventSystem;
+using THEDARKKNIGHT.InputOperate;
 using THEDARKKNIGHT.InputOperate.DataStruct;
 using THEDARKKNIGHT.ProcessCore;
 using UnityEngine;
@@ -11,18 +12,20 @@ namespace THEDARKKNIGHT.Example
 {
     public class ProcessPlayerThreeOfTwoDemo : BProcessItem
     {
-        public GameObject PlayerThree { get; private set; }
+        public GameObject PlayThree_2 { get; private set; }
 
-        public ProcessPlayerThreeOfTwoDemo(string name)
-        {
+        GameObject PlayCylinder;
+
+        GameObject PlaySphere;
+
+        public ProcessPlayerThreeOfTwoDemo(string name) {
             this.TaskName = name;
         }
 
-
         public override void AssetInit(object data)
         {
-            GameObject PlayerThree_2 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayerThree_2") as GameObject;
-            PlayerThree = GameObject.Instantiate(PlayerThree_2);
+            GameObject playerThree_2 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayerThree_2") as GameObject;
+            PlayThree_2 = GameObject.Instantiate(playerThree_2);
             ReadyToExcute();
         }
 
@@ -34,37 +37,46 @@ namespace THEDARKKNIGHT.Example
         private object LeftPressCallback(object data)
         {
             InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
-            if (packet.Info.CastGameObject == PlayerThree)
-            {
-                ProcessData = "B";
-                ForceToFinishProcess();
+
+            if (packet.Info.CastGameObject == PlayThree_2) {
+                PlayThree_2.GetComponent<Rotate>().IsNeedRotate = true;
+                mono.StartCoroutine(DelayToExcuteFinish(null));
             }
             return null;
         }
 
-        public override void FixedUpdate()
+        IEnumerator DelayToExcuteFinish(string branch)
         {
+            yield return new WaitForSecondsRealtime(8f);
+            ProcessFinish(branch);
         }
 
-        public override void Destory()
+        public override void FixedUpdate()
         {
 
-            BEventManager.Instance().RemoveListener(BatEventDefine.LEFTPRESSEVENT, LeftPressCallback);
-            GameObject.Destroy(PlayerThree);
         }
 
         public override void ProcessExcute()
         {
+
         }
 
         public override void StopExcute()
         {
+
         }
 
         public override void Update()
         {
+
         }
 
-
+        public override void Destory()
+        {
+            BEventManager.Instance().RemoveListener(BatEventDefine.LEFTPRESSEVENT, LeftPressCallback);
+            GameObject.Destroy(PlayCylinder);
+            GameObject.Destroy(PlaySphere);
+        }
     }
+
 }

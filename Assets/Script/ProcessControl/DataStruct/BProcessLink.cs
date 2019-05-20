@@ -47,7 +47,10 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct
         public T NextProcessItem()
         {
             currentItemData = currentItemData.NextItem;
-            return currentItemData.Value;
+            if (currentItemData == null)
+                return null;
+            else
+                return currentItemData.Value;
         }
 
         /// <summary>
@@ -104,7 +107,10 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct
             {
                 ProcessItemData<T, K> item = new ProcessItemData<T,K>();
                 item.Value = data;
-                currentItemData.NextItem = item;
+                if (currentItemData != null) { 
+                    currentItemData.NextItem = item;
+                    item.LastItem = currentItemData;
+                }
                 item.LastItem = currentItemData;
                 currentItemData = item;
                 processItemList.Add(currentItemData);
@@ -117,7 +123,10 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct
         /// <returns>current node</returns>
         public T  GetCurrentProcessItem()
         {
-            return currentItemData.Value;
+            if (currentItemData == null)
+                return null;
+            else
+                return currentItemData.Value;
         }
 
         /// <summary>
@@ -146,10 +155,13 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct
         {
             targetItem = null;
             ProcessItemData<T, K> tempItem = currentItemData;
+            if (currentItemData.Value == node) {
+                targetItem = currentItemData;
+            }
             while (tempItem.LastItem != null)
             {
 
-                if (tempItem.LastItem.Value.Equals(node))
+                if (tempItem.LastItem.Value == node)
                 {
                     targetItem = tempItem;
                     break;
@@ -159,7 +171,7 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct
             tempItem = currentItemData;
             while (tempItem.NextItem != null)
             {
-                if (tempItem.LastItem.Value.Equals(node))
+                if (tempItem.LastItem.Value == node)
                 {
                     targetItem = tempItem;
                     break;
@@ -272,31 +284,49 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct
         /// <param name="link"></param>
         public void InsertLinkAtNode(T targetNode, IProcessForerunner<T, K> link)
         {
-            /////
-            /////TODO finish the method
-            ///// 
+            if (targetNode == null)
+                return;
             ProcessItemData<T, K> targetItem = null;
             SeachProcessItem(targetNode, out targetItem);
-            if (targetItem !=null) {
-                T firstNode = link.GetFirstNode();
-                ProcessItemData<T, K> item = new ProcessItemData<T, K>();
-                item.Value = firstNode;
-                targetItem.NextItem = item;
-                item.LastItem = targetItem;
-                ProcessItemData<T, K> tempItem = item;
-                while (link.GetCurrentProcessItem() != null)
+            ProcessItemData<T, K> firstNode = link.GetFirstNodePoint();
+            while (firstNode != null && targetItem != null) {
+                targetItem = AddNewProcessAfter(targetItem, firstNode.Value);
+                firstNode = firstNode.NextItem;
+            }
+        }
+
+        private ProcessItemData<T, K> AddNewProcessAfter(ProcessItemData<T, K> targetItem, T newNode)
+        {
+            if (newNode == null)
+                return null;
+            ProcessItemData<T, K> item = new ProcessItemData<T, K>();
+            item.Value = newNode;
+            item.NextItem = targetItem.NextItem;
+            targetItem.NextItem = item;
+            item.LastItem = targetItem;
+            return item;
+        }
+
+        public ProcessItemData<T, K> GetFirstNodePoint()
+        {
+            if (processItemList.Count == 1) {
+                return processItemList[0];
+            }
+            else {
+                for (int i = 0; i < processItemList.Count; i++)
                 {
-                    T tempNode = link.NextProcessItem();
-                    if (tempNode != null) {
-                        ProcessItemData<T, K> nodeItem = new ProcessItemData<T, K>();
-                        tempItem.Value = tempNode;
-                        tempItem.NextItem = nodeItem;
-                        nodeItem.LastItem = tempItem;
-                        tempItem = nodeItem;
+                    if (processItemList[i].LastItem == null && processItemList[i].NextItem != null)
+                    {
+                        return processItemList[i];
                     }
                 }
             }
-   
+            return null;
+        }
+
+        public void ResetIndicatorToStart()
+        {
+            currentItemData = GetFirstNodePoint();
         }
     }
 }

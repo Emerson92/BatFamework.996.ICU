@@ -27,6 +27,8 @@ namespace THEDARKKNIGHT.ProcessCore.Graph.Json {
     [Serializable]
     public class SubProcess {
 
+        public string Nickname;
+
         public string Namespace;
 
         public string ClassName;

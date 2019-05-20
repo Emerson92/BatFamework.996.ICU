@@ -198,8 +198,9 @@ namespace XNodeEditor {
                 for (int j = 0; j < nextNode.ProcessItems.Length; j++)
                 {
                     SubProcess subClass = new SubProcess();
-                    subClass.Namespace = nextNode.ProcessItems[j].Namespace;
-                    subClass.ClassName = nextNode.ProcessItems[j].className;
+                    subClass.Nickname   = nextNode.ProcessItems[j].Nickname;
+                    subClass.Namespace  = nextNode.ProcessItems[j].Namespace;
+                    subClass.ClassName  = nextNode.ProcessItems[j].Classname;
                     subProcessList.Add(subClass);
                 }
                 unit.SubProcessList = subProcessList;
@@ -220,9 +221,7 @@ namespace XNodeEditor {
                                 SearchProcessUnit(nextNode, dataArray);
                             }
                         }
-
                     }
-
                 }
             }
         }

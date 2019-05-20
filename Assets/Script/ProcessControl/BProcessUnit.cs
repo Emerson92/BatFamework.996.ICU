@@ -14,7 +14,7 @@ namespace THEDARKKNIGHT.ProcessCore {
         /// </summary>
         private List<T> ProcessItem = new List<T>();
 
-        public Action<object> ProcessUnitFinishExcution;
+        public Action<object,string> ProcessUnitFinishExcution;
 
         public Action ProcessUnitReadyToGO;
 
@@ -67,23 +67,23 @@ namespace THEDARKKNIGHT.ProcessCore {
             }
         }
 
-        public virtual void ProcessFinish(object data,bool IsForceToEnd)
+        public virtual void ProcessFinish(string branchName,object data,bool IsForceToEnd)
         {
             if(IsForceToEnd){
-                AllTaskFinish(data);
+                AllTaskFinish(branchName,data);
                 return;
             }
             for (int i = 0;i< ProcessItem.Count;i++) {
                 if (ProcessItem[i].ProcessStatus != BProcessItem.PROCESSSTATUS.Finish)
                     return;
             }
-            AllTaskFinish(data);
+            AllTaskFinish(branchName,data);
         }
 
-        private void AllTaskFinish(object data)
+        private void AllTaskFinish(string branchName,object data)
         {
             if (ProcessUnitFinishExcution != null)
-                ProcessUnitFinishExcution(data);
+                ProcessUnitFinishExcution(data, branchName);
             for (int i = 0; i < ProcessItem.Count; i++) {
                 ProcessItem[i].ProcessDestory();
                 ProcessItem[i].ProcessItemFinishExcution -= ProcessFinish;
