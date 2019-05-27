@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using THEDARKKNIGHT.ProcessCore.Graph;
 using UnityEngine;
 
 namespace XNode {
@@ -9,7 +10,7 @@ namespace XNode {
 
         /// <summary> All nodes in the graph. <para/>
         /// See: <see cref="AddNode{T}"/> </summary>
-        [SerializeField] public List<Node> nodes = new List<Node>();
+        [SerializeField] public List<ProcessItem> nodes = new List<ProcessItem>();
 
         /// <summary> Add a node to the graph by type </summary>
         public T AddNode<T>() where T : Node {
@@ -17,16 +18,16 @@ namespace XNode {
         }
 
         /// <summary> Add a node to the graph by type </summary>
-        public virtual Node AddNode(Type type) {
-            Node node = ScriptableObject.CreateInstance(type) as Node;
+        public virtual ProcessItem AddNode(Type type) {
+            ProcessItem node = ScriptableObject.CreateInstance(type) as ProcessItem;
             nodes.Add(node);
             node.graph = this;
             return node;
         }
 
         /// <summary> Creates a copy of the original node in the graph </summary>
-        public virtual Node CopyNode(Node original) {
-            Node node = ScriptableObject.Instantiate(original);
+        public virtual Node CopyNode(ProcessItem original) {
+            ProcessItem node = ScriptableObject.Instantiate(original);
             node.ClearConnections();
             nodes.Add(node);
             node.graph = this;
@@ -35,7 +36,7 @@ namespace XNode {
 
         /// <summary> Safely remove a node and all its connections </summary>
         /// <param name="node"> The node to remove </param>
-        public void RemoveNode(Node node) {
+        public void RemoveNode(ProcessItem node) {
             node.ClearConnections();
             nodes.Remove(node);
             if (Application.isPlaying) Destroy(node);
@@ -58,7 +59,7 @@ namespace XNode {
             // Instantiate all nodes inside the graph
             for (int i = 0; i < nodes.Count; i++) {
                 if (nodes[i] == null) continue;
-                Node node = Instantiate(nodes[i]) as Node;
+                ProcessItem node = Instantiate(nodes[i]) as ProcessItem;
                 node.graph = graph;
                 graph.nodes[i] = node;
             }

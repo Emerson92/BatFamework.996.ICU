@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using THEDARKKNIGHT.ProcessCore.Graph;
 using UnityEngine;
 
 namespace XNode {
@@ -267,6 +268,16 @@ namespace XNode {
         public void Redirect(List<Node> oldNodes, List<Node> newNodes) {
             foreach (PortConnection connection in connections) {
                 int index = oldNodes.IndexOf(connection.node);
+                if (index >= 0) connection.node = newNodes[index];
+            }
+        }
+
+        /// <summary> Swap connected nodes from the old list with nodes from the new list </summary>
+        public void Redirect(List<ProcessItem> oldNodes, List<ProcessItem> newNodes)
+        {
+            foreach (PortConnection connection in connections)
+            {
+                int index = oldNodes.IndexOf(connection.node as ProcessItem);
                 if (index >= 0) connection.node = newNodes[index];
             }
         }

@@ -27,7 +27,7 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
 
         public object RedefineNodeProproty {
             set {
-                UpdateBranchParent();
+                UpdateBranchParent(value);
             }
         }
 
@@ -42,11 +42,17 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
         /// <summary>
         /// Update all the Node branch Parent
         /// </summary>
-        private void UpdateBranchParent()
+        private void UpdateBranchParent(object value)
         {
-            ////TODO
-            FindBranchParent();////Find Parent Branch 
-            CheckBackwardChild();////Check Child Statues
+            if (string.IsNullOrEmpty((string)value))
+            {
+                BranchParent = null;
+            }
+            else {
+                ////TODO
+                FindBranchParent();////Find Parent Branch 
+                CheckBackwardChild();////Check Child Statues
+            }
         }
 
         private void FindBranchParent()
@@ -66,6 +72,7 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
 
         private void CheckBackwardChild()
         {
+            if (OutPortProcess.Length > 1) return;
             for (int i = 0; i < OutPortProcess.Length;i++ )
             {
                 if (OutPortProcess[i] == null) continue;
@@ -79,7 +86,8 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
             if (node.BranchID == lastNode.BranchID && !string.IsNullOrEmpty(node.BranchID)) {
                 node.BranchParent = lastNode.BranchParent;
                 foreach (ProcessItem item in node.OutPortProcess) {
-                    CheckBackwardNode(item, node);
+                    if(item.EnterProcess.Length < 2)
+                        CheckBackwardNode(item, node);
                 }
             }
         }

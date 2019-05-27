@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Timers;
 using THEDARKKNIGHT.ConstDefine;
 using THEDARKKNIGHT.EventDefine;
 using THEDARKKNIGHT.EventSystem;
@@ -13,9 +14,15 @@ namespace THEDARKKNIGHT.Example
     public class ProcessPlayerTwoDemo : BProcessItem
     {
         public GameObject PlayerTwo { get; private set; }
+        public bool StartToExcute { get; private set; }
+
+        public Vector3 TargetScale = new Vector3(0.25f,2,0.25f);
+
         GameObject PlayCylinder;
 
         GameObject PlaySphere;
+
+        private float tick = 0;
 
         public ProcessPlayerTwoDemo(string name) {
             this.TaskName = name;
@@ -41,8 +48,7 @@ namespace THEDARKKNIGHT.Example
 
             if (packet.Info.CastGameObject == PlayCylinder)
             {
-                PlayCylinder.GetComponent<Rotate>().IsNeedRotate = true;
-                mono.StartCoroutine(DelayToExcuteFinish("1"));
+                StartToExcute = true;
             }
             else if (packet.Info.CastGameObject == PlaySphere)
             {
@@ -76,16 +82,18 @@ namespace THEDARKKNIGHT.Example
 
         public override void Update()
         {
-            //if(StartToExcute){
-            //    Timer += Time.deltaTime;
-            //    PlayerTwo.transform.localScale = Vector3.Lerp(PlayerTwo.transform.localScale, TargetScale, Timer/ 5);
-            //    if(PlayerTwo.transform.localScale == TargetScale){
-            //        StartToExcute = false;
-            //        Timer = 0;
-            //        ProcessFinish();
-            //    }
-            //}
-           
+            if (StartToExcute)
+            {
+                tick += Time.deltaTime;
+                PlayCylinder.transform.localScale = Vector3.Lerp(PlayCylinder.transform.localScale, TargetScale, tick / 5);
+                if (PlayCylinder.transform.localScale == TargetScale)
+                {
+                    StartToExcute = false;
+                    tick = 0;
+                    ProcessFinish("1");
+                }
+            }
+
         }
 
         public override void Destory()
