@@ -235,8 +235,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Hi ! you should Click the three object and then you will jump to Player
-    Area three.
+  m_Text: 'Hi there!you have two option.choose first,you will jump to one branch(playerArea
+    three),or you will jump into two branch(playerArea four)! '
 --- !u!114 &114450337440968262
 MonoBehaviour:
   m_ObjectHideFlags: 1

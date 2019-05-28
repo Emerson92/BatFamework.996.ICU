@@ -72,7 +72,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1449931372074112}
   m_LocalRotation: {x: -0.3789008, y: 0.02313171, z: 0.020126596, w: 0.92492926}
-  m_LocalPosition: {x: -2.0800002, y: 2.128, z: -13.8534775}
+  m_LocalPosition: {x: -2.0800002, y: 1.9, z: -13.8534775}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224706544748500872}
@@ -186,7 +186,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Hi ! if you choose me you will jump to the play Area One. '
+  m_Text: Hi ! I am Cyclinder.
 --- !u!114 &114893022014504314
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -268,7 +268,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1363715005006684}
   m_LocalRotation: {x: 0.3789008, y: -0.02313171, z: -0.020126596, w: 0.92492926}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.24}
   m_LocalScale: {x: 0.1, y: 0.10000001, z: 0.099999994}
   m_Children:
   - {fileID: 224328580357349164}
@@ -277,6 +277,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.01, y: 0.24}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}

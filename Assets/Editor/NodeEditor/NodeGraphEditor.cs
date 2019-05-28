@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using THEDARKKNIGHT.ProcessCore.Graph;
 using UnityEditor;
 using UnityEngine;
 
@@ -44,7 +45,7 @@ namespace XNodeEditor {
 
         /// <summary> Creates a copy of the original node in the graph </summary>
         public XNode.Node CopyNode(XNode.Node original) {
-            XNode.Node node = target.CopyNode(original);
+            XNode.Node node = target.CopyNode(original as ProcessItem);
             node.name = original.name;
             AssetDatabase.AddObjectToAsset(node, target);
             if (NodeEditorPreferences.GetSettings().autoSave) AssetDatabase.SaveAssets();
@@ -54,7 +55,7 @@ namespace XNodeEditor {
         /// <summary> Safely remove a node and all its connections. </summary>
         public void RemoveNode(XNode.Node node) {
             UnityEngine.Object.DestroyImmediate(node, true);
-            target.RemoveNode(node);
+            target.RemoveNode(node as ProcessItem);
             if (NodeEditorPreferences.GetSettings().autoSave) AssetDatabase.SaveAssets();
         }
 

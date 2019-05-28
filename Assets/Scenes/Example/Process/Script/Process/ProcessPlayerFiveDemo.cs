@@ -36,10 +36,31 @@ namespace THEDARKKNIGHT.Example
             InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
             if (packet.Info.CastGameObject == PlayerFive)
             {
-                ProcessData = "B";
-                ForceToFinishProcess();
+                AddRigidbody();
             }
             return null;
+        }
+
+        private void AddRigidbody()
+        {
+            for (int i = 0; i < PlayerFive.transform.childCount; i++)
+            {
+                Transform child = PlayerFive.transform.GetChild(i);
+                if (child.name != "Option") {
+                    child.gameObject.AddComponent<Rigidbody>();
+                    child.GetComponent<Collider>().enabled = true;
+                }
+
+            }
+            mono.StartCoroutine(DelayToExcuteFinish());
+        }
+
+
+
+        IEnumerator DelayToExcuteFinish()
+        {
+            yield return new WaitForSecondsRealtime(4f);
+            ProcessFinish();
         }
 
         public override void FixedUpdate()
@@ -48,7 +69,6 @@ namespace THEDARKKNIGHT.Example
 
         public override void Destory()
         {
-
             BEventManager.Instance().RemoveListener(BatEventDefine.LEFTPRESSEVENT, LeftPressCallback);
             GameObject.Destroy(PlayerFive);
         }

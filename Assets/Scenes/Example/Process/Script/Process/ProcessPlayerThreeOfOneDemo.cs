@@ -13,9 +13,18 @@ namespace THEDARKKNIGHT.Example
     public class ProcessPlayerThreeOfOneDemo : BProcessItem
     {
 
-        public GameObject PlayerThree { get; private set; }
+        public GameObject PlayerCalabash { get; private set; }
+
+        private Transform Calabash;
+
         public GameObject PlayerAreaTwo { get; private set; }
 
+
+        private Vector3 targetRotation = new Vector3 (0,0,0);
+        private Vector3 targetScale = new Vector3(10,10,10);
+
+        private bool IsTransform;
+        private float Tick;
 
         public ProcessPlayerThreeOfOneDemo(string name) {
             this.TaskName = name;
@@ -24,7 +33,8 @@ namespace THEDARKKNIGHT.Example
         public override void AssetInit(object data)
         {
             GameObject playerTwo_1 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayerThree_1") as GameObject;
-            PlayerThree = GameObject.Instantiate(playerTwo_1);
+            PlayerCalabash = GameObject.Instantiate(playerTwo_1);
+            Calabash =  PlayerCalabash.transform.Find("Calabash");
             ReadyToExcute();
         }
 
@@ -37,18 +47,17 @@ namespace THEDARKKNIGHT.Example
         {
             InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
 
-            if (packet.Info.CastGameObject == PlayerThree)
+            if (packet.Info.CastGameObject == PlayerCalabash)
             {
-                PlayerThree.AddComponent<Rigidbody>();
-                mono.StartCoroutine(DelayToExcuteFinish(null));
+                IsTransform = true;
             }
             return null;
         }
 
-        IEnumerator DelayToExcuteFinish(string branch)
+        IEnumerator DelayToExcuteFinish()
         {
-            yield return new WaitForSecondsRealtime(5f);
-            ProcessFinish(branch);
+            yield return new WaitForSecondsRealtime(3f);
+            ProcessFinish();
         }
 
         public override void FixedUpdate()
@@ -68,13 +77,23 @@ namespace THEDARKKNIGHT.Example
 
         public override void Update()
         {
-
+            if (IsTransform) {
+                Tick +=Time.deltaTime;
+                IsTransform = true;
+                Calabash.rotation =Quaternion.Euler(Vector3.Lerp(Calabash.rotation.eulerAngles, targetRotation, Tick/5));
+                Calabash.localScale = Vector3.Lerp(Calabash.localScale, targetScale, Tick / 5);
+                if (Calabash.rotation == Quaternion.Euler(targetRotation) && Calabash.localScale == targetScale) {
+                    IsTransform = false;
+                    Calabash.gameObject.AddComponent<Rigidbody>();
+                    mono.StartCoroutine(DelayToExcuteFinish());
+                }
+            }
         }
 
         public override void Destory()
         {
             BEventManager.Instance().RemoveListener(BatEventDefine.LEFTPRESSEVENT, LeftPressCallback);
-            GameObject.Destroy(PlayerThree);
+            GameObject.Destroy(PlayerCalabash);
         }
     }
 

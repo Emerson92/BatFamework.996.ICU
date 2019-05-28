@@ -272,7 +272,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Hi ! if you choose me you will jump to the play Area One. '
+  m_Text: 'Hi ! if you click the blue cube, you will jump to the play Area Six. '
 --- !u!222 &222648936353110294
 CanvasRenderer:
   m_ObjectHideFlags: 1

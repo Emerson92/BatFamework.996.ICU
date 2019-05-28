@@ -47,7 +47,7 @@ namespace THEDARKKNIGHT.Example
 
         IEnumerator DelayToExcuteFinish(string branch)
         {
-            yield return new WaitForSecondsRealtime(8f);
+            yield return new WaitForSecondsRealtime(5f);
             ProcessFinish(branch);
         }
 
