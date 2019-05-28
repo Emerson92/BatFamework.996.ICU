@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using THEDARKKNIGHT.ProcessCore.Graph;
 using UnityEditor;
 using UnityEngine;
 
@@ -58,13 +59,16 @@ namespace XNodeEditor {
 
         private void DrawPathArea()
         {
-            EditorGUILayout.BeginVertical();
-
+            EditorGUILayout.BeginVertical(NodeEditorResources.styles.subProcessBG, GUILayout.MaxWidth(150));
             if (GUILayout.Button("LoadFile", GUILayout.Width(80f), GUILayout.Height(20f)))
             {
                 OutputPath = EditorUtility.OpenFilePanel("Choose your Config", "", "");
             }
             GUILayout.Label("Path: " + OutputPath, LableSytle, GUILayout.MaxWidth(450));
+            EditorGUILayout.BeginHorizontal(GUILayout.Width(120));
+            EditorGUILayout.LabelField("LuaScript:", LableSytle, GUILayout.Width(80));
+            ProcessGraph.IsLuaScript = EditorGUILayout.Toggle(ProcessGraph.IsLuaScript);
+            EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
         }
 
@@ -364,7 +368,8 @@ namespace XNodeEditor {
                 if (graph.nodes[n] == null) continue;
                 if (n >= graph.nodes.Count) return;
                 XNode.Node node = graph.nodes[n];
-
+                if(node.GetType().Name == "ProcessItem")
+                    ((ProcessItem)node).IsLuaScript = ProcessGraph.IsLuaScript;
                 NodeEditor nodeEditor = NodeEditor.GetEditor(node);
 
                 // Culling

@@ -23,7 +23,11 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
         [Output]
         public ProcessItem[] OutPortProcess;
 
+        public bool IsLuaScript = false;
+
         public ClassType[] ProcessItems;
+
+        public LuaClassType[] LuaProcessItems;
 
         public object RedefineNodeProproty {
             set {
@@ -212,5 +216,13 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
         public string Namespace;
 
         public BProcessItem item;
+    }
+
+    [Serializable]
+    public class LuaClassType {
+
+        public string Nickname;
+
+        public string LuaPath;
     }
 }
