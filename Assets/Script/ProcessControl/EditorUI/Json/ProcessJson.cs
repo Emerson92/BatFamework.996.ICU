@@ -15,7 +15,11 @@ namespace THEDARKKNIGHT.ProcessCore.Graph.Json {
 
         public string name;
 
+        public bool IsLuaScript;
+
         public List<SubProcess> SubProcessList;
+
+        public List<SubLuaProcess> SubLuaProcessList;
 
         public string BranchID;
 
@@ -33,5 +37,13 @@ namespace THEDARKKNIGHT.ProcessCore.Graph.Json {
 
         public string ClassName;
 
+    }
+
+    [Serializable]
+    public class SubLuaProcess {
+
+        public string Nickname;
+
+        public string UrlPath;
     }
 }

@@ -11,6 +11,7 @@ using System;
 using XLua;
 using System.Reflection;
 using System.Linq;
+using UnityEngine;
 
 //配置的详细介绍请看Doc下《XLua的配置.doc》
 public static class ExampleConfig
@@ -273,4 +274,55 @@ public static class ExampleConfig
                 new List<string>(){"System.IO.DirectoryInfo", "Create", "System.Security.AccessControl.DirectorySecurity"},
                 new List<string>(){"UnityEngine.MonoBehaviour", "runInEditMode"},
             };
+    //lua中要使用到C#库的配置，比如C#标准库，或者Unity API，第三方库等。
+    [LuaCallCSharp]
+    public static List<Type> LuaCallCSharp = new List<Type>()
+    {
+        typeof(System.Object),
+        typeof(UnityEngine.Object),
+        typeof(Vector2),
+        typeof(Vector3),
+        typeof(Vector4),
+        typeof(Quaternion),
+        typeof(Color),
+        typeof(Ray),
+        typeof(Bounds),
+        typeof(Ray2D),
+        typeof(Time),
+        typeof(GameObject),
+        typeof(Component),
+        typeof(Behaviour),
+        typeof(Transform),
+        typeof(Resources),
+        typeof(TextAsset),
+        typeof(Keyframe),
+        typeof(AnimationCurve),
+        typeof(AnimationClip),
+        typeof(MonoBehaviour),
+        typeof(ParticleSystem),
+        typeof(SkinnedMeshRenderer),
+        typeof(Renderer),
+        typeof(WWW),
+        typeof(Light),
+        typeof(Mathf),
+        typeof(System.Collections.Generic.List<int>),
+        typeof(Action<string>),
+        typeof(UnityEngine.Debug),
+        typeof(WaitForSeconds),
+        typeof(System.Collections.IEnumerator),
+        //typeof(XLua.Cast.Any<IEnumerator>)
+    };
+
+    //C#静态调用Lua的配置（包括事件的原型），仅可以配delegate，interface
+    [CSharpCallLua]
+    public static List<Type> CSharpCallLua = new List<Type>()
+    {
+        typeof(Action),
+        typeof(Func<double, double, double>),
+        typeof(Action<string>),
+        typeof(Action<double>),
+        typeof(UnityEngine.Events.UnityAction),
+        typeof(System.Collections.IEnumerator)
+    };
+
 }

@@ -194,16 +194,32 @@ namespace XNodeEditor {
                         return ;
                 }
                 ProcessUnit unit = new ProcessUnit();
-                List<SubProcess> subProcessList = new List<SubProcess>();
-                for (int j = 0; j < nextNode.ProcessItems.Length; j++)
+                unit.IsLuaScript = nextNode.IsLuaScript;
+                if (nextNode.IsLuaScript)
                 {
-                    SubProcess subClass = new SubProcess();
-                    subClass.Nickname   = nextNode.ProcessItems[j].Nickname;
-                    subClass.Namespace  = nextNode.ProcessItems[j].Namespace;
-                    subClass.ClassName  = nextNode.ProcessItems[j].Classname;
-                    subProcessList.Add(subClass);
+                    List<SubLuaProcess> subLuaProcessList = new List<SubLuaProcess>();
+                    for (int j = 0; j < nextNode.LuaProcessItems.Length; j++)
+                    {
+                        SubLuaProcess subClass = new SubLuaProcess();
+                        subClass.Nickname = nextNode.LuaProcessItems[j].Nickname;
+                        subClass.UrlPath = nextNode.LuaProcessItems[j].LuaPath;
+                        subLuaProcessList.Add(subClass);
+                    }
+                    unit.SubLuaProcessList = subLuaProcessList;
                 }
-                unit.SubProcessList = subProcessList;
+                else {
+
+                    List<SubProcess> subProcessList = new List<SubProcess>();
+                    for (int j = 0; j < nextNode.ProcessItems.Length; j++)
+                    {
+                        SubProcess subClass = new SubProcess();
+                        subClass.Nickname = nextNode.ProcessItems[j].Nickname;
+                        subClass.Namespace = nextNode.ProcessItems[j].Namespace;
+                        subClass.ClassName = nextNode.ProcessItems[j].Classname;
+                        subProcessList.Add(subClass);
+                    }
+                    unit.SubProcessList = subProcessList;
+                }
                 unit.BranchID = nextNode.BranchID;
                 unit.BranchParentName = nextNode.BranchParent;
                 unit.SubBranchID = nextNode.SubBranchID;

@@ -12,8 +12,8 @@ local MovePosition
 
 function AssetInit(data,target)
     print("lua AssetInit : " .. target.TaskName)
-	local Player = CS.UnityEngine.Resources.Load(CS.THEDARKKNIGHT.ConstDefine.BFameWorkPathDefine.BFameResourceTestProcessPath .. "/PlayerOne")
-	PlayerOne = CS.UnityEngine.GameObject.Instantiate(Player)
+	local playerOne = CS.UnityEngine.Resources.Load(CS.THEDARKKNIGHT.ConstDefine.BFameWorkPathDefine.BFameResourceTestProcessPath .. "/PlayerOne")
+	PlayerOne = CS.UnityEngine.GameObject.Instantiate(playerOne)
 	Self = target
 	Self:ReadyToExcute()
 end
@@ -21,13 +21,15 @@ end
 function DataInit(data,target)
     print("lua DataInit : " .. target.TaskName)
 	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():AddListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,LeftPressCallbackPlayOne)
-	MovePosition = PlayerOne.transform.position + PlayerOne.transform.forward * 3;
+	MovePosition = PlayerOne.transform.position + PlayerOne.transform.forward * 3
 end
 
 function Destory()
     print("lua Destory PlayerOne")
 	CS.UnityEngine.GameObject.Destroy(PlayerOne)
 	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():RemoveListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,LeftPressCallbackPlayOne)
+	Self = nil
+	PlayerOne = nil
 end
 
 function FixedUpdate()
@@ -49,8 +51,8 @@ function Update()
         if (Time > 3)
         then
             Time = 0;
-            Self:ProcessFinish();
-            IsNeedToMove = false;
+            Self:ProcessFinish()
+            IsNeedToMove = false
 		else
 			Time = Time + CS.UnityEngine.Time.deltaTime
 		end
@@ -62,7 +64,7 @@ function LeftPressCallbackPlayOne(data)
     local packet = data;
     if (packet.Info.CastGameObject == PlayerOne)
 	then
-		IsNeedToMove = true;
+		IsNeedToMove = true
     end
-	return nuil;
+	return nuil
 end

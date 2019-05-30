@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 805406734}
   - component: {fileID: 805406733}
   m_Layer: 0
-  m_Name: ProcessDemo
+  m_Name: LuaProcessDemo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -336,6 +336,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aca8c22f7324eed499647e88451d77cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  text: {fileID: 4900000, guid: 293776809477170439ca3d86217c9c1f, type: 3}
 --- !u!4 &805406734
 Transform:
   m_ObjectHideFlags: 0

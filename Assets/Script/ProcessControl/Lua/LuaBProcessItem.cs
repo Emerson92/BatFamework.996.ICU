@@ -20,27 +20,27 @@ namespace THEDARKKNIGHT.ProcessCore.Lua
         private Action LuaProcessExcute;
         private Action LuaStopExcute;
         private Action LuaUpdate;
-        private LuaTable scriptEnv;
-        private string LuaPathName;
+        public string LuaPathName;
         public LuaEnv LuaEnvRoot = new LuaEnv();
-
+        private bool IsReadyUpdate = false;
+        LuaTable scriptEnv = null;
         public LuaBProcessItem(string luaPath, string name)
         {
             this.TaskName = name;
-            LuaPathName = luaPath;
+            this.LuaPathName = luaPath;
         }
 
         private LuaTable LoadFileWithCondition(string fileName, Action<LuaTable> callBack = null)
         {
-            LuaTable scriptEnv = LuaEnvRoot.NewTable();
+            scriptEnv = LuaEnvRoot.NewTable();
             LuaTable meta = LuaEnvRoot.NewTable();
-            Debug.Log("LuaEnvRoot.Global :" + LuaEnvRoot.Global);
             meta.Set("__index", LuaEnvRoot.Global);
             scriptEnv.SetMetaTable(meta);
             meta.Dispose();
+            LoadFile(LuaFileLoad(LuaPathName), fileName, scriptEnv);
             if (callBack != null)
                 callBack(scriptEnv);
-            LoadFile(LuaFileLoad(LuaPathName), fileName, scriptEnv);
+       
             return scriptEnv;
         }
 
@@ -57,12 +57,7 @@ namespace THEDARKKNIGHT.ProcessCore.Lua
 
         private void LuaInit(string luaPath)
         {
-            //BLuaControl.Instance().LoadLuaFile(luaPath);
-            //scriptEnv = BLuaControl.Instance().LoadFileWithCondition(luaPath, (param) =>
-            //{
-            //    param.Set("self", this);
-            //});
-            LoadFileWithCondition(luaPath, (param) =>
+            LoadFileWithCondition(luaPath, (scriptEnv) =>
             {
                 scriptEnv.Get("AssetInit", out AssetInitCallback);
                 scriptEnv.Get("DataInit", out DataInitCallback);
@@ -85,14 +80,15 @@ namespace THEDARKKNIGHT.ProcessCore.Lua
         {
             if (DataInitCallback != null)
                 DataInitCallback(data, this);
+            IsReadyUpdate = true; 
         }
 
         public override void Destory()
         {
-            if (LuaDestory != null)
-                LuaDestory();
             if (scriptEnv != null)
                 scriptEnv.Dispose();
+            if (LuaDestory != null)
+                LuaDestory();
             AssetInitCallback = null;
             DataInitCallback = null;
             LuaFixedUpdate = null;
@@ -104,7 +100,7 @@ namespace THEDARKKNIGHT.ProcessCore.Lua
 
         public override void FixedUpdate()
         {
-            if (LuaFixedUpdate != null)
+            if (LuaFixedUpdate != null && IsReadyUpdate)
                 LuaFixedUpdate();
         }
 
@@ -122,7 +118,7 @@ namespace THEDARKKNIGHT.ProcessCore.Lua
 
         public override void Update()
         {
-            if (LuaUpdate != null)
+            if (LuaUpdate != null && IsReadyUpdate)
                 LuaUpdate();
         }
 
@@ -134,8 +130,6 @@ namespace THEDARKKNIGHT.ProcessCore.Lua
 
             if (LuaDestory != null)
                 LuaDestory();
-            if (scriptEnv != null)
-                scriptEnv.Dispose();
             AssetInitCallback = null;
             DataInitCallback = null;
             LuaFixedUpdate = null;

@@ -30,7 +30,6 @@ namespace THEDARKKNIGHT.ProcessCore.Graph.NodeEditor {
                 case "LuaProcessItems":
                     if (target.IsLuaScript) {
                         EditorGUILayout.BeginVertical(style);
-                        Debug.Log("property.name :"+ property.name);
                         EditorGUILayout.PropertyField(property, label, includeChildren, GUILayout.MinWidth(40));
                         EditorGUILayout.EndVertical();
                     }

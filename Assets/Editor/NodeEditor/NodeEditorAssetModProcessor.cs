@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using THEDARKKNIGHT.ProcessCore.Graph;
+using UnityEditor;
 using UnityEngine;
 
 namespace XNodeEditor {
@@ -30,7 +31,7 @@ namespace XNodeEditor {
                         if (node != null && node.graph != null) {
                             // Delete the node and notify the user
                             Debug.LogWarning (node.name + " of " + node.graph + " depended on deleted script and has been removed automatically.", node.graph);
-                            node.graph.RemoveNode (node);
+                            node.graph.RemoveNode (node as ProcessItem);
                         }
                     }
                 }
@@ -51,7 +52,7 @@ namespace XNodeEditor {
                 Object[] objs = AssetDatabase.LoadAllAssetRepresentationsAtPath (assetpath);
                 // Ensure that all sub node assets are present in the graph node list
                 for (int u = 0; u < objs.Length; u++) {
-                    if (!graph.nodes.Contains (objs[u] as XNode.Node)) graph.nodes.Add(objs[u] as XNode.Node);
+                    if (!graph.nodes.Contains (objs[u] as ProcessItem)) graph.nodes.Add(objs[u] as ProcessItem);
                 }
             }
         }

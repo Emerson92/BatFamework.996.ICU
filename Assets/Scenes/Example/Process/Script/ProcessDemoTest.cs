@@ -11,7 +11,11 @@ namespace THEDARKKNIGHT.Example
     {
 
         ProcessDemo ProcessControl;
-
+#if UNITY_EDITOR
+        public TextAsset text;
+#else
+        private TextAsset text;
+#endif
         GameObject PlayerAreaTwo { get; set; }
         GameObject PlayerAreaOne { get; set; }
         GameObject PlayerAreaThree { get; set; }
@@ -23,7 +27,9 @@ namespace THEDARKKNIGHT.Example
         void Start()
         {
             BInputOperateEngine.Instance();
-            TextAsset text = Resources.Load<TextAsset>("Test\\ProcessDemo\\ProcessConfig");
+#if !UNITY_EDITOR
+            text = Resources.Load<TextAsset>("Test\\ProcessDemo\\ProcessConfig\\NormalProcess\\ProcessConfig");
+#endif
             ProcessControl = new ProcessDemo();
             ProcessControl.AddProcessUnitByJson(text.text);
             ProcessControl.SetProcessUnitStartCallback(ProcessUnitStart);

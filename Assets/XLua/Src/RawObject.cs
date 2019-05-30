@@ -16,6 +16,13 @@ namespace XLua
 
 namespace XLua.Cast
 {
+    public class IEnumerator : Any<System.Collections.IEnumerator>
+    {
+        public IEnumerator(System.Collections.IEnumerator i) : base(i)
+        {
+        }
+    }
+
     public class Any<T> : RawObject
     {
         T mTarget;

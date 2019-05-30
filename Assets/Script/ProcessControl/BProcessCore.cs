@@ -5,6 +5,7 @@ using THEDARKKNIGHT.Log;
 using THEDARKKNIGHT.ProcessCore.DataStruct;
 using THEDARKKNIGHT.ProcessCore.Graph.Json;
 using THEDARKKNIGHT.ProcessCore.Interface;
+using THEDARKKNIGHT.ProcessCore.Lua;
 using UnityEngine;
 namespace THEDARKKNIGHT.ProcessCore
 {
@@ -83,17 +84,34 @@ namespace THEDARKKNIGHT.ProcessCore
             for (int i = 0; i < target.ProcessList.Count;i++) {
                 T unit =  new BProcessUnit<K>() as T;
                 unit.SetUnitTagName(target.ProcessList[i].name);
-                target.ProcessList[i].SubProcessList.ForEach((SubProcess p)=> {
-                    try
-                    {
-                        Type t = Type.GetType(p.Namespace + "." + p.ClassName);
-                        K item = Activator.CreateInstance(t, p.Nickname) as BProcessItem as K;
-                        unit.AddItem(item);
-                    }
-                    catch (Exception ex) {
-                        BLog.Instance().Error(ex.Message);
-                    }
-                });
+                if (target.ProcessList[i].IsLuaScript)
+                {
+                    target.ProcessList[i].SubLuaProcessList.ForEach((SubLuaProcess p) => {
+                        try
+                        {
+                            K item = new LuaBProcessItem(p.UrlPath,p.Nickname) as K;
+                            unit.AddItem(item);
+                        }
+                        catch (Exception ex)
+                        {
+                            BLog.Instance().Error(ex.Message);
+                        }
+                    });
+                }
+                else {
+                    target.ProcessList[i].SubProcessList.ForEach((SubProcess p) => {
+                        try
+                        {
+                            Type t = Type.GetType(p.Namespace + "." + p.ClassName);
+                            K item = Activator.CreateInstance(t, p.Nickname) as BProcessItem as K;
+                            unit.AddItem(item);
+                        }
+                        catch (Exception ex)
+                        {
+                            BLog.Instance().Error(ex.Message);
+                        }
+                    });
+                }
                 if (string.IsNullOrEmpty(target.ProcessList[i].BranchID))
                 {
                     AddProcessUnit(unit);
