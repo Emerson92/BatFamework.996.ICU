@@ -5,33 +5,26 @@
 -- Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
 local Self = nil
-local PlayerTwo = nil
-local util = require 'xlua.util'
-local yield_return = (require 'cs_coroutine').yield_return
-local DelayToExcuteFinish = coroutine.create(function()
-    print('coroutine start!')
-    yield_return(CS.UnityEngine.WaitForSeconds(8))
-	PlayerTwo:GetComponent("Rotate").IsNeedRotate = false;
-	Self:ProcessFinish();
-end)
+
+local PlayerSix = nil
 
 function AssetInit(data,target)
-    print("lua AssetInit")
-	local Player = CS.UnityEngine.Resources.Load(CS.THEDARKKNIGHT.ConstDefine.BFameWorkPathDefine.BFameResourceTestProcessPath .. "/PlayerTwo_1")
-	PlayerTwo = CS.UnityEngine.GameObject.Instantiate(Player)
+    print("lua AssetInit"..target.TaskName)
+	local playSix = CS.UnityEngine.Resources.Load(CS.THEDARKKNIGHT.ConstDefine.BFameWorkPathDefine.BFameResourceTestProcessPath .. "/PlaySix")
+	PlayerSix = CS.UnityEngine.GameObject.Instantiate(playSix)
 	Self = target
 	Self:ReadyToExcute()
 end
 
 function DataInit(data,target)
-    print("lua DataInit")
-	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():AddListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,LeftPressCallbackPlayerTwoOne)
+    print("lua DataInit"..target.TaskName)
+	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():AddListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,LeftPressCallbackPlayerSix)
 end
 
 function Destory()
-    print("lua Destory PlayerTwo_1")
-	CS.UnityEngine.GameObject.Destroy(PlayerTwo)
-	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():RemoveListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,LeftPressCallbackPlayerTwoOne)
+    print("lua Destory PlayerSix")
+	CS.UnityEngine.GameObject.Destroy(PlayerSix)
+	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():RemoveListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,LeftPressCallbackPlayerSix)
 end
 
 function FixedUpdate()
@@ -50,13 +43,12 @@ function Update()
 
 end
 
-function LeftPressCallbackPlayerTwoOne(data)
-	print("LeftPressCallback PlayerTwo_1" )
+function LeftPressCallbackPlayerSix(data)
+	print("LeftPressCallback PlayerSix" )
     local packet = data;
-    if (packet.Info.CastGameObject == PlayerTwo)
+    if (packet.Info.CastGameObject == PlayerSix)
 	then
-		PlayerTwo:GetComponent("Rotate").IsNeedRotate = true;
-        assert(coroutine.resume(DelayToExcuteFinish))
+		Self:ProcessFinish()
     end
 	return nuil;
 end

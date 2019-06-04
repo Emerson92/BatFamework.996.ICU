@@ -4,34 +4,37 @@
 -- http://opensource.org/licenses/MIT
 -- Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-local Self = nil
-local PlayerTwo = nil
 local util = require 'xlua.util'
-local yield_return = (require 'cs_coroutine').yield_return
-local DelayToExcuteFinish = coroutine.create(function()
-    print('coroutine start!')
-    yield_return(CS.UnityEngine.WaitForSeconds(8))
-	PlayerTwo:GetComponent("Rotate").IsNeedRotate = false;
-	Self:ProcessFinish();
-end)
+
+local Self = nil
+
+local PlayerFive = nil
+
+local PlayBody = nil
+
+
+local DelayToExcuteFinish = util.cs_generator(function()
+		coroutine.yield(CS.UnityEngine.WaitForSeconds(8))
+		Self:ProcessFinish()
+	end)
 
 function AssetInit(data,target)
-    print("lua AssetInit")
-	local Player = CS.UnityEngine.Resources.Load(CS.THEDARKKNIGHT.ConstDefine.BFameWorkPathDefine.BFameResourceTestProcessPath .. "/PlayerTwo_1")
-	PlayerTwo = CS.UnityEngine.GameObject.Instantiate(Player)
-	Self = target
+    print("lua AssetInit"..target.TaskName)
+	local playerFiveGB = CS.UnityEngine.Resources.Load(CS.THEDARKKNIGHT.ConstDefine.BFameWorkPathDefine.BFameResourceTestProcessPath .. "/PlayerFive")
+	PlayerFive = CS.UnityEngine.GameObject.Instantiate(playerFiveGB)
+	Self = target	
 	Self:ReadyToExcute()
 end
 
 function DataInit(data,target)
-    print("lua DataInit")
-	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():AddListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,LeftPressCallbackPlayerTwoOne)
+    print("lua DataInit"..target.TaskName)
+	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():AddListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,LeftPressCallbackPlayerFive)
 end
 
 function Destory()
-    print("lua Destory PlayerTwo_1")
-	CS.UnityEngine.GameObject.Destroy(PlayerTwo)
-	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():RemoveListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,LeftPressCallbackPlayerTwoOne)
+    print("lua Destory")
+	CS.UnityEngine.GameObject.Destroy(PlayerFive)
+	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():RemoveListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,LeftPressCallbackPlayerFive)
 end
 
 function FixedUpdate()
@@ -50,17 +53,33 @@ function Update()
 
 end
 
-function LeftPressCallbackPlayerTwoOne(data)
-	print("LeftPressCallback PlayerTwo_1" )
+function LeftPressCallbackPlayerFive(data)
+	print("LeftPressCallback PlayerFive" )
     local packet = data;
-    if (packet.Info.CastGameObject == PlayerTwo)
+    if (packet.Info.CastGameObject == PlayerFive)
 	then
-		PlayerTwo:GetComponent("Rotate").IsNeedRotate = true;
-        assert(coroutine.resume(DelayToExcuteFinish))
+		PlayFiveAddRigidbody()
     end
 	return nuil;
 end
 
+function PlayFiveAddRigidbody()
+	print("PlayerFive.transform.childCount :"..PlayerFive.transform.childCount)
+	for i = 0,PlayerFive.transform.childCount-1 do
+		local child = PlayerFive.transform:GetChild(i).gameObject	
+		if (child.name ~= "Option") 
+		then
+			print("child.name :"..child.name)
+			child:AddComponent(typeof(CS.UnityEngine.Rigidbody))
+			local collider = child:GetComponent(typeof(CS.UnityEngine.Collider))
+			if(collider ~= nil)
+			then
+				collider.enabled = true
+			end
+		end
+	end
+	Self.mono:StartCoroutine(DelayToExcuteFinish)
+end
 
 
 

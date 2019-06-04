@@ -32,8 +32,8 @@ namespace THEDARKKNIGHT.Example
 
         public override void AssetInit(object data)
         {
-            GameObject playerTwo_1 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayerThree_1") as GameObject;
-            PlayerCalabash = GameObject.Instantiate(playerTwo_1);
+            GameObject playerThree_1 = Resources.Load(BFameWorkPathDefine.BFameResourceTestProcessPath + "/PlayerThree_1") as GameObject;
+            PlayerCalabash = GameObject.Instantiate(playerThree_1);
             Calabash =  PlayerCalabash.transform.Find("Calabash");
             ReadyToExcute();
         }

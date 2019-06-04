@@ -83,7 +83,7 @@ namespace THEDARKKNIGHT.ProcessCore
             ProcessJson target = JsonUtility.FromJson<ProcessJson>(data);
             for (int i = 0; i < target.ProcessList.Count;i++) {
                 T unit =  new BProcessUnit<K>() as T;
-                unit.SetUnitTagName(target.ProcessList[i].name);
+                unit.SetUnitTagName(target.ProcessList[i].Name);
                 if (target.ProcessList[i].IsLuaScript)
                 {
                     target.ProcessList[i].SubLuaProcessList.ForEach((SubLuaProcess p) => {

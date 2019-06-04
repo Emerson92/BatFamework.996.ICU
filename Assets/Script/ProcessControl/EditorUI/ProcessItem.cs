@@ -14,7 +14,10 @@ namespace THEDARKKNIGHT.ProcessCore.Graph {
 
         [SerializeField, SetProperty("RedefineNodeProproty")]
         public string BranchID = null;
-        
+
+        [SerializeField]
+        public string[] ParBranchID;
+
         [SerializeField]
         public string[] SubBranchID;
 

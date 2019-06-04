@@ -200,8 +200,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Hi ! Clicking me and I will move a short distance,and when this animition
-    finish you will jump to Play Area Two.
+  m_Text: Hi ! there,process display is over.you can play it again.
 --- !u!114 &114301048489079768
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -44,22 +44,10 @@ namespace THEDARKKNIGHT.Example {
             switch (name)
             {
                 case "PlayerOneUnit":
-                    break;
                 case "PlayerTwoUnit":
-                    break;
                 case "PlayerThreeUnit":
-                    if ((string)data == "B")
-                    {
-                        ProcessControl.StartProcess();
-                        return false;
-                    }
-                    break;
                 case "PlayerFourUnit":
-                    {
-                        ProcessControl.StartProcess();
-                        return false;
-                    }
-                    break;
+                      break;
             }
             return true;
         }

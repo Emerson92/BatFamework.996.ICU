@@ -50,7 +50,6 @@ namespace THEDARKKNIGHT.Example
                     child.gameObject.AddComponent<Rigidbody>();
                     child.GetComponent<Collider>().enabled = true;
                 }
-
             }
             mono.StartCoroutine(DelayToExcuteFinish());
         }

@@ -13,7 +13,9 @@ namespace THEDARKKNIGHT.ProcessCore.Graph.Json {
     [Serializable]
     public class ProcessUnit {
 
-        public string name;
+        public string Name;
+
+        public Vector2 Pos;
 
         public bool IsLuaScript;
 
@@ -26,6 +28,8 @@ namespace THEDARKKNIGHT.ProcessCore.Graph.Json {
         public string BranchParentName;
 
         public string[] SubBranchID;
+
+        public string[] ParBranchID;
     }
 
     [Serializable]

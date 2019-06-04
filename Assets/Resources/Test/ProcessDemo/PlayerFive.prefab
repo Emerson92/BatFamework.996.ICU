@@ -198,8 +198,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4396101911539116}
-  - component: {fileID: 65087786079101102}
-  - component: {fileID: 65473361164780544}
+  - component: {fileID: 65578976550160772}
   m_Layer: 0
   m_Name: PlayerFive
   m_TagString: Untagged
@@ -1047,7 +1046,7 @@ MeshCollider:
   m_GameObject: {fileID: 1125995009071710}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Convex: 1
   m_CookingOptions: 14
@@ -1061,7 +1060,7 @@ MeshCollider:
   m_GameObject: {fileID: 1799792625670614}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Convex: 1
   m_CookingOptions: 14
@@ -1075,7 +1074,7 @@ MeshCollider:
   m_GameObject: {fileID: 1065091743751598}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Convex: 1
   m_CookingOptions: 14
@@ -1089,7 +1088,7 @@ MeshCollider:
   m_GameObject: {fileID: 1302616013514114}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Convex: 1
   m_CookingOptions: 14
@@ -1103,7 +1102,7 @@ MeshCollider:
   m_GameObject: {fileID: 1182313208475412}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Convex: 1
   m_CookingOptions: 14
@@ -1117,7 +1116,7 @@ MeshCollider:
   m_GameObject: {fileID: 1332786900028470}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Convex: 1
   m_CookingOptions: 14
@@ -1131,7 +1130,7 @@ MeshCollider:
   m_GameObject: {fileID: 1872022964893148}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Convex: 1
   m_CookingOptions: 14
@@ -1145,24 +1144,12 @@ MeshCollider:
   m_GameObject: {fileID: 1906742190505710}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Convex: 1
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!65 &65087786079101102
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1725430340943328}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 2, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &65175588555039800
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -1183,11 +1170,23 @@ BoxCollider:
   m_GameObject: {fileID: 1350912011317390}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!65 &65473361164780544
+--- !u!65 &65494811651545816
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1754113271886624}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &65578976550160772
 BoxCollider:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1197,20 +1196,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.1746984, y: 2.2978163, z: 2.479538}
-  m_Center: {x: -0.017484426, y: 0.14890826, z: -0.20614243}
---- !u!65 &65494811651545816
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1754113271886624}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 2, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 3.1078563, z: 1.1430578}
+  m_Center: {x: 0, y: -0.16551709, z: -0.07152891}
 --- !u!65 &65836975194844486
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -1231,7 +1218,7 @@ BoxCollider:
   m_GameObject: {fileID: 1834337042440508}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}

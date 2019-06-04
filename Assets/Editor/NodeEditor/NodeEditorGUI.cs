@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using THEDARKKNIGHT.ProcessCore.Graph;
 using UnityEditor;
@@ -14,6 +15,8 @@ namespace XNodeEditor {
 
         GUIStyle LableSytle;
         string OutputPath = null;
+
+        string FileName = null;
 
         private void OnGUI() {
             Event e = Event.current;
@@ -41,9 +44,7 @@ namespace XNodeEditor {
         {
             Rect windArea = current.position;
             CreateStyle();
-
             DrawPathArea();
-
             DrawButtonGroup(windArea);
         }
 
@@ -63,8 +64,12 @@ namespace XNodeEditor {
             if (GUILayout.Button("LoadFile", GUILayout.Width(80f), GUILayout.Height(20f)))
             {
                 OutputPath = EditorUtility.OpenFilePanel("Choose your Config", "", "");
+                if (!string.IsNullOrEmpty(OutputPath)) {
+                    FileName = Path.GetFileNameWithoutExtension(OutputPath);
+                    ReLoadConfig(OutputPath);
+                }
             }
-            GUILayout.Label("Path: " + OutputPath, LableSytle, GUILayout.MaxWidth(450));
+            GUILayout.Label("FileName: " + FileName, LableSytle, GUILayout.MaxWidth(450));
             EditorGUILayout.BeginHorizontal(GUILayout.Width(120));
             EditorGUILayout.LabelField("LuaScript:", LableSytle, GUILayout.Width(80));
             ProcessGraph.IsLuaScript = EditorGUILayout.Toggle(ProcessGraph.IsLuaScript);

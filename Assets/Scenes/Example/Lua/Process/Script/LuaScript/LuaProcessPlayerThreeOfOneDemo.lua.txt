@@ -5,12 +5,31 @@
 -- Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
 local Self = nil
-local PlayerThree_1 = nil
-local Player
+
+local Calabash = nil
+
+local Tick = 0
+
+local IsTransform = false
+
+local targetRotation = CS.UnityEngine.Vector3 (0,0,0)
+
+local targetScale = CS.UnityEngine.Vector3(10,10,10)
+
+local util = require 'xlua.util'
+
+local DelayToExcuteFinish = util.cs_generator(function()
+		coroutine.yield(CS.UnityEngine.WaitForSeconds(5))
+		Self:ProcessFinish()
+	end)
+
+local PlayerCalabash = nil
+
 function AssetInit(data,target)
     print("lua AssetInit : " .. target.TaskName)
-	Player = CS.UnityEngine.Resources.Load(CS.THEDARKKNIGHT.ConstDefine.BFameWorkPathDefine.BFameResourceTestProcessPath .. "/PlayerThree_1")
-	PlayerThree_1 = CS.UnityEngine.GameObject.Instantiate(Player)
+	local playerThree_1  = CS.UnityEngine.Resources.Load(CS.THEDARKKNIGHT.ConstDefine.BFameWorkPathDefine.BFameResourceTestProcessPath .. "/PlayerThree_1")
+	PlayerCalabash = CS.UnityEngine.GameObject.Instantiate(playerThree_1)
+	Calabash =  PlayerCalabash.transform:Find("Calabash")
 	Self = target
 	Self:ReadyToExcute()
 end
@@ -22,7 +41,8 @@ end
 
 function Destory()
     print("lua Destory")
-	CS.UnityEngine.GameObject.Destroy(PlayerThree_1)
+	CS.UnityEngine.GameObject.Destroy(Calabash)
+	CS.UnityEngine.GameObject.Destroy(PlayerCalabash)
 	CS.THEDARKKNIGHT.EventSystem.BEventManager:Instance():RemoveListener(CS.THEDARKKNIGHT.EventDefine.BatEventDefine.LEFTPRESSEVENT,LeftPressCallbackPlayThreeOne)
 end
 
@@ -39,15 +59,26 @@ function StopExcute()
 end
 
 function Update()
-
+	if (IsTransform) 
+		then
+			Tick = Tick + CS.UnityEngine.Time.deltaTime
+			IsTransform = true
+			Calabash.rotation = CS.UnityEngine.Quaternion.Euler(CS.UnityEngine.Vector3.Lerp(Calabash.rotation.eulerAngles, targetRotation, Tick/5))
+			Calabash.localScale = CS.UnityEngine.Vector3.Lerp(Calabash.localScale, targetScale, Tick / 5);
+			if (Calabash.rotation == CS.UnityEngine.Quaternion.Euler(targetRotation) and Calabash.localScale == targetScale) 
+			then
+					IsTransform = false
+					Calabash.gameObject:AddComponent(typeof(CS.UnityEngine.Rigidbody))
+			        Self.mono:StartCoroutine(DelayToExcuteFinish)
+			end
+    end
 end
 
 function LeftPressCallbackPlayThreeOne(data)
     local packet = data;
-    if (packet.Info.CastGameObject == PlayerThree_1)
+    if (packet.Info.CastGameObject == PlayerCalabash)
 	then
-		TargetScale = PlayerThree_1.transform.localScale * 0.5
-        StartToExcute = true;
+		IsTransform = true;
     end
 	return nuil;
 end
