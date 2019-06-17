@@ -21,13 +21,12 @@ namespace THEDARKKNIGHT.ProcessCore
         }
 
         /// <summary>
-        /// 
+        /// Add data to Process Tree
         /// </summary>
         public void AddProcessUnitByJson(string data)
         {
             ProcesTreeJson target = JsonUtility.FromJson<ProcesTreeJson>(data);
             LoopAddTheNode(target, processTree.RootTree);
-
         }
 
         private void LoopAddTheNode(ProcesTreeJson target, BProcessUnit<K> parent)
@@ -58,7 +57,6 @@ namespace THEDARKKNIGHT.ProcessCore
                         Type t = Type.GetType(p.Namespace + "." + p.ClassName);
                         K item = Activator.CreateInstance(t, p.Nickname) as BProcessItem as K;
                         unit.AddItem(item);
-                        
                     }
                     catch (Exception ex)
                     {
@@ -67,11 +65,9 @@ namespace THEDARKKNIGHT.ProcessCore
                 });
             }
             processTree.AddNewTree(parent, unit);
-            for (int i = 0; 0 < target.SubTrees.Count; i++)
+            for (int i = 0; i < target.SubTrees.Count; i++)
             {
-                T subUnit = new BProcessUnit<K>() as T;
-                unit.SetUnitTagName(target.SubTrees[i].Name);
-                LoopAddTheNode(target, unit);
+                LoopAddTheNode(target.SubTrees[i], unit);
             }
         }
 
@@ -119,7 +115,7 @@ namespace THEDARKKNIGHT.ProcessCore
         /// <param name="branch"></param>
         public override void MoveToNext(string branch)
         {
-            if(string.IsNullOrEmpty(branch) )
+            if(!string.IsNullOrEmpty(branch) )
                 processTree.MoveToNext(branch);
         }
     }

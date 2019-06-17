@@ -1,0 +1,75 @@
+﻿{
+	"Name": "PlayerOneUnit",
+	"IsLuaScript": false,
+	"SubProcessList": [{
+		"Nickname": "PlayerOne",
+		"Namespace": "THEDARKKNIGHT.Example",
+		"ClassName": "ProcessTreePlayerOneDemo"
+	}],
+	"SubLuaProcessList": [],
+	"SubTrees": [{
+		"Name": "PlayerTwoUnit",
+		"IsLuaScript": false,
+		"SubProcessList": [{
+			"Nickname": "PlayerTwo",
+			"Namespace": "THEDARKKNIGHT.Example",
+			"ClassName": "ProcessTreePlayerTwoDemo"
+		}],
+		"SubLuaProcessList": [],
+		"SubTrees": [{
+			"Name": "PlayerThreeUnit",
+			"IsLuaScript": false,
+			"SubProcessList": [{
+				"Nickname": "PlayerThreeOfOne",
+				"Namespace": "THEDARKKNIGHT.Example",
+				"ClassName": "ProcessTreePlayerThreeOfOneDemo"
+			}, {
+				"Nickname": "PlayerThreeOfTwo",
+				"Namespace": "THEDARKKNIGHT.Example",
+				"ClassName": "ProcessTreePlayerThreeOfTwoDemo"
+			}],
+			"SubLuaProcessList": [],
+			"SubTrees": [{
+				"Name": "PlayerFiveUnit",
+				"IsLuaScript": false,
+				"SubProcessList": [{
+					"Nickname": "PlayerFive",
+					"Namespace": "THEDARKKNIGHT.Example",
+					"ClassName": "ProcessTreePlayerFiveDemo"
+				}],
+				"SubLuaProcessList": [],
+				"SubTrees": [{
+					"Name": "PlayerSixTwoUnit",
+					"IsLuaScript": false,
+					"SubProcessList": [{
+						"Nickname": "PlayerSix",
+						"Namespace": "THEDARKKNIGHT.Example",
+						"ClassName": "ProcessTreePlayerSixDemo"
+					}],
+					"SubLuaProcessList": [],
+					"SubTrees": []
+				}]
+			}]
+		}, {
+			"Name": "PlayerFourUnit",
+			"IsLuaScript": false,
+			"SubProcessList": [{
+				"Nickname": "PlayerFour",
+				"Namespace": "THEDARKKNIGHT.Example",
+				"ClassName": "ProcessTreePlayerFourDemo"
+			}],
+			"SubLuaProcessList": [],
+			"SubTrees": [{
+				"Name": "PlayerSixOneUnit",
+				"IsLuaScript": false,
+				"SubProcessList": [{
+					"Nickname": "PlayerSix",
+					"Namespace": "THEDARKKNIGHT.Example",
+					"ClassName": "ProcessTreePlayerSixDemo"
+				}],
+				"SubLuaProcessList": [],
+				"SubTrees": []
+			}]
+		}]
+	}]
+}

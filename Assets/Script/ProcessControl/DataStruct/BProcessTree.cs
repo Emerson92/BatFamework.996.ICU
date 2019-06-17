@@ -44,6 +44,7 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
             else {
                 BTree<T, K> subTree = new BTree<T, K>(null, value);
                 rootTree = subTree;
+                currentTree = rootTree;
             }
         }
 
@@ -65,6 +66,7 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
             }
             else {
                 rootTree = new BTree<T, K>(null, value);
+                currentTree = rootTree;
             }
         }
 
@@ -96,7 +98,7 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
         /// </summary>
         /// <returns></returns>
         public BProcessUnit<K> GetCurrentUnit() {
-            return currentTree.Value;
+            return currentTree != null ? currentTree.Value : null;
         }
 
 
