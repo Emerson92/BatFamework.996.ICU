@@ -463,14 +463,20 @@ namespace XNodeEditor {
                         //Check if port rect is available
                         if (!portConnectionPoints.ContainsKey(input)) continue;
                         Rect r = GridToWindowRectNoClipped(portConnectionPoints[input]);
-                        if (r.Contains(mousePos)) hoveredPort = input;
+                        if (r.Contains(mousePos)) {
+                            hoveredPort = input;
+                        }
+                       
                     }
                     //Check all output ports
                     foreach (XNode.NodePort output in node.Outputs) {
                         //Check if port rect is available
                         if (!portConnectionPoints.ContainsKey(output)) continue;
                         Rect r = GridToWindowRectNoClipped(portConnectionPoints[output]);
-                        if (r.Contains(mousePos)) hoveredPort = output;
+                        if (r.Contains(mousePos)) {
+                            hoveredPort = output;
+                        }
+                        
                     }
                 }
 

@@ -80,7 +80,7 @@ namespace XNodeEditor
             byte[] data = BFileSystem.Instance().ReadFileFromDisk(path);
             string config = Encoding.UTF8.GetString(data);
             Debug.Log("config :" + config);
-            XNode.NodeGraph nodeGraph = new ProcessGraph();
+            XNode.NodeGraph nodeGraph = ScriptableObject.CreateInstance<ProcessGraph>();
             List<ProcessItem> nodes = new List<ProcessItem>();
             ProcessJson configData = JsonUtility.FromJson<ProcessJson>(config);
             /////Start to create new nodes
@@ -152,17 +152,16 @@ namespace XNodeEditor
                 }
             }
             nodeGraph.nodes = nodes;
-            ////TODO 刷新图像
             this.graph = nodeGraph;
         }
 
         private ProcessItem[] FindNextNodes(List<ProcessItem> nodes, string[] parBranchID)
         {
             ProcessItem[] startNodes = new ProcessItem[parBranchID.Length];
-            for (int i = 0; i < parBranchID.Length; i++)
+            for (int i = 0; i < parBranchID.Length-1; i++)
             {
                 string branchID = parBranchID[i];
-                for (int j =0; j < nodes.Count; j++)
+                for (int j = 0; j < nodes.Count; j++)
                 {
                     if (nodes[j].BranchID == branchID)
                     {
@@ -175,13 +174,16 @@ namespace XNodeEditor
 
         private ProcessItem FindNextNode(List<ProcessItem> nodes, int index)
         {
+            Debug.Log("FindNextNode Cout:"+ nodes.Count);
             int tempIndex = index;
-            while (tempIndex > 0 && !string.IsNullOrEmpty(nodes[tempIndex].BranchID))
+            while (tempIndex > 0 && tempIndex + 1 < nodes.Count && !string.IsNullOrEmpty(nodes[tempIndex+1].BranchID))
             {
+                Debug.Log("FindNextNode Node Name:" + nodes[tempIndex].name + " tempIndex : "+ tempIndex);
                 tempIndex += 1;
             }
+            Debug.Log(tempIndex);
             if (index != tempIndex)
-                return nodes[tempIndex];
+                return tempIndex >= 0 ? nodes[tempIndex] : nodes[0];
             else
                 return null;
         }
@@ -195,9 +197,9 @@ namespace XNodeEditor
         private ProcessItem[] FindLastNodes(List<ProcessItem> processList,string[] parBranchID)
         {
             ProcessItem[] endNodes = new ProcessItem[parBranchID.Length];
-            for (int i = 0; i < parBranchID.Length;i++) {
+            for (int i = 0; i < parBranchID.Length-1;i++) {
                 string branchID = parBranchID[i];
-                for (int j = processList.Count; j > 0; j--) {
+                for (int j = processList.Count-1; j > 0; j--) {
                     if (processList[j].BranchID == branchID) {
                         endNodes[i] = processList[j];
                     }
@@ -206,15 +208,15 @@ namespace XNodeEditor
             return endNodes;
         }
 
-        private ProcessItem FindLastNode(List<ProcessItem> processList, int index)
+        private ProcessItem FindLastNode(List<ProcessItem> nodes, int index)
         {
             int tempIndex = index;
-            while (tempIndex > 0 && string.IsNullOrEmpty(processList[tempIndex].BranchID))
+            while (tempIndex > 0 && string.IsNullOrEmpty(nodes[tempIndex-1].BranchID))
             {
                 tempIndex -= 1;
             }
             if (index != tempIndex)
-                return processList[tempIndex];
+                return tempIndex >= 0 ? nodes[tempIndex] : nodes[0];
             else
                 return null;
         }
@@ -383,7 +385,6 @@ namespace XNodeEditor
                 }
                 else
                 {
-
                     List<SubProcess> subProcessList = new List<SubProcess>();
                     for (int j = 0; j < nextNode.ProcessItems.Length; j++)
                     {
@@ -395,10 +396,12 @@ namespace XNodeEditor
                     }
                     unit.SubProcessList = subProcessList;
                 }
-                unit.BranchID = nextNode.BranchID;
+                unit.BranchID         = nextNode.BranchID;
                 unit.BranchParentName = nextNode.BranchParent;
-                unit.SubBranchID = nextNode.SubBranchID;
-                unit.Name = nextNode.name;
+                unit.SubBranchID      = nextNode.SubBranchID;
+                unit.ParBranchID      = nextNode.ParBranchID;
+                unit.Pos              = nextNode.position;
+                unit.Name             = nextNode.name;
                 dataArray.Add(unit);
                 if (nextNode.OutPortProcess != null)
                 {

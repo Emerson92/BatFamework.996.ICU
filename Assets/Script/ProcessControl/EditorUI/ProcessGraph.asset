@@ -59,12 +59,14 @@ MonoBehaviour:
       _connectionType: 0
       _dynamic: 0
   EnterProcess:
-  - {fileID: 0}
+  - {fileID: 114146675187461154}
   BranchID: 2
+  ParBranchID: []
   SubBranchID: []
   BranchParent: PlayerTwoUnit
   OutPortProcess:
-  - {fileID: 0}
+  - {fileID: 114133134168579100}
+  IsLuaScript: 0
   ProcessItems:
   - Nickname: PlayerThreeOfOne
     Classname: ProcessPlayerThreeOfOneDemo
@@ -72,6 +74,11 @@ MonoBehaviour:
   - Nickname: PlayerThreeOfTwo
     Classname: ProcessPlayerThreeOfTwoDemo
     Namespace: THEDARKKNIGHT.Example
+  LuaProcessItems:
+  - Nickname: LuaProcessPlayerThreeOfOneDemo.lua.txt
+    LuaPath: D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/Process/Script/LuaScript/LuaProcessPlayerThreeOfOneDemo.lua.txt
+  - Nickname: LuaProcessPlayerThreeOfTwoDemo.lua.txt
+    LuaPath: D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/Process/Script/LuaScript/LuaProcessPlayerThreeOfTwoDemo.lua.txt
 --- !u!114 &114090981356320946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,7 +91,7 @@ MonoBehaviour:
   m_Name: PlayerOneUnit
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1448, y: -152}
+  position: {x: -1432, y: -136}
   ports:
     keys:
     - EnterProcess
@@ -99,7 +106,7 @@ MonoBehaviour:
       _connectionType: 0
       _dynamic: 0
     - _fieldName: OutPortProcess
-      _node: {fileID: 114146675187461154}
+      _node: {fileID: 114090981356320946}
       _typeQualifiedName: THEDARKKNIGHT.ProcessCore.Graph.ProcessItem[], Assembly-CSharp,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       connections:
@@ -112,14 +119,19 @@ MonoBehaviour:
   EnterProcess:
   - {fileID: 0}
   BranchID: 
+  ParBranchID: []
   SubBranchID: []
   BranchParent: 
   OutPortProcess:
-  - {fileID: 0}
+  - {fileID: 114146675187461154}
+  IsLuaScript: 0
   ProcessItems:
   - Nickname: PlayerOne
     Classname: ProcessPlayerOneDemo
     Namespace: THEDARKKNIGHT.Example
+  LuaProcessItems:
+  - Nickname: LuaProcessPlayerOneDemo.lua.txt
+    LuaPath: D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/Process/Script/LuaScript/LuaProcessPlayerOneDemo.lua.txt
 --- !u!114 &114117140449573038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,16 +173,21 @@ MonoBehaviour:
       _connectionType: 0
       _dynamic: 0
   EnterProcess:
-  - {fileID: 0}
-  BranchID: 
+  - {fileID: 114146675187461154}
+  BranchID: 1
+  ParBranchID: []
   SubBranchID: []
-  BranchParent: 
+  BranchParent: PlayerTwoUnit
   OutPortProcess:
-  - {fileID: 0}
+  - {fileID: 114654767114814532}
+  IsLuaScript: 0
   ProcessItems:
   - Nickname: PlayerFour
     Classname: ProcessPlayerFourDemo
     Namespace: THEDARKKNIGHT.Example
+  LuaProcessItems:
+  - Nickname: LuaProcessPlayerFourDemo.lua.txt
+    LuaPath: D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/Process/Script/LuaScript/LuaProcessPlayerFourDemo.lua.txt
 --- !u!114 &114133134168579100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,7 +200,7 @@ MonoBehaviour:
   m_Name: PlayerFiveUnit
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -200, y: 184}
+  position: {x: -200, y: 216}
   ports:
     keys:
     - EnterProcess
@@ -212,16 +229,21 @@ MonoBehaviour:
       _connectionType: 0
       _dynamic: 0
   EnterProcess:
-  - {fileID: 0}
+  - {fileID: 114066790061191184}
   BranchID: 2
+  ParBranchID: []
   SubBranchID: []
   BranchParent: PlayerTwoUnit
   OutPortProcess:
-  - {fileID: 0}
+  - {fileID: 114654767114814532}
+  IsLuaScript: 0
   ProcessItems:
   - Nickname: PlayerFive
     Classname: ProcessPlayerFiveDemo
     Namespace: THEDARKKNIGHT.Example
+  LuaProcessItems:
+  - Nickname: LuaProcessPlayerFiveDemo.lua.txt
+    LuaPath: D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/Process/Script/LuaScript/LuaProcessPlayerFiveDemo.lua.txt
 --- !u!114 &114146675187461154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,7 +256,7 @@ MonoBehaviour:
   m_Name: PlayerTwoUnit
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -1048, y: -136}
+  position: {x: -984, y: -152}
   ports:
     keys:
     - EnterProcess
@@ -266,18 +288,24 @@ MonoBehaviour:
       _connectionType: 0
       _dynamic: 0
   EnterProcess:
-  - {fileID: 0}
+  - {fileID: 114090981356320946}
   BranchID: 
+  ParBranchID: []
   SubBranchID:
   - 1
   - 2
   BranchParent: 
   OutPortProcess:
-  - {fileID: 0}
+  - {fileID: 114117140449573038}
+  - {fileID: 114066790061191184}
+  IsLuaScript: 0
   ProcessItems:
   - Nickname: PlayerTwo
     Classname: ProcessPlayerTwoDemo
     Namespace: THEDARKKNIGHT.Example
+  LuaProcessItems:
+  - Nickname: LuaProcessPlayerTwoDemo.lua.txt
+    LuaPath: D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/Process/Script/LuaScript/LuaProcessPlayerTwoDemo.lua.txt
 --- !u!114 &114654767114814532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,13 +347,21 @@ MonoBehaviour:
       _connectionType: 0
       _dynamic: 0
   EnterProcess:
-  - {fileID: 0}
+  - {fileID: 114133134168579100}
+  - {fileID: 114117140449573038}
   BranchID: 
+  ParBranchID:
+  - 1
+  - 2
   SubBranchID: []
   BranchParent: 
   OutPortProcess:
   - {fileID: 0}
+  IsLuaScript: 0
   ProcessItems:
   - Nickname: PlayerSix
     Classname: ProcessPlayerSixDemo
     Namespace: THEDARKKNIGHT.Example
+  LuaProcessItems:
+  - Nickname: LuaProcessPlayerSixDemo.lua.txt
+    LuaPath: D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/Process/Script/LuaScript/LuaProcessPlayerSixDemo.lua.txt

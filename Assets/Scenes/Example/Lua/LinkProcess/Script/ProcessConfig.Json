@@ -1,0 +1,92 @@
+{
+  "ProcessList": [
+    {
+      "Name": "PlayerOneUnit",
+      "IsLuaScript": true,
+      "SubProcessList": [],
+      "SubLuaProcessList": [
+        {
+          "Nickname": "LuaProcessPlayerOneDemo.lua.txt",
+          "UrlPath": "D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/LinkProcess/Script/LuaScript/LuaProcessPlayerOneDemo.lua.txt"
+        }
+      ],
+      "BranchID": "",
+      "BranchParentName": "",
+      "SubBranchID": []
+    },
+    {
+      "Name": "PlayerTwoUnit",
+      "IsLuaScript": true,
+      "SubProcessList": [],
+      "SubLuaProcessList": [
+        {
+          "Nickname": "LuaProcessPlayerTwoDemo.lua.txt",
+          "UrlPath": "D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/LinkProcess/Script/LuaScript/LuaProcessPlayerTwoDemo.lua.txt"
+        }
+      ],
+      "BranchID": "",
+      "BranchParentName": "",
+      "SubBranchID": [ "1", "2" ]
+    },
+    {
+      "Name": "PlayerThreeUnit",
+      "IsLuaScript": true,
+      "SubProcessList": [],
+      "SubLuaProcessList": [
+        {
+          "Nickname": "LuaProcessPlayerThreeOfOneDemo.lua.txt",
+          "UrlPath": "D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/LinkProcess/Script/LuaScript/LuaProcessPlayerThreeOfOneDemo.lua.txt"
+        },
+        {
+          "Nickname": "LuaProcessPlayerThreeOfTwoDemo.lua.txt",
+          "UrlPath": "D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/LinkProcess/Script/LuaScript/LuaProcessPlayerThreeOfTwoDemo.lua.txt"
+        }
+      ],
+      "BranchID": "2",
+      "BranchParentName": "PlayerTwoUnit",
+      "SubBranchID": []
+    },
+    {
+      "Name": "PlayerFiveUnit",
+      "IsLuaScript": true,
+      "SubProcessList": [],
+      "SubLuaProcessList": [
+        {
+          "Nickname": "LuaProcessPlayerFiveDemo.lua.txt",
+          "UrlPath": "D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/LinkProcess/Script/LuaScript/LuaProcessPlayerFiveDemo.lua.txt"
+        }
+      ],
+      "BranchID": "2",
+      "BranchParentName": "PlayerTwoUnit",
+      "SubBranchID": []
+    },
+    {
+      "Name": "PlayerSixUnit",
+      "IsLuaScript": true,
+      "SubProcessList": [],
+      "SubLuaProcessList": [
+        {
+          "Nickname": "LuaProcessPlayerSixDemo.lua.txt",
+          "UrlPath": "D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/LinkProcess/Script/LuaScript/LuaProcessPlayerSixDemo.lua.txt"
+        }
+      ],
+      "BranchID": "",
+      "BranchParentName": "",
+      "SubBranchID": []
+    },
+    {
+      "Name": "PlayerFourUnit",
+      "IsLuaScript": true,
+      "SubProcessList": [],
+      "SubLuaProcessList": [
+        {
+          "Nickname": "LuaProcessPlayerFourDemo.lua.txt",
+          "UrlPath": "D:/LearnProject/BatFamework/BatFamework/Assets/Scenes/Example/Lua/LinkProcess/Script/LuaScript/LuaProcessPlayerFourDemo.lua.txt"
+        }
+      ],
+      "BranchID": "1",
+      "BranchParentName": "PlayerTwoUnit",
+      "SubBranchID": []
+    }
+  ]
+}
