@@ -7,18 +7,18 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
      *         Tree Data Struct
      *  
      * ************************************/
-    public class BProcessTree<T> where T : BProcessItem
+    public class BProcessTree<T,K> where T : BProcessUnit<K> where K : BProcessItem
     {
-        private BTree<T> rootTree;
+        private BTree<T,K> rootTree;
 
         /// <summary>
         /// Get the root of tree
         /// </summary>
-        public BProcessUnit<T> RootTree {
+        public BProcessUnit<K> RootTree {
             set {
                 if (rootTree == null)
                 {
-                    BTree<T> tree = new BTree<T>(null, value);
+                    BTree<T,K> tree = new BTree<T,K>(null, value);
                     rootTree = tree;
                 }
                 else {
@@ -26,20 +26,25 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
                 }
             }
             get {
-                return rootTree.Value;
+                return rootTree != null ? rootTree.Value : null;
             }
         }
 
-        private BTree<T> currentTree;
+        private BTree<T,K> currentTree;
 
         /// <summary>
         /// Add the new Tree node to the main Tree
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="value"></param>
-        public void AddNewTree(BProcessUnit<T> parent,BProcessUnit<T> value) {
+        public void AddNewTree(BProcessUnit<K> parent,BProcessUnit<K> value) {
             ////TODO Add the new Tree after the parent node
-            AddNewTree(parent.UnitTagName, value);
+            if (parent != null)
+                AddNewTree(parent.UnitTagName, value);
+            else {
+                BTree<T, K> subTree = new BTree<T, K>(null, value);
+                rootTree = subTree;
+            }
         }
 
         /// <summary>
@@ -47,14 +52,19 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
         /// </summary>
         /// <param name="unitTagName"></param>
         /// <param name="value"></param>
-        public void AddNewTree(string unitTagName, BProcessUnit<T> value) {
+        public void AddNewTree(string unitTagName, BProcessUnit<K> value) {
             ////TODO Add the new Tree after the parent node by the name
-            if (rootTree != null) {
-                BTree<T> result = GetBTressNode(unitTagName, rootTree);
-                if (result != null) {
-                    BTree<T> subTree = new BTree<T>(result, value);
+            if (rootTree != null)
+            {
+                BTree<T, K> result = GetBTressNode(unitTagName, rootTree);
+                if (result != null)
+                {
+                    BTree<T, K> subTree = new BTree<T, K>(result, value);
                     result.SubTrees.Add(subTree);
                 }
+            }
+            else {
+                rootTree = new BTree<T, K>(null, value);
             }
         }
 
@@ -62,7 +72,7 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
         /// move the index to the next node
         /// </summary>
         /// <param name="nextNode"></param>
-        public void MoveToNext(BProcessUnit<T> nextNode) {
+        public void MoveToNext(BProcessUnit<K> nextNode) {
             MoveToNext(nextNode.UnitTagName);
         }
 
@@ -85,7 +95,7 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
         /// get current unit
         /// </summary>
         /// <returns></returns>
-        public BProcessUnit<T> GetCurrentUnit() {
+        public BProcessUnit<K> GetCurrentUnit() {
             return currentTree.Value;
         }
 
@@ -102,10 +112,10 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
         /// </summary>
         /// <param name="unitName"></param>
         /// <returns></returns>
-        public BProcessUnit<T> FindNodeByName(string unitTagName) {
+        public BProcessUnit<K> FindNodeByName(string unitTagName) {
             if (rootTree != null)
             {
-                BTree<T> result = GetBTressNode(unitTagName, rootTree);
+                BTree<T,K> result = GetBTressNode(unitTagName, rootTree);
                 return result != null ? result.Value : null;
             }
             return null;
@@ -116,7 +126,7 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
         /// </summary>
         /// <param name="unitTagName"></param>
         /// <returns></returns>
-        private BTree<T> FindTreeNodeByName(string unitTagName) {
+        private BTree<T,K> FindTreeNodeByName(string unitTagName) {
             if (rootTree != null)
             {
                 return GetBTressNode(unitTagName,rootTree);
@@ -130,7 +140,7 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
         /// <param name="unitTagName"></param>
         /// <param name="tree"></param>
         /// <returns></returns>
-        private BTree<T> GetBTressNode(string unitTagName, BTree<T> tree)
+        private BTree<T,K> GetBTressNode(string unitTagName, BTree<T,K> tree)
         {
             if (tree.Value.UnitTagName == unitTagName)
             {
@@ -138,10 +148,10 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
             }
             else
             {
-                List<BTree<T>> SubTrees = tree.SubTrees;
+                List<BTree<T,K>> SubTrees = tree.SubTrees;
                 for (int i = 0; i < SubTrees.Count; i++)
                 {
-                    BTree <T> result = GetBTressNode(unitTagName, SubTrees[i]);
+                    BTree <T,K> result = GetBTressNode(unitTagName, SubTrees[i]);
                     if (result != null)
                         return result;
                     else
@@ -154,52 +164,52 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
         /// <summary>
         /// Tree Struct
         /// </summary>
-        private class BTree<T> where T : BProcessItem
+        private class BTree<T,K>  where T : BProcessUnit<K> where K : BProcessItem
         {
 
-            private BTree<T> parentTree;
+            private BTree<T,K> parentTree;
 
             /// <summary>
             ///  subTrees
             /// </summary>
-            private List<BTree<T>> subTrees = new List<BTree<T>>();
+            private List<BTree<T,K>> subTrees = new List<BTree<T,K>>();
 
-            private BProcessUnit<T> value;
+            private BProcessUnit<K> value;
 
 
-            public BTree<T> ParentTree {
+            public BTree<T,K> ParentTree {
 
                 get {
                     return parentTree;
                 }
             }
 
-            public BProcessUnit<T> Value {
+            public BProcessUnit<K> Value {
 
                 get {
                     return value;
                 }
             }
 
-            public List<BTree<T>> SubTrees {
+            public List<BTree<T,K>> SubTrees {
                 get {
                     return subTrees;
                 }
             }
 
-            public void SetParentTree(BTree<T> parent) {
+            public void SetParentTree(BTree<T,K> parent) {
                 this.parentTree = parent;
             }
 
-            public void SetValue(BProcessUnit<T> value) {
+            public void SetValue(BProcessUnit<K> value) {
                 this.value = value;
             }
 
-            public void SetSubTree(BTree<T> subTree) {
+            public void SetSubTree(BTree<T,K> subTree) {
                 subTrees.Add(subTree);
             }
 
-            public BTree (BTree<T> parent, BProcessUnit<T> value)
+            public BTree (BTree<T,K> parent, BProcessUnit<K> value)
             {
                 this.parentTree = parent;
                 this.value = value;

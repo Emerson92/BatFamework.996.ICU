@@ -7,7 +7,13 @@ namespace THEDARKKNIGHT.ProcessCore {
     public class BProcessUnit<T> where T : BProcessItem
     {
 
-        public string UnitTagName;
+        private string unitTagName;
+
+        public string UnitTagName {
+            get {
+                return unitTagName;
+            }
+        }
 
         /// <summary>
         /// it is a list which contain some Parallel process items;
@@ -25,7 +31,7 @@ namespace THEDARKKNIGHT.ProcessCore {
         }
 
         public void SetUnitTagName(string name) {
-            this.UnitTagName = name;
+            this.unitTagName = name;
         }
 
         public void AddItem(T item) {
