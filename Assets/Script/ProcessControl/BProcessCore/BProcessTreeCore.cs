@@ -13,10 +13,11 @@ namespace THEDARKKNIGHT.ProcessCore
     public class BProcessTreeCore<T, K> : BProcessCore<T, K> where T : BProcessUnit<K> where K : BProcessItem
     {
 
-        private BProcessTree<T,K> processTree;
+        private BProcessTree<T, K> processTree;
 
 
-        public BProcessTreeCore() {
+        public BProcessTreeCore()
+        {
             processTree = new BProcessTree<T, K>();
         }
 
@@ -71,7 +72,8 @@ namespace THEDARKKNIGHT.ProcessCore
             }
         }
 
-        public void AddProcess(BProcessUnit<K> parent, BProcessUnit<K> value) {
+        public void AddProcess(BProcessUnit<K> parent, BProcessUnit<K> value)
+        {
             processTree.AddNewTree(parent, value);
         }
 
@@ -88,7 +90,7 @@ namespace THEDARKKNIGHT.ProcessCore
         /// <param name="branch"></param>
         public override void FinishExcuteCallback(T currentNode, object data, string branch)
         {
-            
+
         }
 
         /// <summary>
@@ -115,8 +117,7 @@ namespace THEDARKKNIGHT.ProcessCore
         /// <param name="branch"></param>
         public override void MoveToNext(string branch)
         {
-            if(!string.IsNullOrEmpty(branch) )
-                processTree.MoveToNext(branch);
+            processTree.MoveToNext(branch);
         }
     }
 

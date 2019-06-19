@@ -88,14 +88,15 @@ namespace THEDARKKNIGHT.ProcessCore {
 
         private void AllTaskFinish(string branchName,object data)
         {
-            if (ProcessUnitFinishExcution != null)
-                ProcessUnitFinishExcution(data, branchName);
-            for (int i = 0; i < ProcessItem.Count; i++) {
+
+            for (int i = 0; i < ProcessItem.Count; i++)
+            {
                 ProcessItem[i].ProcessDestory();
                 ProcessItem[i].ProcessItemFinishExcution -= ProcessFinish;
                 ProcessItem[i].ProcessItemAssetAlready -= ProcessReady;
             }
-                
+            if (ProcessUnitFinishExcution != null)
+                ProcessUnitFinishExcution(data, branchName); 
         }
     }
 

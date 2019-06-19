@@ -83,14 +83,24 @@ namespace THEDARKKNIGHT.ProcessCore.DataStruct.Tree {
         /// </summary>
         /// <param name="nextUnitName"></param>
         public void MoveToNext(string nextUnitName) {
-            if (currentTree != null) {
-                for (int i = 0 ; i < currentTree.SubTrees.Count  ;i++) {
-                    if (currentTree.SubTrees[i].Value.UnitTagName == nextUnitName) {
-                        currentTree = currentTree.SubTrees[i];
-                        break;
+            if (string.IsNullOrEmpty(nextUnitName))
+            {
+                currentTree = null;
+            }
+            else {
+                if (currentTree != null)
+                {
+                    for (int i = 0; i < currentTree.SubTrees.Count; i++)
+                    {
+                        if (currentTree.SubTrees[i].Value.UnitTagName == nextUnitName)
+                        {
+                            currentTree = currentTree.SubTrees[i];
+                            break;
+                        }
                     }
                 }
             }
+
         }
 
         /// <summary>

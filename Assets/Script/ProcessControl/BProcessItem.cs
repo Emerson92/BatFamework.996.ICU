@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT.Interface;
+using THEDARKKNIGHT.Log;
 using UnityEngine;
 namespace THEDARKKNIGHT.ProcessCore
 {
@@ -105,7 +106,7 @@ namespace THEDARKKNIGHT.ProcessCore
         }
 
         public void ProcessDestory() {
-            Debug.Log("ProcessDestory :"+ TaskName);
+            BLog.Instance().Log("ProcessDestory :"+ TaskName);
             this.Disable();
             Destory();
             ProcessData = null;

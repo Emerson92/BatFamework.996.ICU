@@ -66,20 +66,30 @@ namespace THEDARKKNIGHT.ProcessCore
 
         private void ProcessUnitFinish(object data, string branch)
         {
-            bool moveNext = true;
-            CurrentNode.ProcessUnitReadyToGO -= ProcessUnitPrepareComplete;
-            CurrentNode.ProcessUnitFinishExcution -= ProcessUnitFinish;
-            if (ProcessUnitFinishCallback != null)
-                moveNext = ProcessUnitFinishCallback(CurrentNode.UnitTagName, data);
-            FinishExcuteCallback(CurrentNode, data, branch);
-            if (moveNext)
+            try
             {
-                Debug.Log("ProcessUnitFinish");
-                MoveToNext(branch);
-                T currentNode = GetCurrentNode();
-                if (currentNode != null) {
-                    StartProcess(data, currentNode);
+                bool moveNext = true;
+                CurrentNode.ProcessUnitReadyToGO -= ProcessUnitPrepareComplete;
+                CurrentNode.ProcessUnitFinishExcution -= ProcessUnitFinish;
+                if (ProcessUnitFinishCallback != null)
+                    moveNext = ProcessUnitFinishCallback(CurrentNode.UnitTagName, data);
+                FinishExcuteCallback(CurrentNode, data, branch);
+                if (moveNext)
+                {
+                    BLog.Instance().Log("ProcessUnitFinish");
+                    MoveToNext(branch);
+                    T currentNode = GetCurrentNode();
+                    if (currentNode != null)
+                    {
+                        StartProcess(data, currentNode);
+                    }
+                    else {
+                        BLog.Instance().Error("PS : Process task is finsh!");
+                    }
                 }
+            }
+            catch (Exception ex) {
+                Debug.Log(ex.Message);
             }
         }
 
