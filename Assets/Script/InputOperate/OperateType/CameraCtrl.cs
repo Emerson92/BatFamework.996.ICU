@@ -17,7 +17,6 @@ namespace THEDARKKNIGHT.InputOperate
 
         private float Radius = 5f;
         private Camera ObCamera;
-        private Vector3 CameraLookDir;
         private Vector3 CenterPos;
         private float CurrentX = 0.0f;
         private float CurrentY = 0.0f;
@@ -29,12 +28,15 @@ namespace THEDARKKNIGHT.InputOperate
         private Quaternion TargetRotation;
         private Vector3 TargetPosition;
         private bool IsNeedLerp = false;
+        private Vector3 IdentityDir;
+
 
         public float TargetRadius { get; private set; }
 
         private CameraCtrl()
         {
             this.Enable();
+            IdentityDir = new Vector3(0, 0, -Radius);
         }
 
         public void SetCamera(Camera camera)
@@ -54,6 +56,7 @@ namespace THEDARKKNIGHT.InputOperate
         public void SetObserverRadius(float radius)
         {
             Radius = radius;
+            IdentityDir = new Vector3(0, 0, -Radius);
         }
 
         /// <summary>
@@ -94,38 +97,31 @@ namespace THEDARKKNIGHT.InputOperate
         /// <param name="detlaValue"></param>
         public void RotateWithScreenPixl(Vector3 detlaValue)
         {
-            //**************************************************************
-            //             摄像机旋转问，需要进一步优化
-            //              主要问题是摄像机的来回抖动
-            //**************************************************************
-            //Vector3 worldDir = ObCamera.transform.TransformDirection(detlaValue);
-            //Vector3 targetDir = (worldDir - ObCamera.transform.forward * Radius).normalized * Radius;
-            //Vector3 targePos = CenterPos + targetDir;
-            ////Quaternion nowStatus = ObCamera.transform.rotation;
-            //Debug.DrawLine(ObCamera.transform.position, targePos, Color.green, 10f);
-            //ObCamera.transform.position = targePos;    
-            //Quaternion transQuater = Quaternion.FromToRotation(ObCamera.transform.forward, -targetDir);
-            //ObCamera.transform.forward = -targetDir;
-            //ObCamera.transform.rotation *= transQuater;
-            if (ObCamera == null) return;
+            Quaternion rotation;
+            Vector3 position;
+            CaculatePandR(detlaValue, out rotation, out position);
+            ObCamera.transform.position = position;
+            ObCamera.transform.rotation = rotation;
+            IsNeedLerp = false;
+        }
+
+        private void CaculatePandR(Vector3 detlaValue, out Quaternion rotation, out Vector3 position)
+        {
             CurrentX += detlaValue.x * speedX * Time.deltaTime;
             CurrentY -= detlaValue.y * speedY * Time.deltaTime;
             CurrentY = ClampAngle(CurrentY, minLimitY, maxLimitY);
-            Quaternion rotation = Quaternion.Euler(CurrentY, CurrentX, 0);
-            Vector3 position = rotation * new Vector3(0, 0, -Radius) + CenterPos;
-            ObCamera.transform.rotation = rotation;
-            ObCamera.transform.position = position;
-            IsNeedLerp = false;
+            Quaternion rot= Quaternion.Euler(CurrentY, CurrentX, 0);
+            Vector3 pos = rot * new Vector3(0, 0, -Radius) + CenterPos;
+            rotation = rot;
+            position = pos;
         }
 
         public void LerpRotateWithScreenPixl(Vector3 detlaValue)
         {
             if (ObCamera == null) return;
-            CurrentX += detlaValue.x * speedX * Time.deltaTime;
-            CurrentY -= detlaValue.y * speedY * Time.deltaTime;
-            CurrentY = ClampAngle(CurrentY, minLimitY, maxLimitY);
-            Quaternion rotation = Quaternion.Euler(CurrentY, CurrentX, 0);
-            Vector3 position = rotation * new Vector3(0, 0, -Radius) + CenterPos;
+            Quaternion rotation;
+            Vector3 position;
+            CaculatePandR(detlaValue, out rotation, out position);
             TargetRotation = rotation;
             TargetPosition = position;
             IsNeedLerp = true;

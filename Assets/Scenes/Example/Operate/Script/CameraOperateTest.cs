@@ -93,8 +93,8 @@ namespace THEDARKKNIGHT.Example {
         private object RightDragCallback(object data)
         {
             InputDataPacket<Vector3> packet = (InputDataPacket<Vector3>)data;
-            CameraCtrl.Instance().RotateWithScreenPixl(packet.DeltaValue[0]);
-            //CameraCtrl.Instance().LerpRotateWithScreenPixl(packet.DeltaValue[0]);
+            //CameraCtrl.Instance().RotateWithScreenPixl(packet.DeltaValue[0]);
+            CameraCtrl.Instance().LerpRotateWithScreenPixl(packet.DeltaValue[0]);
             return null;
         }
 
