@@ -1,7 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT.Interface;
+using THEDARKKNIGHT.SyncSystem.FrameSync.Buffer;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Interface;
+using THEDARKKNIGHT.SyncSystem.FrameSync.Struct;
 using UnityEngine;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
@@ -10,12 +13,22 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
         public static List<ISyncComponent> SyncObjectGroup = new List<ISyncComponent>();
 
+        private BFrameBufferCore<BFrameCommend> networkFrameBuffer = new BFrameBufferCore<BFrameCommend>(1);
+
+        public BFrameSyncSystem() {
+            Init();
+        }
+
+        private void Init()
+        {
+            networkFrameBuffer.SetDeQueneCallback(NetworkDequene);
+        }
+
 
         public override void FrameLockLogic(int frameConut)
         {
-            for (int i = 0;i < SyncObjectGroup.Count;i++) {
-                SyncObjectGroup[i].UpdateLogic(frameConut);
-            }
+            LocalLogicUpdate(frameConut);////for local logic code 
+            NetworkLogicUpdate(frameConut);///for network logic code
         }
 
         public override void UpdateRender(float interpolationValue)
@@ -25,9 +38,43 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             }
         }
 
+        /// <summary>
+        /// Locals the logic update.
+        /// </summary>
+        /// <param name="frameConut">Frame conut.</param>
+        void LocalLogicUpdate(int frameConut)
+        {
+            for (int i = 0; i < SyncObjectGroup.Count; i++)
+            {
+                SyncObjectGroup[i].UpdateLogic(frameConut);
+            }
+        }
+
+        /// <summary>
+        /// newwork buffer is pushed out
+        /// </summary>
+        /// <param name="data"></param>
+        private void NetworkDequene(BFrame<BFrameCommend>[] data)
+        {
+            for (int i = 0; i < SyncObjectGroup.Count; i++)
+            {
+                SyncObjectGroup[i].networkLogicUpdate(data);
+            }
+        }
+
+        /// <summary>
+        /// Networks the logic update.
+        /// </summary>
+        /// <param name="frameConut">Frame conut.</param>
+        void NetworkLogicUpdate(int frameConut)
+        {
+            networkFrameBuffer.RefreshBuffer();
+        }
+
         void ILifeCycle.BAwake(MonoBehaviour main){
             this.Enable().SetLifeCycle(LifeCycleTool.LifeType.Update,true);
         }
+
         void ILifeCycle.BDisable(MonoBehaviour main){}
         void ILifeCycle.BFixedUpdate(MonoBehaviour main){}
         void ILifeCycle.BLateUpdate(MonoBehaviour main){}
