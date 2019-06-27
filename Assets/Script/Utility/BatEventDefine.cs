@@ -5,6 +5,7 @@ namespace THEDARKKNIGHT.EventDefine {
 
     public static class BatEventDefine
     {
+        /// Input event 
         public const string LEFTPRESSEVENT = "LEFTPRESSEVENT";
         public const string LEFTDRAGEVENT = "LEFTDRAGEVENT";
         public const string LEFTRELEASEVENT = "LEFTRELEASEVENT";
@@ -18,6 +19,9 @@ namespace THEDARKKNIGHT.EventDefine {
         public const string MULTITOUCHEVENT = "MULTITOUCHEVENT";
         public const string MULTIDRAGEVENT = "MULTIDRAGEVENT";
         public const string MULTIRELEASEVENT = "MULTIRELEASEVENT";
+
+        ////network event
+        public const string UPDATEBYNETFRAME = "UPDATEBYNETFRAME";
     }
 }
 

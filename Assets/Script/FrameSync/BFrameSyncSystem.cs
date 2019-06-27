@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using THEDARKKNIGHT.EventDefine;
+using THEDARKKNIGHT.EventSystem;
 using THEDARKKNIGHT.Interface;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Buffer;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Interface;
@@ -13,7 +15,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
         public static List<ISyncComponent> SyncObjectGroup = new List<ISyncComponent>();
 
-        private BFrameBufferCore<BFrameCommend> networkFrameBuffer = new BFrameBufferCore<BFrameCommend>(1);
+        //private BFrameBufferCore<BFrameCommend> networkFrameBuffer = new BFrameBufferCore<BFrameCommend>(1);
 
         public BFrameSyncSystem() {
             Init();
@@ -21,14 +23,26 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
         private void Init()
         {
-            networkFrameBuffer.SetDeQueneCallback(NetworkDequene);
+            BEventManager.Instance().AddListener(BatEventDefine.UPDATEBYNETFRAME, NetworkLogicUpdate);
         }
-
 
         public override void FrameLockLogic(int frameConut)
         {
             LocalLogicUpdate(frameConut);////for local logic code 
-            NetworkLogicUpdate(frameConut);///for network logic code
+        }
+
+        private object NetworkLogicUpdate(object data)
+        {
+            BNFrameCommdend Ncmd = (BNFrameCommdend)data;
+            for (int i = 0; i < SyncObjectGroup.Count; i++)
+            {
+                for (int j = 0; j < Ncmd.OperateCmd.Count;j++) {
+                    if (SyncObjectGroup[i].GetComponentType() == Ncmd.OperateCmd[j].OperateType) {
+                        SyncObjectGroup[i].UpdateByNet(Ncmd.NFrameNum, Ncmd.OperateCmd[j].cmd);
+                    }
+                }
+            }
+            return null;
         }
 
         public override void UpdateRender(float interpolationValue)
@@ -48,27 +62,6 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             {
                 SyncObjectGroup[i].UpdateLogic(frameConut);
             }
-        }
-
-        /// <summary>
-        /// newwork buffer is pushed out
-        /// </summary>
-        /// <param name="data"></param>
-        private void NetworkDequene(BFrame<BFrameCommend>[] data)
-        {
-            for (int i = 0; i < SyncObjectGroup.Count; i++)
-            {
-                SyncObjectGroup[i].networkLogicUpdate(data);
-            }
-        }
-
-        /// <summary>
-        /// Networks the logic update.
-        /// </summary>
-        /// <param name="frameConut">Frame conut.</param>
-        void NetworkLogicUpdate(int frameConut)
-        {
-            networkFrameBuffer.RefreshBuffer();
         }
 
         void ILifeCycle.BAwake(MonoBehaviour main){

@@ -43,6 +43,10 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
         /// </summary>
         public static int GameLogicFrame = 0;
 
+        /// <summary>
+        /// the network of frame
+        /// </summary>
+        public static int GameNetworkFrame = 0;
 
         protected void UpdateLogic() {
 

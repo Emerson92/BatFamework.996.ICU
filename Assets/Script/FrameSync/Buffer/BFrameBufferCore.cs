@@ -114,7 +114,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Buffer {
 
         public uint FrameNum;
 
-        public T Data;
+        public T Cmd;
     
     }
 }
