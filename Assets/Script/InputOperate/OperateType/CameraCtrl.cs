@@ -109,8 +109,8 @@ namespace THEDARKKNIGHT.InputOperate
         {
             CurrentX += detlaValue.x * speedX * Time.deltaTime;
             CurrentY -= detlaValue.y * speedY * Time.deltaTime;
-            CurrentY = ClampAngle(CurrentY, minLimitY, maxLimitY);
-            Quaternion rot= Quaternion.Euler(CurrentY, CurrentX, 0);
+            CurrentY  = ClampAngle(CurrentY, minLimitY, maxLimitY);
+            Quaternion rot = Quaternion.Euler(CurrentY, CurrentX, 0);
             Vector3 pos = rot * new Vector3(0, 0, -Radius) + CenterPos;
             rotation = rot;
             position = pos;

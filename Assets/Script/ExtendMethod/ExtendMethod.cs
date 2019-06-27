@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using THEDARKKNIGHT.Interface;
 using UnityEngine;
 namespace THEDARKKNIGHT {
-    public static class ExtendMethod{
+    public static partial class ExtendMethod{
         
         /// <summary>
         /// Set up Life Cycle 
