@@ -16,6 +16,8 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             POSITION,
             ROTATION,
             SCALE,
+            ANIMATION,
+            ANIMATOR,
             OTHER
         }
 
@@ -24,14 +26,18 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
         /// </summary>
         private SYNCTYPE componentType = SYNCTYPE.NULL;
 
-        public BSyncComponentCore(SYNCTYPE type) {
-            this.EnableSync();
-            this.componentType = type;
-        }
+        private uint ComponentID;
 
         protected BNetworkFrameBuffer NetworkFrameBuffer = new BNetworkFrameBuffer(1);
 
         protected BLocalFrameBuffer LocalFrameBuffer = new BLocalFrameBuffer(1);
+
+
+        public BSyncComponentCore(uint componentID,SYNCTYPE type) {
+            this.EnableSync();
+            this.componentType = type;
+            this.ComponentID = componentID;
+        }
 
         public virtual SYNCTYPE GetComponentType()
         {
@@ -54,7 +60,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             ////TODO PS: Warning ,there has a trap, you need to pay a attention
             BFrame<BFrameCommend>[] frames = LocalFrameBuffer.DeQuene(frameCount);
             BNOperateCommend cmd = new BNOperateCommend();
-            cmd.ComponentID = 0;/////Wait to create new ID;
+            cmd.ComponentID = ComponentID;/////Wait to create new ID;
             cmd.OperateType = componentType;
             cmd.cmd = frames[0].Cmd; ////if you get cache much commdend ,theose code make you feel trouble;
             return cmd;
@@ -63,12 +69,12 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
         public virtual void UpdateByNet(uint NframeCount, BFrameCommend data)
         {
             ////TODO do some Update by net
-            BFrame<BFrameCommend> Severcmd = new BFrame<BFrameCommend>()
+            BFrame<BFrameCommend> Scmd = new BFrame<BFrameCommend>()
             {
                 FrameNum = NframeCount,
                 Cmd = data
             };
-            NetworkFrameBuffer.EnQuene(Severcmd);
+            NetworkFrameBuffer.EnQuene(Scmd);
         }
 
         public virtual void SetComponentType(SYNCTYPE type) {
