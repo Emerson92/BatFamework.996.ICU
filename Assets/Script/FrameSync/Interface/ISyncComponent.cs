@@ -12,7 +12,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Interface {
 
         BSyncComponentCore.SYNCTYPE GetComponentType();
 
-        void UpdateLogic(int frameCount);
+        BNOperateCommend UpdateLogic(int frameCount);
 
         void Update(float interpolationValue);
 

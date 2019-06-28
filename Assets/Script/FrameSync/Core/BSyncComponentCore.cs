@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Buffer;
 using THEDARKKNIGHT.SyncSystem.FrameSync.ExtendMethod;
@@ -11,12 +12,10 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
     {
         public enum SYNCTYPE {
             NULL,
-            ACTION,
-            SOLIDER,
-            SPHERE,
-            PEOPLE,
-            ANIMATION,
-            CAT,
+            TRANSFORM,
+            POSITION,
+            ROTATION,
+            SCALE,
             OTHER
         }
 
@@ -25,11 +24,14 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
         /// </summary>
         private SYNCTYPE componentType = SYNCTYPE.NULL;
 
-        public BSyncComponentCore() {
+        public BSyncComponentCore(SYNCTYPE type) {
             this.EnableSync();
+            this.componentType = type;
         }
 
-        protected BFrameBufferCore<BFrameCommend> networkFrameBuffer = new BFrameBufferCore<BFrameCommend>(1);
+        protected BNetworkFrameBuffer NetworkFrameBuffer = new BNetworkFrameBuffer(1);
+
+        protected BLocalFrameBuffer LocalFrameBuffer = new BLocalFrameBuffer(1);
 
         public virtual SYNCTYPE GetComponentType()
         {
@@ -41,9 +43,21 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             ////TODO do some of Render
         }
 
-        public virtual void UpdateLogic(int frameCount)
+        public virtual BNOperateCommend UpdateLogic(int frameCount)
         {
-           ////TODO do some Logic thing
+            ////TODO do some Logic thing
+            return CreateCmdLogic(frameCount);
+        }
+
+        private BNOperateCommend CreateCmdLogic(int frameCount)
+        {
+            ////TODO PS: Warning ,there has a trap, you need to pay a attention
+            BFrame<BFrameCommend>[] frames = LocalFrameBuffer.DeQuene(frameCount);
+            BNOperateCommend cmd = new BNOperateCommend();
+            cmd.ComponentID = 0;/////Wait to create new ID;
+            cmd.OperateType = componentType;
+            cmd.cmd = frames[0].Cmd; ////if you get cache much commdend ,theose code make you feel trouble;
+            return cmd;
         }
 
         public virtual void UpdateByNet(uint NframeCount, BFrameCommend data)
@@ -54,7 +68,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
                 FrameNum = NframeCount,
                 Cmd = data
             };
-            networkFrameBuffer.EnQuene(Severcmd);
+            NetworkFrameBuffer.EnQuene(Severcmd);
         }
 
         public virtual void SetComponentType(SYNCTYPE type) {

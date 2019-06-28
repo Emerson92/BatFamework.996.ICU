@@ -15,8 +15,6 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
         public static List<ISyncComponent> SyncObjectGroup = new List<ISyncComponent>();
 
-        //private BFrameBufferCore<BFrameCommend> networkFrameBuffer = new BFrameBufferCore<BFrameCommend>(1);
-
         public BFrameSyncSystem() {
             Init();
         }
@@ -38,7 +36,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             {
                 for (int j = 0; j < Ncmd.OperateCmd.Count;j++) {
                     if (SyncObjectGroup[i].GetComponentType() == Ncmd.OperateCmd[j].OperateType) {
-                        SyncObjectGroup[i].UpdateByNet(Ncmd.NFrameNum, Ncmd.OperateCmd[j].cmd);
+                        SyncObjectGroup[i].UpdateByNet((uint)Ncmd.NFrameNum, Ncmd.OperateCmd[j].cmd);
                     }
                 }
             }
@@ -58,10 +56,27 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
         /// <param name="frameConut">Frame conut.</param>
         void LocalLogicUpdate(int frameConut)
         {
+            BNFrameCommdend frameCmd = new BNFrameCommdend();
+            frameCmd.NFrameNum = frameConut;
+            frameCmd.OperateCmd = new List<BNOperateCommend>();
+            ///////TODO each Component's commend is collected ,and send it to Server 
             for (int i = 0; i < SyncObjectGroup.Count; i++)
             {
-                SyncObjectGroup[i].UpdateLogic(frameConut);
+                BNOperateCommend operatedCmd = SyncObjectGroup[i].UpdateLogic(frameConut);
+                if (operatedCmd != null)
+                    frameCmd.OperateCmd.Add(operatedCmd);
             }
+            SendCommendToServer(frameCmd);
+        }
+
+        /// <summary>
+        /// Send it Msg to Server
+        /// </summary>
+        /// <param name="frameCmd"></param>
+        private void SendCommendToServer(BNFrameCommdend frameCmd)
+        {
+           /////TODO Send it Msg to Server
+           
         }
 
         void ILifeCycle.BAwake(MonoBehaviour main){

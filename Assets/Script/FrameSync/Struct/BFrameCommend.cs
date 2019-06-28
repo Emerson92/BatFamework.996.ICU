@@ -18,6 +18,8 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Struct {
 
         public BSyncComponentCore.SYNCTYPE OperateType;
 
+        public uint ComponentID;
+
         public BFrameCommend cmd;
         ///////Wait to finish data
 
