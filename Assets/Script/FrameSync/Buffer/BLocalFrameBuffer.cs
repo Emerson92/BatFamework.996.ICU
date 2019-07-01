@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Struct;
 using UnityEngine;
-namespace THEDARKKNIGHT.SyncSystem.FrameSync.Buffer {
+namespace THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer {
 
     public class BLocalFrameBuffer : BFrameBufferCore<BFrameCommend>
     {
@@ -17,7 +17,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Buffer {
             bufferQuene.Add(data);
         }
 
-        public override BFrame<BFrameCommend>[] DeQuene(int frameIndex, bool force = false)
+        public override BFrame<BFrameCommend>[] DeQuenes(uint frameIndex, bool force = false)
         {
             return PushBuffer();
         }

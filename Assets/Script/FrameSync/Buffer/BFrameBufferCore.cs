@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace THEDARKKNIGHT.SyncSystem.FrameSync.Buffer {
+namespace THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer {
 
     public abstract class BFrameBufferCore<T> where T : class{
 
@@ -12,7 +12,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Buffer {
 
         protected BFrame<T>[] cacheBuffer;
 
-        protected uint CacheNum {
+        public uint CacheNum {
             set {
                 this.cacheNum = value;
                 cacheBuffer = new BFrame<T>[this.cacheNum];
@@ -31,9 +31,15 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Buffer {
             bufferQuene.Add(data);
         }
 
-        public virtual BFrame<T>[] DeQuene(int frameIndex, bool force = false) {
+        public virtual BFrame<T>[] DeQuenes(uint frameIndex, bool force = false) {
 
             return cacheBuffer;
+        }
+
+        public virtual BFrame<T>? DeQuene(uint frameIndex, bool force = false) {
+            BFrame<T> topFrame = bufferQuene[0];
+            bufferQuene.RemoveAt(0);
+            return topFrame;
         }
 
         /// <summary>

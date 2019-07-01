@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Struct;
 using UnityEngine;
-namespace THEDARKKNIGHT.SyncSystem.FrameSync.Buffer
+namespace THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer
 {
 
     public class BNetworkFrameBuffer : BFrameBufferCore<BFrameCommend>
@@ -14,7 +14,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Buffer
 
         }
 
-        public override BFrame<BFrameCommend>[] DeQuene(int frameIndex, bool force = false)
+        public override BFrame<BFrameCommend>[] DeQuenes(uint frameIndex, bool force = false)
         {
             if (CheckIsNeedPushBuffer(frameIndex))
             {
@@ -27,6 +27,20 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Buffer
             }
             return null;
         }
+
+        public override BFrame<BFrameCommend>? DeQuene(uint frameIndex, bool force = false)
+        {
+            BFrame<BFrameCommend>? cmdFrame = base.DeQuene(frameIndex, force);
+            if (frameIndex == cmdFrame.GetValueOrDefault().FrameNum) {
+
+                return cmdFrame;
+            }
+            else {
+                if (force) return cmdFrame;
+            }
+            return null;
+        }
+
 
         public override void EnQuene(BFrame<BFrameCommend> data)
         {
@@ -80,7 +94,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Buffer
         /// Check the frame index keep right order 
         /// </summary>
         /// <returns>true/false</returns>
-        private bool CheckIsNeedPushBuffer(int frameIndex)
+        private bool CheckIsNeedPushBuffer(uint frameIndex)
         {
             for (int i = 0; i < CacheNum - 1; i++)
             {

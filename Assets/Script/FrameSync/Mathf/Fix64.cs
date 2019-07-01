@@ -481,6 +481,12 @@ public struct FixVector3
         this.z = v.z;
     }
 
+    public FixVector3(UnityEngine.Vector3 v) {
+        this.x = (Fix64)v.x;
+        this.y = (Fix64)v.y;
+        this.z = (Fix64)v.z;
+    }
+
     public Fix64 this[int index]
     {
         get

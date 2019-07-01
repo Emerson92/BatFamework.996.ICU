@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using THEDARKKNIGHT.SyncSystem.FrameSync.Buffer;
+using THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer;
 using THEDARKKNIGHT.SyncSystem.FrameSync.ExtendMethod;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Interface;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Struct;
@@ -49,21 +49,26 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             ////TODO do some of Render
         }
 
-        public virtual BNOperateCommend UpdateLogic(int frameCount)
+        public virtual BNOperateCommend UpdateLogic(int frameIndex)
         {
             ////TODO do some Logic thing
-            return CreateCmdLogic(frameCount);
+            return CreateCmdLogic(frameIndex);
         }
 
-        private BNOperateCommend CreateCmdLogic(int frameCount)
+        private BNOperateCommend CreateCmdLogic(int frameIndex)
         {
             ////TODO PS: Warning ,there has a trap, you need to pay a attention
-            BFrame<BFrameCommend>[] frames = LocalFrameBuffer.DeQuene(frameCount);
+            BFrame<BFrameCommend>? frames = LocalFrameBuffer.DeQuene((uint)frameIndex);
             BNOperateCommend cmd = new BNOperateCommend();
             cmd.ComponentID = ComponentID;/////Wait to create new ID;
             cmd.OperateType = componentType;
-            cmd.cmd = frames[0].Cmd; ////if you get cache much commdend ,theose code make you feel trouble;
+            cmd.cmd         = frames?.Cmd; ////if you get cache much commdend ,theose code make you feel trouble;
             return cmd;
+        }
+
+        protected BFrameCommend GetNetworkCmd(uint frameIndex) {
+            BFrame<BFrameCommend>?  frames = NetworkFrameBuffer.DeQuene(frameIndex);
+            return frames?.Cmd;
         }
 
         public virtual void UpdateByNet(uint NframeCount, BFrameCommend data)
@@ -81,6 +86,9 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             componentType = type;
         }
 
+        public virtual void Dispose() {
+            this.DisEnableSync();
+        }
     }
 
 

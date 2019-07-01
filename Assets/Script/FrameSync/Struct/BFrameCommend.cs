@@ -20,7 +20,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Struct {
 
         public uint ComponentID;
 
-        public BFrameCommend cmd;
+        public BFrameCommend cmd;/////// you must considert the extend ability
         ///////Wait to finish data
 
     }
@@ -29,6 +29,10 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Struct {
     public class BFrameCommend
     {
         //////Wait to extend data struct
+        public FixVector3 TDirection;
+        public FixVector3 TRotation;
+        public FixVector3 TScale;
+
     }
 }
 

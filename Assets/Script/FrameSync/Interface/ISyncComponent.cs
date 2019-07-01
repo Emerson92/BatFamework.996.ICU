@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using THEDARKKNIGHT.SyncSystem.FrameSync.Buffer;
+using THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Struct;
 using UnityEngine;
 
