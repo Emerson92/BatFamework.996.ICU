@@ -5,10 +5,11 @@ using THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer;
 using THEDARKKNIGHT.SyncSystem.FrameSync.ExtendMethod;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Interface;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Struct;
+using THEDARKKNIGHT.SyncSystem.FrameSync.Utility;
 using UnityEngine;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
-    public abstract class BSyncComponentCore : ISyncComponent
+    public abstract class BSyncComponentCore : ISyncComponent,IRoallbackable
     {
         public enum SYNCTYPE {
             NULL,
@@ -88,6 +89,16 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
         public virtual void Dispose() {
             this.DisEnableSync();
+        }
+
+        public void TakeSnapshot(SnapshotWriter writer)
+        {
+           
+        }
+
+        public void RollbackTo(SnapshotReader reader)
+        {
+           
         }
     }
 

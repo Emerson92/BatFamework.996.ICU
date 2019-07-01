@@ -10,7 +10,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.TimeMachine {
     /// 通常，根据延迟自动调整的逻辑，我们通常只保存5~10份快照。然后根据后续战斗结束比对快照的需求（防外挂的部分考虑），
     /// 每隔一段时间（比如30秒）保存一份快照。
     /// </summary>
-    public class TimeMachine : IRoallbackable
+    public class TimeMachine
     {
 
         public void TakeSnapshot(SnapshotWriter writer)
