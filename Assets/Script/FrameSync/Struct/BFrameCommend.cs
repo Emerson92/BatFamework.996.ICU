@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace THEDARKKNIGHT.SyncSystem.FrameSync.Struct {
+namespace THEDARKKNIGHT.SyncSystem.FrameSync.BStruct {
 
     [Serializable]
     public class BNFrameCommdend {

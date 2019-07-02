@@ -6,7 +6,7 @@ using THEDARKKNIGHT.EventSystem;
 using THEDARKKNIGHT.Interface;
 using THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Interface;
-using THEDARKKNIGHT.SyncSystem.FrameSync.Struct;
+using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct;
 using UnityEngine;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 

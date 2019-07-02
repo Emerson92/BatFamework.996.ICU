@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer;
-using THEDARKKNIGHT.SyncSystem.FrameSync.Struct;
+using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct;
+using THEDARKKNIGHT.SyncSystem.FrameSync.Utility;
 using UnityEngine;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync.Component {
 
@@ -74,10 +75,25 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Component {
         /// </summary>
         public override void Dispose()
         {
-            base.Dispose();
             TargetTransform = null;
+            base.Dispose();
         }
 
+        public new void TakeSnapshot(SnapshotWriter writer)
+        {
+            base.TakeSnapshot(writer);
+        }
+
+        public override void RollbackTo(SnapshotReader reader)
+        {
+            base.RollbackTo(reader);
+            switch (Statue) {
+                case COMPONENTLIFECYCLE.DEATH:
+                    break;
+                case COMPONENTLIFECYCLE.HIDDEN:
+                    break;
+            }
+        }
     }
 
 }

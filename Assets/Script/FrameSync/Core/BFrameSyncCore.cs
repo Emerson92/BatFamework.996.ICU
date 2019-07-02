@@ -20,7 +20,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
         /// <summary>
         /// each of the logic updat time
         /// </summary>
-        float frameLength = 0;
+        public static readonly float frameLength = (float)Fix64.FromRaw(273);
 
         /// <summary>
         /// the lerp time 
@@ -47,6 +47,8 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
         /// the network of frame
         /// </summary>
         public static int GameNetworkFrame = 0;
+
+        public static int LogicFrameRate => (int)(1 / frameLength);
 
         protected void UpdateLogic() {
 

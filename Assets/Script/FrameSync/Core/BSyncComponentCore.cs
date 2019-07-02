@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer;
 using THEDARKKNIGHT.SyncSystem.FrameSync.ExtendMethod;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Interface;
-using THEDARKKNIGHT.SyncSystem.FrameSync.Struct;
+using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Utility;
 using UnityEngine;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync {
@@ -21,6 +21,14 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             ANIMATOR,
             OTHER
         }
+
+        public enum COMPONENTLIFECYCLE {
+            LIVE,
+            HIDDEN,
+            DEATH
+        }
+
+        public COMPONENTLIFECYCLE Statue;
 
         /// <summary>
         /// Current Component's Type 
@@ -87,19 +95,23 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             componentType = type;
         }
 
+        public virtual void TakeSnapshot(SnapshotWriter writer)
+        {
+
+        }
+
+        public virtual void RollbackTo(SnapshotReader reader)
+        {
+
+        }
+
+
         public virtual void Dispose() {
-            this.DisEnableSync();
+            this.DisableSync();
+            Statue = COMPONENTLIFECYCLE.DEATH;
         }
 
-        public void TakeSnapshot(SnapshotWriter writer)
-        {
-           
-        }
 
-        public void RollbackTo(SnapshotReader reader)
-        {
-           
-        }
     }
 
 
