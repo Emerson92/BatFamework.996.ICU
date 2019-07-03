@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer;
 using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct;
@@ -22,6 +23,8 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Component {
 
         private Transform TargetTransform;
 
+        public Func<COMPONENTLIFECYCLE,Transform> RecoverTransfrom;
+
         public BSyncTransform( uint componentID, Transform target) : base(componentID,SYNCTYPE.TRANSFORM)
         {
             this.TargetTransform = target;
@@ -33,13 +36,15 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Component {
             LtargetScale = scale;
         }
 
-        public override void UpdateByNet(uint NframeCount, BFrameCommend data)
+        public override bool UpdateByNet(uint NframeCount, BFrameCommend data)
         {
             base.UpdateByNet(NframeCount, data);
+            FrameConfirm<BFrameCommend>(data);
             BFrameCommend cmd = GetNetworkCmd(NframeCount);
             NtargetPos   = cmd.TDirection + new FixVector3(TargetTransform.position);
             NtargetRot   = new FixVector3(TargetTransform.rotation * Quaternion.Euler(cmd.TRotation.ToVector3()).eulerAngles);
             NtargetScale = cmd.TScale + new FixVector3(TargetTransform.localScale);
+            return false;
         }
 
         public override BNOperateCommend UpdateLogic(int frameIndex)
@@ -82,6 +87,9 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Component {
         public new void TakeSnapshot(SnapshotWriter writer)
         {
             base.TakeSnapshot(writer);
+            writer.Write(new FixVector3(TargetTransform.position));////Position
+            writer.Write(new FixVector3(TargetTransform.rotation.eulerAngles));/////Rotation of angle(eluer)
+            writer.Write(new FixVector3(TargetTransform.localScale));////Scale
         }
 
         public override void RollbackTo(SnapshotReader reader)
@@ -89,10 +97,20 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Component {
             base.RollbackTo(reader);
             switch (Statue) {
                 case COMPONENTLIFECYCLE.DEATH:
+                    TargetTransform = RecoverTransfrom(Statue);
                     break;
                 case COMPONENTLIFECYCLE.HIDDEN:
+                    RecoverTransfrom(Statue);
                     break;
             }
+            TargetTransform.position = reader.ReadFixVector3().ToVector3();////Position
+            TargetTransform.rotation = Quaternion.Euler(reader.ReadFixVector3().ToVector3());/////Rotation of angle(eluer)
+            TargetTransform.localScale = reader.ReadFixVector3().ToVector3();////Scale
+        }
+
+        public override bool FrameConfirm<T>(T data)
+        {
+            return base.FrameConfirm(data);
         }
     }
 

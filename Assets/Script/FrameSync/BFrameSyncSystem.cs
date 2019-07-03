@@ -8,6 +8,8 @@ using THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Interface;
 using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct;
 using UnityEngine;
+using THEDARKKNIGHT.SyncSystem.FrameSync.Snapshot;
+
 namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
     public class BFrameSyncSystem : BFrameSyncCore,ILifeCycle
@@ -15,7 +17,10 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
         public static List<ISyncComponent> SyncObjectGroup = new List<ISyncComponent>();
 
+        public TimeMachine TimeMachineInstance;
+
         public BFrameSyncSystem() {
+            TimeMachineInstance = new TimeMachine();
             Init();
         }
 
@@ -26,7 +31,8 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
         public override void FrameLockLogic(int frameConut)
         {
-            LocalLogicUpdate(frameConut);////for local logic code 
+            LocalLogicUpdate(frameConut);////for local logic code
+            TimeMachineInstance.TakeSnapshot();/////Start to take snapshot
         }
 
         private object NetworkLogicUpdate(object data)
@@ -36,10 +42,16 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             {
                 for (int j = 0; j < Ncmd.OperateCmd.Count;j++) {
                     if (SyncObjectGroup[i].GetComponentType() == Ncmd.OperateCmd[j].OperateType) {
-                        SyncObjectGroup[i].UpdateByNet((uint)Ncmd.NFrameNum, Ncmd.OperateCmd[j].cmd);
+                        if (SyncObjectGroup[i].UpdateByNet((uint)Ncmd.NFrameNum, Ncmd.OperateCmd[j].cmd)) {
+                            TimeMachineInstance.RollbackTo((uint)Ncmd.NFrameNum);//////Rollback the Frame beacause one local frame can not match the frame from server
+                            return null;
+                        }
                     }
                 }
             }
+
+            ///////Network frame is no error ,so comfire this frame
+            TimeMachineInstance.ConfiremedFrame((uint)Ncmd.NFrameNum);
             return null;
         }
 

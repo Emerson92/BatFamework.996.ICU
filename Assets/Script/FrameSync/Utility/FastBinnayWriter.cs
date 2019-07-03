@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync.Utility
 {
@@ -110,6 +112,36 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Utility
             Write(value ? (uint)1 : (uint)0);
         }
 
+        /// <summary>
+        /// create the serializble the class to the memorystream
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="serializable"></param>
+        public void Write(byte[] value)
+        {
+            int len = value.Length;
+            if (len == 0) {
+                Write(0);
+                return; // just a header
+            }
+            Write((uint)len);//write the head length
+            DemandSpace(len);
+            int dataLenght = len;
+            do
+            {
+                if (dataLenght <= (_ioBuffer.Length - _ioIndex)) {
+                    Buffer.BlockCopy(value, 0, _ioBuffer, _ioIndex, dataLenght);
+                    dataLenght = 0;
+                    _position =+ dataLenght;
+                }
+                else {
+                    Buffer.BlockCopy(value, 0, _ioBuffer, _ioIndex, _ioBuffer.Length);
+                    dataLenght = dataLenght - (_ioBuffer.Length - _ioIndex);
+                    _position = +_ioBuffer.Length;
+                }
+                Flush();
+            } while (dataLenght > 0);
+        }
 
         public void clear()
         {

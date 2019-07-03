@@ -92,6 +92,19 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Utility
             }
         }
 
+        public byte[] ReadByteArray() {
+            int bytes = (int)ReadUInt32Variant(false);
+            byte[] data = new byte[bytes];
+            int bytesRead;
+            while ((bytesRead = _source.Read(data, _position, bytes)) > 0)
+            {
+                _available -= bytesRead;
+                _position  += bytes;
+            }
+            return data;
+        }
+
+
         internal int TryReadUInt32VariantWithoutMoving(bool trimNegative, out uint value)
         {
             if (_available < 10) Ensure(10, false);
@@ -254,7 +267,6 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Utility
             {
                 throw EoF();
             }
-
         }
 
         private Exception CreateException(string message)

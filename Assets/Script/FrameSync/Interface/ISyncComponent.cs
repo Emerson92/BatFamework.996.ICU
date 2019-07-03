@@ -16,7 +16,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Interface {
 
         void Update(float interpolationValue);
 
-        void UpdateByNet(uint NframeCount, BFrameCommend data);
+        bool UpdateByNet(uint NframeCount, BFrameCommend data);
 
     }
 }

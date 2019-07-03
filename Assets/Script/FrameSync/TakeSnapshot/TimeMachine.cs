@@ -56,7 +56,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Snapshot
                 frameSnapshot.Add(stream);
             }
             stream.Position = 0;
-
+            /////Tell the every component take snapshot
             snapshotWriter.Init(stream);
             for (int i = 0; i < ComponentList.Count; i++) {
                 ComponentList[i].TakeSnapshot(snapshotWriter);
@@ -74,7 +74,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Snapshot
             if (data == null) {
                 Debug.Log("this frame"+frameIndex+"snapshot released,can not roll back");
             }
-
+            /////Tell the every component rollback to this frame
             snapshotReader.Init(data);
             for (int i = 0 ; i < ComponentList.Count ; i++) {
                 ComponentList[i].RollbackTo(snapshotReader);
@@ -83,6 +83,10 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Snapshot
 
         }
 
+        /// <summary>
+        /// confire this frame data from server
+        /// </summary>
+        /// <param name="value"></param>
         public void ConfiremedFrame(uint value) {
             if (value <= lastConfirmFrame) {
                 return;

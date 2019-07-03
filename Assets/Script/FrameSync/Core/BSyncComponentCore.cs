@@ -9,7 +9,7 @@ using THEDARKKNIGHT.SyncSystem.FrameSync.Utility;
 using UnityEngine;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
-    public abstract class BSyncComponentCore : ISyncComponent,IRoallbackable
+    public abstract class BSyncComponentCore : ISyncComponent,IRoallbackable, IFrameConfirm
     {
         public enum SYNCTYPE {
             NULL,
@@ -41,7 +41,6 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
         protected BLocalFrameBuffer LocalFrameBuffer = new BLocalFrameBuffer(1);
 
-
         public BSyncComponentCore(uint componentID,SYNCTYPE type) {
             this.EnableSync();
             this.componentType = type;
@@ -53,10 +52,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             return componentType;
         }
 
-        public virtual void Update(float interpolationValue)
-        { 
-            ////TODO do some of Render
-        }
+        public virtual void Update(float interpolationValue){ }
 
         public virtual BNOperateCommend UpdateLogic(int frameIndex)
         {
@@ -80,7 +76,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             return frames?.Cmd;
         }
 
-        public virtual void UpdateByNet(uint NframeCount, BFrameCommend data)
+        public virtual bool UpdateByNet(uint NframeCount, BFrameCommend data)
         {
             ////TODO do some Update by net
             BFrame<BFrameCommend> Scmd = new BFrame<BFrameCommend>()
@@ -89,30 +85,23 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
                 Cmd = data
             };
             NetworkFrameBuffer.EnQuene(Scmd);
+            return false;
         }
 
-        public virtual void SetComponentType(SYNCTYPE type) {
-            componentType = type;
-        }
+        public virtual void SetComponentType(SYNCTYPE type) {componentType = type;}
 
-        public virtual void TakeSnapshot(SnapshotWriter writer)
+        public virtual void TakeSnapshot(SnapshotWriter writer){}
+
+        public virtual void RollbackTo(SnapshotReader reader){}
+
+        public virtual void Dispose() { this.DisableSync();Statue = COMPONENTLIFECYCLE.DEATH;}
+
+        public virtual bool FrameConfirm<T>(T data) where T : class
         {
-
+            return false;
         }
 
-        public virtual void RollbackTo(SnapshotReader reader)
-        {
-
-        }
-
-
-        public virtual void Dispose() {
-            this.DisableSync();
-            Statue = COMPONENTLIFECYCLE.DEATH;
-        }
-
+        //public virtual bool FrameConfirm(BFrameCommend data) {return false;}
 
     }
-
-
 }
