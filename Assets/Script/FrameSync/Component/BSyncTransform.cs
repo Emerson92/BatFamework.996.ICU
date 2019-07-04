@@ -14,9 +14,9 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Component
     public class BSyncTransform : BSyncComponentCore<BFrameTransformCmd>
     {
 
-        private FixVector3 NtargetPos;
-        private FixVector3 NtargetRot;
-        private FixVector3 NtargetScale;
+        private FixVector3? NtargetPos;
+        private FixVector3? NtargetRot;
+        private FixVector3? NtargetScale;
 
         private FixVector3? LtargetPos;
         private FixVector3? LtargetRot;
@@ -84,9 +84,38 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Component
         public override void Update(float interpolationValue)
         {
             base.Update(interpolationValue);
-            TargetTransform.position = Vector3.Lerp(TargetTransform.position, NtargetPos.ToVector3(), interpolationValue);
-            TargetTransform.rotation = Quaternion.Euler(Vector3.Lerp(TargetTransform.rotation.eulerAngles, NtargetRot.ToVector3(), interpolationValue));
-            TargetTransform.localScale = Vector3.Lerp(TargetTransform.localScale, NtargetScale.ToVector3(), interpolationValue);
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /// if current Network frame excution finish ,we can predicted the tranform according to user input
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            TargetTransform.position = TransformLerp(TargetTransform.position, NtargetPos, LtargetPos, interpolationValue);
+            TargetTransform.rotation = Quaternion.Euler(TransformLerp(TargetTransform.rotation.eulerAngles, NtargetRot, LtargetRot, interpolationValue)) ;
+            TargetTransform.localScale = TransformLerp(TargetTransform.localScale, NtargetScale, LtargetScale, interpolationValue);
+        }
+
+        /// <summary>
+        /// it method contain predicted frame and confirm frame from network
+        /// </summary>
+        /// <param name="curValue"></param>
+        /// <param name="ntarValue"></param>
+        /// <param name="ltarValue"></param>
+        /// <param name="interpolationValue"></param>
+        /// <returns></returns>
+        private Vector3 TransformLerp(Vector3 curValue,FixVector3? ntarValue,FixVector3? ltarValue,float interpolationValue)
+        {
+            Vector3 lerpValue;
+            if (NtargetPos != null)
+            {
+                lerpValue = Vector3.Lerp(curValue, ntarValue.GetValueOrDefault().ToVector3(), interpolationValue);
+                if (curValue == ntarValue.GetValueOrDefault().ToVector3())////if the lerp network frame excute is finish,we start to excute predicting frame
+                {
+                    ntarValue = null;
+                }
+            }
+            else
+            {
+                lerpValue = Vector3.Lerp(curValue, ltarValue.GetValueOrDefault().ToVector3(), interpolationValue);////predicting frame
+            }
+            return lerpValue;
         }
 
         /// <summary>
