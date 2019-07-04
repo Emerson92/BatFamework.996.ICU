@@ -16,17 +16,17 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.BStruct {
     public class BNOperateCommend
     {
 
-        public BSyncComponentCore.SYNCTYPE OperateType;
+        public SYNCTYPE OperateType;
 
         public uint ComponentID;
 
-        public BFrameCommend cmd;/////// you must considert the extend ability
+        public object cmd;/////// you must considert the extend ability
         ///////Wait to finish data
 
     }
 
     [Serializable]
-    public class BFrameCommend
+    public class BFrameTransformCmd
     {
         //////Wait to extend data struct
         public FixVector3 TDirection;

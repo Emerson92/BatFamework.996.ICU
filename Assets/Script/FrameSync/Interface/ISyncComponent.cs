@@ -7,16 +7,16 @@ using UnityEngine;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync.Interface {
 
 
-    public interface ISyncComponent 
+    public interface ISyncComponent
     {
 
-        BSyncComponentCore.SYNCTYPE GetComponentType();
+        SYNCTYPE GetComponentType();
 
         BNOperateCommend UpdateLogic(int frameCount);
 
         void Update(float interpolationValue);
 
-        bool UpdateByNet(uint NframeCount, BFrameCommend data);
+        bool UpdateByNet(uint NframeCount, object data);
 
     }
 }

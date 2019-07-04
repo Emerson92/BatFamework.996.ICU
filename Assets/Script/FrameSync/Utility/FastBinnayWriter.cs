@@ -143,6 +143,11 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Utility
             } while (dataLenght > 0);
         }
 
+        public void Reset() {
+            _ioIndex = 0;
+            _position = 0;
+        }
+
         public void clear()
         {
             _stream = null;

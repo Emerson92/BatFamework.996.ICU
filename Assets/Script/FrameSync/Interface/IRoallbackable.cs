@@ -9,5 +9,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Interface
         void TakeSnapshot(SnapshotWriter writer);
 
         void RollbackTo(SnapshotReader reader);
+
+        void DistributeSnapshot(SnapshotReader reader);
     }
 }

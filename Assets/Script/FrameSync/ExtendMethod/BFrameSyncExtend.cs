@@ -8,7 +8,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.ExtendMethod
     public static partial class ExtendMethod
     {
 
-        public static void EnableSync(this ISyncComponent i)
+        public static void EnableSync(this ISyncComponent i) 
         {
             BFrameSyncSystem.SyncObjectGroup.Add(i);
         }

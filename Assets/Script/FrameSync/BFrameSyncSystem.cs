@@ -32,18 +32,21 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
         public override void FrameLockLogic(int frameConut)
         {
             LocalLogicUpdate(frameConut);////for local logic code
-            TimeMachineInstance.TakeSnapshot();/////Start to take snapshot
+            TimeMachineInstance.TakeSnapshot();/////every frame save the component
         }
 
         private object NetworkLogicUpdate(object data)
         {
+           
             BNFrameCommdend Ncmd = (BNFrameCommdend)data;
+            uint frameIndex = (uint)Ncmd.NFrameNum;
+            TimeMachineInstance.GetFrameSnapshot(frameIndex);///////Dispatch the snapshot to each component;
             for (int i = 0; i < SyncObjectGroup.Count; i++)
             {
                 for (int j = 0; j < Ncmd.OperateCmd.Count;j++) {
                     if (SyncObjectGroup[i].GetComponentType() == Ncmd.OperateCmd[j].OperateType) {
-                        if (SyncObjectGroup[i].UpdateByNet((uint)Ncmd.NFrameNum, Ncmd.OperateCmd[j].cmd)) {
-                            TimeMachineInstance.RollbackTo((uint)Ncmd.NFrameNum);//////Rollback the Frame beacause one local frame can not match the frame from server
+                        if (SyncObjectGroup[i].UpdateByNet(frameIndex, Ncmd.OperateCmd[j].cmd)) {
+                            TimeMachineInstance.RollbackTo(frameIndex);//////Rollback the Frame beacause one local frame can not match the frame from server
                             return null;
                         }
                     }

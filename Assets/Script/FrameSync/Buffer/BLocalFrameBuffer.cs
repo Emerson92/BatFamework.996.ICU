@@ -4,7 +4,7 @@ using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct;
 using UnityEngine;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer {
 
-    public class BLocalFrameBuffer : BFrameBufferCore<BFrameCommend>
+    public class BLocalFrameBuffer<T> : BFrameBufferCore<T> where T :class
     {
 
         public BLocalFrameBuffer(uint cacheNum) : base(cacheNum)
@@ -12,12 +12,12 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer {
 
         }
 
-        public override void EnQuene(BFrame<BFrameCommend> data)
+        public override void EnQuene(BFrame<T> data)
         {
             bufferQuene.Add(data);
         }
 
-        public override BFrame<BFrameCommend>[] DeQuenes(uint frameIndex, bool force = false)
+        public override BFrame<T>[] DeQuenes(uint frameIndex, bool force = false)
         {
             return PushBuffer();
         }
@@ -32,7 +32,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer {
             base.Dispose();
         }
 
-        private BFrame<BFrameCommend>[] PushBuffer()
+        private BFrame<T>[] PushBuffer()
         {
             for (int i = 0; i < CacheNum; i++)
             {

@@ -11,7 +11,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Snapshot.BStruct
 
         public int ComponentID;
 
-        public BSyncComponentCore.COMPONENTLIFECYCLE statue;
+        public COMPONENTLIFECYCLE statue;
 
         public FixVector3 Position;
 
@@ -19,7 +19,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Snapshot.BStruct
 
         public FixVector3 Direction;
 
-        public BFrameCommend Cmd;
+        public BFrameTransformCmd Cmd;
     }
 
 }

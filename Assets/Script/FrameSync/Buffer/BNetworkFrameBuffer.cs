@@ -6,7 +6,7 @@ using UnityEngine;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer
 {
 
-    public class BNetworkFrameBuffer : BFrameBufferCore<BFrameCommend>
+    public class BNetworkFrameBuffer<T> : BFrameBufferCore<T> where T :class
     {
 
         public BNetworkFrameBuffer(uint cacheNum = 1) : base(cacheNum)
@@ -14,7 +14,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer
 
         }
 
-        public override BFrame<BFrameCommend>[] DeQuenes(uint frameIndex, bool force = false)
+        public override BFrame<T>[] DeQuenes(uint frameIndex, bool force = false)
         {
             if (CheckIsNeedPushBuffer(frameIndex))
             {
@@ -28,9 +28,9 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer
             return null;
         }
 
-        public override BFrame<BFrameCommend>? DeQuene(uint frameIndex, bool force = false)
+        public override BFrame<T>? DeQuene(uint frameIndex, bool force = false)
         {
-            BFrame<BFrameCommend>? cmdFrame = base.DeQuene(frameIndex, force);
+            BFrame<T>? cmdFrame = base.DeQuene(frameIndex, force);
             if (frameIndex == cmdFrame.GetValueOrDefault().FrameNum) {
 
                 return cmdFrame;
@@ -42,7 +42,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer
         }
 
 
-        public override void EnQuene(BFrame<BFrameCommend> data)
+        public override void EnQuene(BFrame<T> data)
         {
             AddAndSortBufferQuene(data);
         }
@@ -52,7 +52,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer
             base.Dispose();
         }
 
-        private BFrame<BFrameCommend>[] PushBuffer()
+        private BFrame<T>[] PushBuffer()
         {
             for (int i = 0; i < CacheNum; i++)
             {
@@ -62,7 +62,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer
             return cacheBuffer;
         }
 
-        private void AddAndSortBufferQuene(BFrame<BFrameCommend> frame)
+        private void AddAndSortBufferQuene(BFrame<T> frame)
         {
             bool isNewFrame = true;
             for (int i = 0; i < bufferQuene.Count; i++)

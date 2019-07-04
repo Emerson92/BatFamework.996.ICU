@@ -279,6 +279,11 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Utility
             return new EndOfStreamException();
         }
 
+        public void Reset() {
+            _ioIndex = 0;
+            _available = 0;
+            _position = 0;
+        }
 
         public void clear()
         {

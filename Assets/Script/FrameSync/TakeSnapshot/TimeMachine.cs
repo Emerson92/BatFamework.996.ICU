@@ -64,8 +64,32 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Snapshot
             snapshotWriter.Flush();
         }
 
+        /// <summary>
+        /// get the current frame snapshot
+        /// </summary>
+        /// <param name="frameIndex"></param>
+        public void GetFrameSnapshot(uint frameIndex) {
+            if (frameIndex >= frameSnapshot.Count)
+            {
+                Debug.Log("try get this frame,but frame's count is less than Server frame:" + frameIndex);
+                for (int i = 0; i < ComponentList.Count; i++)
+                {
+                    ComponentList[i].DistributeSnapshot(null);
+                }
+            }
+            else {
+                MemoryStream curSnapshot = frameSnapshot[(int)frameIndex];
+                snapshotReader.Init(curSnapshot);
+                for (int i = 0; i < ComponentList.Count; i++)
+                {
+                    ComponentList[i].DistributeSnapshot(snapshotReader);
+                }
+                snapshotReader.Reset();
+            }
+        }
+
         public void RollbackTo(uint frameIndex)
-        {
+        { 
             if (frameIndex >= frameSnapshot.Count) {
                 Debug.Log("try roll back to 没跑的过帧:"+frameIndex);
                 return;

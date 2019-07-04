@@ -9,24 +9,27 @@ using THEDARKKNIGHT.SyncSystem.FrameSync.Utility;
 using UnityEngine;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
-    public abstract class BSyncComponentCore : ISyncComponent,IRoallbackable, IFrameConfirm
+    public enum SYNCTYPE
     {
-        public enum SYNCTYPE {
-            NULL,
-            TRANSFORM,
-            POSITION,
-            ROTATION,
-            SCALE,
-            ANIMATION,
-            ANIMATOR,
-            OTHER
-        }
+        NULL,
+        TRANSFORM,
+        POSITION,
+        ROTATION,
+        SCALE,
+        ANIMATION,
+        ANIMATOR,
+        OTHER
+    }
 
-        public enum COMPONENTLIFECYCLE {
-            LIVE,
-            HIDDEN,
-            DEATH
-        }
+    public enum COMPONENTLIFECYCLE
+    {
+        LIVE,
+        HIDDEN,
+        DEATH
+    }
+
+    public abstract class BSyncComponentCore<T> : ISyncComponent,IRoallbackable where T : class
+    {
 
         public COMPONENTLIFECYCLE Statue;
 
@@ -37,9 +40,9 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
         private uint ComponentID;
 
-        protected BNetworkFrameBuffer NetworkFrameBuffer = new BNetworkFrameBuffer(1);
+        protected BNetworkFrameBuffer<T> NetworkFrameBuffer = new BNetworkFrameBuffer<T>(1);
 
-        protected BLocalFrameBuffer LocalFrameBuffer = new BLocalFrameBuffer(1);
+        protected BLocalFrameBuffer<T> LocalFrameBuffer = new BLocalFrameBuffer<T>(1);
 
         public BSyncComponentCore(uint componentID,SYNCTYPE type) {
             this.EnableSync();
@@ -63,7 +66,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
         private BNOperateCommend CreateCmdLogic(int frameIndex)
         {
             ////TODO PS: Warning ,there has a trap, you need to pay a attention
-            BFrame<BFrameCommend>? frames = LocalFrameBuffer.DeQuene((uint)frameIndex);
+            BFrame<T>? frames = LocalFrameBuffer.DeQuene((uint)frameIndex);
             BNOperateCommend cmd = new BNOperateCommend();
             cmd.ComponentID = ComponentID;/////Wait to create new ID;
             cmd.OperateType = componentType;
@@ -71,21 +74,26 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             return cmd;
         }
 
-        protected BFrameCommend GetNetworkCmd(uint frameIndex) {
-            BFrame<BFrameCommend>?  frames = NetworkFrameBuffer.DeQuene(frameIndex);
+        protected T GetNetworkCmd(uint frameIndex) {
+            BFrame<T>?  frames = NetworkFrameBuffer.DeQuene(frameIndex);
             return frames?.Cmd;
         }
 
-        public virtual bool UpdateByNet(uint NframeCount, BFrameCommend data)
+        public virtual bool UpdateByNet(uint NframeIndex, object data)
         {
             ////TODO do some Update by net
-            BFrame<BFrameCommend> Scmd = new BFrame<BFrameCommend>()
+            if (FrameConfirm(NframeIndex, data))////////Check the server frame,see whether we need to rollback our status
             {
-                FrameNum = NframeCount,
-                Cmd = data
-            };
-            NetworkFrameBuffer.EnQuene(Scmd);
-            return false;
+                BFrame<T> Scmd = new BFrame<T>()
+                {
+                    FrameNum = NframeIndex,
+                    Cmd = (T)data
+                };
+                NetworkFrameBuffer.EnQuene(Scmd);
+                return false;
+            }
+            else
+                return true;
         }
 
         public virtual void SetComponentType(SYNCTYPE type) {componentType = type;}
@@ -96,12 +104,17 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
 
         public virtual void Dispose() { this.DisableSync();Statue = COMPONENTLIFECYCLE.DEATH;}
 
-        public virtual bool FrameConfirm<T>(T data) where T : class
-        {
-            return false;
-        }
+        /// <summary>
+        /// in order to  confirm the local predicting frame is match that frame from the server 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public abstract bool FrameConfirm(uint NframeIndex,object data);
 
-        //public virtual bool FrameConfirm(BFrameCommend data) {return false;}
-
+        /// <summary>
+        /// it dispatched snapshot by Timemachine 
+        /// </summary>
+        /// <param name="reader"></param>
+        public abstract void DistributeSnapshot(SnapshotReader reader);
     }
 }
