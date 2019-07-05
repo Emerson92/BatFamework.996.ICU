@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using THEDARKKNIGHT.EventDefine;
 using THEDARKKNIGHT.EventSystem;
 using THEDARKKNIGHT.Interface;
-using THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Interface;
-using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct;
 using UnityEngine;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Snapshot;
+using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct.NetworkProtocol;
+using THEDARKKNIGHT.SyncSystem.FrameSync.Utility;
 
-namespace THEDARKKNIGHT.SyncSystem.FrameSync {
+namespace THEDARKKNIGHT.SyncSystem.FrameSync
+{
 
     public class BFrameSyncSystem : BFrameSyncCore,ILifeCycle
     {
@@ -90,8 +89,8 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
         /// <param name="frameCmd"></param>
         private void SendCommendToServer(BNFrameCommdend frameCmd)
         {
-           /////TODO Send it Msg to Server
-           
+            /////TODO Send it Msg to Server
+            byte[] cmdBytes= BFrameSyncUtility.NSeralizableClassTobytes(frameCmd);
         }
 
         void ILifeCycle.BAwake(MonoBehaviour main){

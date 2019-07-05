@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer;
-using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct;
+using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct.NetworkProtocol;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Utility;
 using UnityEngine;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync.Component
@@ -45,7 +43,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Component
             LtargetScale = scale;
         }
 
-        public override bool UpdateByNet(uint NframeCount, object data)
+        public override bool UpdateByNet(uint NframeCount, byte[] data)
         {
             if (base.UpdateByNet(NframeCount, data))
             {
@@ -161,7 +159,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Component
             TargetTransform.localScale = reader.ReadFixVector3().ToVector3();////Scale
         }
 
-        public override bool FrameConfirm(uint NframeIndex, object data)
+        public override bool FrameConfirm(uint NframeIndex, BFrameTransformCmd data)
         {
             BFrameTransformCmd Scmd = (BFrameTransformCmd)data;
             if (!checkSnapshot.FreshData) {

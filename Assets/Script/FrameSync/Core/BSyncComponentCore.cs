@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer;
+﻿using THEDARKKNIGHT.SyncSystem.FrameSync.BBuffer;
 using THEDARKKNIGHT.SyncSystem.FrameSync.ExtendMethod;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Interface;
-using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Utility;
-using UnityEngine;
-namespace THEDARKKNIGHT.SyncSystem.FrameSync {
+using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct.NetworkProtocol;
+
+namespace THEDARKKNIGHT.SyncSystem.FrameSync
+{
 
     public enum SYNCTYPE
     {
@@ -70,7 +68,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             BNOperateCommend cmd = new BNOperateCommend();
             cmd.ComponentID = ComponentID;/////Wait to create new ID;
             cmd.OperateType = componentType;
-            cmd.cmd         = frames?.Cmd; ////if you get cache much commdend ,theose code make you feel trouble;
+            cmd.cmd = BFrameSyncUtility.NSeralizableClassTobytes<T>(frames?.Cmd);////if you get cache much commdend ,theose code make you feel trouble;
             return cmd;
         }
 
@@ -79,15 +77,16 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
             return frames?.Cmd;
         }
 
-        public virtual bool UpdateByNet(uint NframeIndex, object data)
+        public virtual bool UpdateByNet(uint NframeIndex, byte[] data)
         {
             ////TODO do some Update by net
-            if (FrameConfirm(NframeIndex, data))////////Check the server frame,see whether we need to rollback our status
+            T SClass= BFrameSyncUtility.NBytesToSeralizableClass<T>(data);
+            if (FrameConfirm(NframeIndex, SClass))////////Check the server frame,see whether we need to rollback our status
             {
                 BFrame<T> Scmd = new BFrame<T>()
                 {
                     FrameNum = NframeIndex,
-                    Cmd = (T)data
+                    Cmd = SClass
                 };
                 NetworkFrameBuffer.EnQuene(Scmd);
                 return false;
@@ -109,7 +108,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public abstract bool FrameConfirm(uint NframeIndex,object data);
+        public abstract bool FrameConfirm(uint NframeIndex,T data);
 
         /// <summary>
         /// it dispatched snapshot by Timemachine 

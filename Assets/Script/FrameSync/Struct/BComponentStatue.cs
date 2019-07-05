@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct;
-using UnityEngine;
+using THEDARKKNIGHT.SyncSystem.FrameSync.BStruct.NetworkProtocol;
 namespace THEDARKKNIGHT.SyncSystem.FrameSync.Snapshot.BStruct
 {
     [Serializable]

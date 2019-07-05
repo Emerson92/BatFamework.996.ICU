@@ -1,8 +1,8 @@
 ﻿
 using System;
 using System.IO;
-
-public partial struct Fix64 : IEquatable<Fix64>, IComparable<Fix64> {
+[Serializable]
+public struct Fix64 : IEquatable<Fix64>, IComparable<Fix64> {
     readonly long m_rawValue;
 
     public static readonly decimal Precision = (decimal)(new Fix64(1L));
@@ -460,7 +460,7 @@ public partial struct Fix64 : IEquatable<Fix64>, IComparable<Fix64> {
     }
     #endregion
 }
-
+[Serializable]
 public struct FixVector3
 {
     public Fix64 x;
