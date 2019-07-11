@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
 using THEDARKKNIGHT.Log;
-namespace THEDARKKNIGHT.TcpSocket {
+namespace THEDARKKNIGHT.Network.TcpSocket {
 
 
     public abstract class TcpSocketClient
@@ -66,7 +66,7 @@ namespace THEDARKKNIGHT.TcpSocket {
 
         public abstract void ClientConnectClose(string IPAddress);
 
-        public void SendMsg(string msg) {
+        public void SendMsg(byte[] msg) {
             CloseClients.Clear();
             foreach (KeyValuePair<string, StateObject> item in ClientDic)
             {
@@ -86,10 +86,9 @@ namespace THEDARKKNIGHT.TcpSocket {
             });
         }
 
-        private void Send(Socket handler, String data)
+        private void Send(Socket handler, byte[] data)
         {
-            byte[] byteData = Encoding.UTF8.GetBytes(data);
-            handler.BeginSend(byteData, 0, byteData.Length, 0, null, handler);
+            handler.BeginSend(data, 0, data.Length, 0, null, handler);
         }
 
         private EndPoint CreateRemoteIP(string ipAddress, int port)

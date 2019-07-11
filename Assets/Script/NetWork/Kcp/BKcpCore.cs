@@ -260,7 +260,7 @@ namespace THEDARKKNIGHT.Network.Kcp
         }
 
         /// <summary>
-        /// 
+        /// 接受
         /// </summary>
         /// <param name="kcp"></param>
         /// <param name="buffer"></param>
@@ -330,6 +330,11 @@ namespace THEDARKKNIGHT.Network.Kcp
             return ikcp_setmtu(kcp, mtu);
         }
 
+        /// <summary>
+        /// 设置回调函数
+        /// </summary>
+        /// <param name="kcp">kcp对象</param>
+        /// <param name="output">回调函数</param>
         public static void Setoutput(IntPtr kcp, kcp_output output)
         {
             if (kcp == IntPtr.Zero)
@@ -339,6 +344,12 @@ namespace THEDARKKNIGHT.Network.Kcp
             ikcp_setoutput(kcp, output);
         }
 
+        /// <summary>
+        /// 以一定频率调用 ikcp_update来更新 kcp状态，并且传入当前时钟（毫秒单位）
+        /// 如 10ms调用一次，或用 ikcp_check确定下次调用 update的时间不必每次调用
+        /// </summary>
+        /// <param name="kcp">kcp对象</param>
+        /// <param name="current">当前时钟（毫秒单位）</param>
         public static void Update(IntPtr kcp, uint current)
         {
             if (kcp == IntPtr.Zero)

@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using THEDARKKNIGHT.TcpSocket;
-using UnityEngine;
-using THEDARKKNIGHT.Log;
-namespace THEDARKKNIGHT.TcpSocket {
+﻿using THEDARKKNIGHT.Log;
+namespace THEDARKKNIGHT.Network.TcpSocket
+{
     public class TcpSocketClientMgr : TcpSocketClient
     {
 
@@ -27,7 +24,6 @@ namespace THEDARKKNIGHT.TcpSocket {
                 this.Messger = Messger;
                 Messger.SetSendMsgFunction(SendMsg);//给予发送消息的权利
             }
-           
         }
 
         public void SetHeartbeat(HeartbeatSolver Heartbeat)

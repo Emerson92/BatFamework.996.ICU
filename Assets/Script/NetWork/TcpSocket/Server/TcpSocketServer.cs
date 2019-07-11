@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using UnityEngine;
 using THEDARKKNIGHT.Log;
-namespace THEDARKKNIGHT.TcpSocket
+namespace THEDARKKNIGHT.Network.TcpSocket
 {
 
     public abstract class TcpSocketServer
@@ -22,7 +20,7 @@ namespace THEDARKKNIGHT.TcpSocket
             Destory
         }
 
-        public static NetWorkLife TcpLifeCycle;
+        public  NetWorkLife TcpLifeCycle;
 
         private ManualResetEvent allDone;
 
@@ -126,7 +124,7 @@ namespace THEDARKKNIGHT.TcpSocket
 
         public abstract void ClientConnectClose(StateObject state);
 
-        public void SendToAll(String data)
+        public void SendToAll(byte[] data)
         {
             CloseClients.Clear();
             foreach (KeyValuePair<string, StateObject> item in ClientDic)
@@ -165,10 +163,9 @@ namespace THEDARKKNIGHT.TcpSocket
             }
         }
 
-        private void Send(Socket handler, String data)
+        private void Send(Socket handler, byte[] data)
         {
-            byte[] byteData = Encoding.UTF8.GetBytes(data);
-            handler.BeginSend(byteData, 0, byteData.Length, 0, null, handler);
+            handler.BeginSend(data, 0, data.Length, 0, null, handler);
         }
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using THEDARKKNIGHT.BatCore;
 using UnityEngine;
-namespace THEDARKKNIGHT
+namespace THEDARKKNIGHT.Network
 {
     public class StateObjectPool :BatSingletion<StateObjectPool>
     {

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using UnityEngine;
-namespace THEDARKKNIGHT.TcpSocket
+namespace THEDARKKNIGHT.Network.TcpSocket
 {
 
     /// <summary>
@@ -12,14 +8,14 @@ namespace THEDARKKNIGHT.TcpSocket
     public class MessagerDataSender
     {
 
-        Action<string> SendMsgToClient;
+        Action<byte[]> SendMsgToClient;
 
 
         public MessagerDataSender() {
 
         }
 
-        public void SetSendMsgFunction(Action<string> function) {
+        public void SetSendMsgFunction(Action<byte[]> function) {
             this.SendMsgToClient = function;
         }
 
@@ -27,7 +23,7 @@ namespace THEDARKKNIGHT.TcpSocket
 
         }
 
-        public void SendMsg(string msg) {
+        public void SendMsg(byte[] msg) {
             if (SendMsgToClient != null)
                 SendMsgToClient(msg);
         }

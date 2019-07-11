@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-namespace THEDARKKNIGHT.TcpSocket
+namespace THEDARKKNIGHT.Network.TcpSocket
 {
 
     /// <summary>

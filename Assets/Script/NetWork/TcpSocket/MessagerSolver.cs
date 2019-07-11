@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using THEDARKKNIGHT.Interface;
+﻿using THEDARKKNIGHT.Interface;
 using THEDARKKNIGHT.ThreadHelper;
-using UnityEngine;
 
-namespace THEDARKKNIGHT.TcpSocket
+namespace THEDARKKNIGHT.Network.TcpSocket
 {
 
     public class MessagerSolver : IMessagerParseSolver

@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using UnityEngine;
-namespace THEDARKKNIGHT
+namespace THEDARKKNIGHT.Network
 {
 
     public class HeartbeatSolver
     {
 
-        public Action<string> SendMsgFunction;
+        public Action<byte[]> SendMsgFunction;
 
-        private string HeartbeatMsg;
+        private byte[] HeartbeatMsg;
 
         private int Period;
 
@@ -32,11 +33,11 @@ namespace THEDARKKNIGHT
 
         public HeartbeatSolver SetHeartbeatMsg(string msg)
         {
-            this.HeartbeatMsg = msg;
+            this.HeartbeatMsg = Encoding.UTF8.GetBytes(msg);
             return this;
         }
 
-        public void SetSendMsgAuthority(Action<string> authority)
+        public void SetSendMsgAuthority(Action<byte[]> authority)
         {
             this.SendMsgFunction = authority;
         }

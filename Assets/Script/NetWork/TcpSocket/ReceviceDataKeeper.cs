@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 using THEDARKKNIGHT.Interface;
-using UnityEngine;
-namespace THEDARKKNIGHT.TcpSocket
+namespace THEDARKKNIGHT.Network.TcpSocket
 {
 
     /// <summary>
