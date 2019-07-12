@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using THEDARKKNIGHT.Interface;
@@ -6,16 +7,21 @@ using THEDARKKNIGHT.Network.Interface;
 using UnityEngine;
 namespace THEDARKKNIGHT.Network.Kcp {
 
-    public class BKcpHandler : INetworkComp,ILifeCycle
+    public class BKcpHandler : IKcpComp,ILifeCycle
     {
+
+        private IntPtr kcp;
 
         public BKcpHandler() {
             this.Enable().SetLifeCycle(LifeCycleTool.LifeType.Update,true);
         }
 
-        public void InitSuccess(string IPAddress)
+        public void InitSuccess(string IPAddress,uint listernPort,uint sendPort)
         {
-            
+            //this.kcp = BKcpCore.Create(this.RemoteConn, new IntPtr(this.LocalConn));
+            //BKcpCore.Nodelay(this.kcp, 1, 10, 1, 1);
+            //BKcpCore.Wndsize(this.kcp, 256, 256);
+            //BKcpCore.Setmtu(this.kcp, 470);
         }
 
         public byte[] ReceviceData(byte[] data, int length, string IPAddress)

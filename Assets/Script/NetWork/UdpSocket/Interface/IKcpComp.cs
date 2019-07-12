@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 namespace THEDARKKNIGHT.Network.Interface {
-    public interface INetworkComp
+    public interface IKcpComp
     {
 
-        void InitSuccess(string IPAddress);
+        void InitSuccess(string IPAddress, uint listernPort, uint sendPort);
 
         byte[] ReceviceData(byte[] data, int length, string IPAddress);
 

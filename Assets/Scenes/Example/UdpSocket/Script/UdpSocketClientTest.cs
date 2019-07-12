@@ -7,7 +7,7 @@ using UnityEngine;
 namespace THEDARKKNIGHT.Example.UdpSocket
 {
 
-    public class UdpSocketTest : MonoBehaviour
+    public class UdpSocketClientTest : MonoBehaviour
     {
         UdpSocketClientMgr UdpClient;
 
@@ -20,9 +20,10 @@ namespace THEDARKKNIGHT.Example.UdpSocket
         // Use this for initialization
         void Start()
         {
-            UdpClient = new UdpSocketClientMgr(IPAddress, ListernPort, SenderPort);
+            UdpClient = new UdpSocketClientMgr(IPAddress, ListernPort);
             UdpClient.MessageKeeper = new MessageKeeper();
             UdpClient.MessageSend = new MessageSender();
+            UdpClient.ConnectToServer(IPAddress, SenderPort);
         }
 
         // Update is called once per frame
