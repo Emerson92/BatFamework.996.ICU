@@ -21,7 +21,7 @@ namespace THEDARKKNIGHT.Example.UdpSocket
         void Start()
         {
             UdpClient = new UdpSocketClientMgr(IPAddress, ListernPort);
-            UdpClient.MessageKeeper = new MessageKeeper();
+            UdpClient.MessageKeeper = new MessageKeeper(new UMessageSolver());
             UdpClient.MessageSend = new MessageSender();
             UdpClient.ConnectToServer(IPAddress, SenderPort);
         }

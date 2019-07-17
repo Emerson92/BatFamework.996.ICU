@@ -20,6 +20,10 @@ namespace THEDARKKNIGHT.Network.UdpSocket
         void Dispose();
 
         void ConnectToserver(EndPoint sendIPAddress);
+
+        void ConnectStatusChange(UdpSocketClient.CONNECTSTATUS status);
+
+        void SetConnectStatus(Action<UdpSocketClient.CONNECTSTATUS> status);
     }
 
 }

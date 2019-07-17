@@ -23,6 +23,10 @@ namespace THEDARKKNIGHT.Network.UdpSocket.Component
 
         private System.Timers.Timer timerCaculator;
 
+        private UdpSocketClient.CONNECTSTATUS currentStatus;
+
+        private Action<UdpSocketClient.CONNECTSTATUS> StatusChangeFunction;
+
         public MessageSender() {
             memoryStream = UdpSocketClientMgr.memoryStream.GetStream("message", ushort.MaxValue);
         }
@@ -49,7 +53,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket.Component
             timerCaculator.Enabled = true;
             timerCaculator.Interval = 200;
             timerCaculator.Elapsed += new System.Timers.ElapsedEventHandler((object source, ElapsedEventArgs e) => {
-                if (UdpSocketClientMgr.ISCONNECTED)///Check if connect is establish
+                if (currentStatus == UdpSocketClient.CONNECTSTATUS.CONNECTED)///Check if connect is establish
                     timerCaculator.Stop();
                 else
                     TryToConnectServer();
@@ -81,6 +85,16 @@ namespace THEDARKKNIGHT.Network.UdpSocket.Component
                 timerCaculator = null;
             }
                
+        }
+
+        public void ConnectStatusChange(UdpSocketClient.CONNECTSTATUS status)
+        {
+            this.currentStatus = status;
+        }
+
+        public void SetConnectStatus(Action<UdpSocketClient.CONNECTSTATUS> callback)
+        {
+            this.StatusChangeFunction = callback;
         }
     }
 

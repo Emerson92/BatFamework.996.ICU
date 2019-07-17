@@ -69,12 +69,11 @@ namespace THEDARKKNIGHT.Network.UdpSocket {
 
         public override void InitSuccess(string IPAddress, uint listernPort, uint sendPort)
         {
-            if (comp != null) comp.InitSuccess(IPAddress, listernPort, sendPort);
+
         }
 
         public override void ReceviceData(byte[] data, int length, string IPAddress)
         {
-            if (comp != null) data = comp.ReceviceData(data, length, IPAddress);
             if (keep != null) keep.MessageDataRecevice(data, length, IPAddress);
         }
 

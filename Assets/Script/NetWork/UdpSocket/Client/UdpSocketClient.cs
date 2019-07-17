@@ -10,6 +10,14 @@ namespace THEDARKKNIGHT.Network.UdpSocket
 
     public abstract class UdpSocketClient
     {
+        public enum CONNECTSTATUS {
+            NONE,
+            CONNECTING,
+            CONNECTED,
+            DISCONNECTED,
+            FINISH,
+        }
+
         public int ListenNum = 10;
 
         public StateObject SocketClient;

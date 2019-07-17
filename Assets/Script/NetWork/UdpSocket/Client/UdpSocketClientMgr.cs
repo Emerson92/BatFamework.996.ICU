@@ -26,6 +26,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket
             set {
                 keep = value;
                 MessageKeeper.SetCurrentID(ID);
+                MessageKeeper.SetConnectStatus(SetConnectStatus);
             }
             get {
                 return keep;
@@ -37,6 +38,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket
                 send = value;
                 send.SetCurrentID(ID);
                 send.SetMessageSend(SendMsg);
+                send.SetConnectStatus(SetConnectStatus);
             }
             get {
                 return send;
@@ -45,8 +47,8 @@ namespace THEDARKKNIGHT.Network.UdpSocket
 
         public IKcpComp Comp {
             set {
-                if(send != null) send.SetKcpComponent(value);
-                if(keep != null) keep.SetKcpComponent(value);
+                if (send != null) send.SetKcpComponent(value);
+                if (keep != null) keep.SetKcpComponent(value);
                 kcp = value;
             }
             get {
@@ -54,10 +56,21 @@ namespace THEDARKKNIGHT.Network.UdpSocket
             }
         }
 
+        private CONNECTSTATUS status;
+
         /// <summary>
         /// Is Coonecting to server
         /// </summary>
-        public static bool ISCONNECTED = false;
+        public CONNECTSTATUS ISCONNECTED {
+            set {
+                send.ConnectStatusChange(status);
+                keep.ConnectStatusChange(status);
+            }
+            get {
+                return status;
+            }
+
+        }
 
         public static RecyclableMemoryStreamManager memoryStream;
 
@@ -83,24 +96,21 @@ namespace THEDARKKNIGHT.Network.UdpSocket
 
         public override void InitSuccess(string IPAddress, uint listernPort)
         {
-            //if (comp != null) comp.InitSuccess(IPAddress, listernPort, sendPort);
+            
         }
 
         public override void ReceviceData(byte[] data, int length, string IPAddress)
         {
-            //if (comp != null) data = comp.ReceviceData(data, length, IPAddress);
             if (keep != null) keep.MessageDataRecevice(data, length, IPAddress);
         }
 
         public override byte[] SendData(byte[] data)
         {
-            //if (comp != null) data = comp.Send(data);
             return data;
         }
 
         public override void Dispose()
         {
-            //if (comp != null) comp.Dispose();
             send.Dispose();
             keep.Dispose();
         }
@@ -108,14 +118,13 @@ namespace THEDARKKNIGHT.Network.UdpSocket
         public override void ConnectToServer(string IP, int sendPort)
         {
             base.ConnectToServer(IP, sendPort);
-            //using (MemoryStream s = new MemoryStream()) {
-            //    byte[] buffer = s.GetBuffer();
-            //    buffer.WriteTo(0,KcpProtocalType.SYN);
-            //    buffer.WriteTo(1, ID);
-            //    return buffer;
-            //}
             send.ConnectToserver(sendIPAddress);
         }
+
+        public void SetConnectStatus(CONNECTSTATUS status) {
+            this.ISCONNECTED = status;
+        }
+
     }
 
 
