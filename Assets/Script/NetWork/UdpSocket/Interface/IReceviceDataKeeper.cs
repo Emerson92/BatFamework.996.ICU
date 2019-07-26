@@ -12,6 +12,8 @@ namespace THEDARKKNIGHT.Network.UdpSocket
 
         void MessageDataRecevice(byte[] data, int length, string IPAddress);
 
+        void SetSendComp(IMessageSender sender);
+
         void SetKcpComponent(IKcpComp comp);
 
         void ConnectStatusChange(UdpSocketClient.CONNECTSTATUS status);

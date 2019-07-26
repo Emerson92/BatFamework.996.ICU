@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using THEDARKKNIGHT.Network.Interface;
@@ -21,7 +22,13 @@ namespace THEDARKKNIGHT.Network.UdpSocket.Component {
 
         private IMessageSolver messageSolver;
 
-        private MessageKeeper() { }
+        private IMessageSender sendComp;
+
+        private readonly MemoryStream memoryStream;
+
+        private MessageKeeper() {
+            memoryStream = UdpSocketClientMgr.memoryStream.GetStream("message", ushort.MaxValue);
+        }
 
         public MessageKeeper(IMessageSolver solver) {
             this.messageSolver = solver;
@@ -37,6 +44,12 @@ namespace THEDARKKNIGHT.Network.UdpSocket.Component {
                 case KcpProtocalType.SYN://Connecting msg
                     Debug.Log("Recevice the connected requeset message!");
                     serverID = BitConverter.ToUInt32(data, 1);
+                    byte[] buffer = this.memoryStream.GetBuffer();
+                    buffer.WriteTo(0, KcpProtocalType.ACK);
+                    buffer.WriteTo(1, currentID);
+                    buffer.WriteTo(5, serverID);
+                    ///Start to send ACK Msg
+                    if (sendComp != null) sendComp.SendMsg(buffer);
                     StatusChangeFunction?.Invoke(UdpSocketClient.CONNECTSTATUS.CONNECTING);
                     break;
                 case KcpProtocalType.ACK://Connecting Ack
@@ -102,6 +115,11 @@ namespace THEDARKKNIGHT.Network.UdpSocket.Component {
         public void SetConnectStatus(Action<UdpSocketClient.CONNECTSTATUS> callback)
         {
             this.StatusChangeFunction = callback;
+        }
+
+        public void SetSendComp(IMessageSender sender)
+        {
+           this.sendComp = sender
         }
     }
 

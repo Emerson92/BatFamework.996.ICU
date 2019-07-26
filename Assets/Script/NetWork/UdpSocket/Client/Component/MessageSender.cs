@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Timers;
+using THEDARKKNIGHT.Log;
 using THEDARKKNIGHT.Network.Interface;
 using THEDARKKNIGHT.Network.UdpSocket.Protocl;
 using UnityEngine;
@@ -17,7 +19,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket.Component
 
         private IKcpComp kcpComp;
 
-        private Action<byte[]> callblack;
+        private Action<byte[], int> sendMsg;
 
         private readonly MemoryStream memoryStream;
 
@@ -25,25 +27,43 @@ namespace THEDARKKNIGHT.Network.UdpSocket.Component
 
         private UdpSocketClient.CONNECTSTATUS currentStatus;
 
-        private Action<UdpSocketClient.CONNECTSTATUS> StatusChangeFunction;
+        private Action<UdpSocketClient.CONNECTSTATUS> statusChangeFunction;
 
-        public MessageSender() {
+        public MessageSender()
+        {
             memoryStream = UdpSocketClientMgr.memoryStream.GetStream("message", ushort.MaxValue);
         }
 
         public void SendMsg(byte[] msg)
         {
-            if (callblack != null) callblack(msg);
+            if (kcpComp.GetWaitsnd())
+            {
+                if (kcpComp != null) kcpComp.Send(msg); else BLog.Instance().Error("MessageSender kcpComp is NULL!");
+            }
+            else {
+                BLog.Instance().Error("MessageSender SendMsg GetWaitsnd is FALSE");
+            }
         }
 
-        public void SetMessageSend(Action<byte[]> sendMessageFuction)
+        public void SetMessageSend(Action<byte[], int> sendMessageFuction)
         {
-            this.callblack = sendMessageFuction;
+            this.sendMsg = sendMessageFuction;
         }
 
         public void SetKcpComponent(IKcpComp comp)
         {
             this.kcpComp = comp;
+            this.kcpComp.SetMsgSendFunction(StartToSendMsg);
+        }
+
+        private void StartToSendMsg(IntPtr bytes, int length)
+        {
+            byte[] buffer = this.memoryStream.GetBuffer();
+            buffer.WriteTo(0, KcpProtocalType.MSG);
+            // writer down the connectID;
+            buffer.WriteTo(1, this.currentID);
+            Marshal.Copy(bytes, buffer, 5, length);
+            if (sendMsg != null) sendMsg(buffer, length + 5); else BLog.Instance().Error("MessageSender sendMsg is NULL!");
         }
 
         public void ConnectToserver(EndPoint sendIPAddress)
@@ -52,7 +72,8 @@ namespace THEDARKKNIGHT.Network.UdpSocket.Component
             timerCaculator = new System.Timers.Timer();
             timerCaculator.Enabled = true;
             timerCaculator.Interval = 200;
-            timerCaculator.Elapsed += new System.Timers.ElapsedEventHandler((object source, ElapsedEventArgs e) => {
+            timerCaculator.Elapsed += new System.Timers.ElapsedEventHandler((object source, ElapsedEventArgs e) =>
+            {
                 if (currentStatus == UdpSocketClient.CONNECTSTATUS.CONNECTED)///Check if connect is establish
                     timerCaculator.Stop();
                 else
@@ -80,11 +101,12 @@ namespace THEDARKKNIGHT.Network.UdpSocket.Component
 
         public void Dispose()
         {
-            if (timerCaculator != null) {
+            if (timerCaculator != null)
+            {
                 timerCaculator.Stop();
                 timerCaculator = null;
             }
-               
+
         }
 
         public void ConnectStatusChange(UdpSocketClient.CONNECTSTATUS status)
@@ -94,7 +116,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket.Component
 
         public void SetConnectStatus(Action<UdpSocketClient.CONNECTSTATUS> callback)
         {
-            this.StatusChangeFunction = callback;
+            this.statusChangeFunction = callback;
         }
     }
 

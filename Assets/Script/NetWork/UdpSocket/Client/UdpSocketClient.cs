@@ -63,11 +63,11 @@ namespace THEDARKKNIGHT.Network.UdpSocket
             sendIPAddress = CreateRemoteIP(IP, sendPort);
         }
 
-        public void SendMsg(byte[] msg)
+        public void SendMsg(byte[] msg,int length)
         {
             try
             {
-                Send(SocketClient.workSocket, msg);
+                Send(SocketClient.workSocket, msg, length);
             }
             catch(Exception ex)
             {
@@ -85,6 +85,12 @@ namespace THEDARKKNIGHT.Network.UdpSocket
         {
             byte[] byteData = SendData(data);
             handler.SendTo(byteData, sendIPAddress);
+        }
+
+        private void Send(Socket handler, byte[] data,int length)
+        {
+            byte[] byteData = SendData(data);
+            handler.SendTo(byteData, length,SocketFlags.None,sendIPAddress);
         }
 
         private EndPoint CreateRemoteIP(string ipAddress, int port)

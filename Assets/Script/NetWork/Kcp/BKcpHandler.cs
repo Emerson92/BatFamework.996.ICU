@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using THEDARKKNIGHT.Interface;
+using THEDARKKNIGHT.Log;
 using THEDARKKNIGHT.Network.Interface;
 using THEDARKKNIGHT.Network.UdpSocket;
+using THEDARKKNIGHT.Network.UdpSocket.Protocl;
 using UnityEngine;
 namespace THEDARKKNIGHT.Network.Kcp {
 
@@ -16,6 +19,8 @@ namespace THEDARKKNIGHT.Network.Kcp {
         private IntPtr kcp;
 
         private Action<byte[]> messageCallback;
+
+        private Action<IntPtr, int> sendMsgCallback;
 
         private Action<SocketError> errorCallback;
 
@@ -27,11 +32,20 @@ namespace THEDARKKNIGHT.Network.Kcp {
 
         private bool IsDisposed = false;
 
+        private kcp_output kcpOutput;
+
+        public int KcpOutput(IntPtr bytes, int len, IntPtr kcp, IntPtr user)
+        {
+            if (sendMsgCallback != null) sendMsgCallback(bytes, len);else BLog.Instance().Error("BKcpHandler sendMsgCallback is NULL!");
+            return len;
+        }
+
         public BKcpHandler() {
             this.Enable().SetLifeCycle(LifeCycleTool.LifeType.Update,true);
             timeStart = TimeHelper.ClientNow();
             timeNow = (uint)(TimeHelper.ClientNow() - timeStart);
             memoryStream = UdpSocketClientMgr.memoryStream.GetStream("message", ushort.MaxValue);
+            kcpOutput = KcpOutput;
         }
 
         public void Init(uint localID, uint RemoteID) {
@@ -39,6 +53,7 @@ namespace THEDARKKNIGHT.Network.Kcp {
             BKcpCore.Nodelay(this.kcp, 1, 10, 1, 1);
             BKcpCore.Wndsize(this.kcp, 256, 256);
             BKcpCore.Setmtu(this.kcp, 470);
+            BKcpCore.Setoutput(this.kcp, kcpOutput);
         }
 
         public void ReceviceData(byte[] data, int offset, int length, string IPAddress)
@@ -77,7 +92,7 @@ namespace THEDARKKNIGHT.Network.Kcp {
                 //this.lastRecvTime = this.GetService().TimeNow;
 
                 //this.OnRead(this.memoryStream);
-                if (messageCallback != null) messageCallback(buffer);
+                if (messageCallback != null)messageCallback(buffer);else BLog.Instance().Error("BkcpHandler messageCallback is NULL");
             }
            
         }
@@ -138,6 +153,14 @@ namespace THEDARKKNIGHT.Network.Kcp {
             }
         }
 
+        public void SetMsgSendFunction(Action<IntPtr, int> send)
+        {
+            this.sendMsgCallback = send;
+        }
 
+        public bool GetWaitsnd()
+        {
+            if (BKcpCore.Waitsnd(this.kcp) > 256 * 2)return false;else return true;
+        }
     }
 }

@@ -27,6 +27,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket
                 keep = value;
                 MessageKeeper.SetCurrentID(ID);
                 MessageKeeper.SetConnectStatus(SetConnectStatus);
+                MessageKeeper.SetSendComp(MessageSend);
             }
             get {
                 return keep;
@@ -38,7 +39,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket
                 send = value;
                 send.SetCurrentID(ID);
                 send.SetMessageSend(SendMsg);
-                send.SetConnectStatus(SetConnectStatus);
+                send.SetConnectStatus(SetConnectStatus);  
             }
             get {
                 return send;
@@ -90,7 +91,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket
             if (Heartbeat != null)
             {
                 this.Heartbeat = Heartbeat;
-                this.Heartbeat.SetSendMsgAuthority(SendMsg);
+                this.Heartbeat.SetSendMsgAuthority(send.SendMsg);
             }
         }
 

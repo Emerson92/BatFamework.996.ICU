@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using THEDARKKNIGHT.Log;
 using UnityEngine;
 namespace THEDARKKNIGHT.Network
 {
@@ -56,8 +57,7 @@ namespace THEDARKKNIGHT.Network
             Debug.Log("SendHeartbeatMsg");
             try
             {
-                if (SendMsgFunction != null)
-                    SendMsgFunction(HeartbeatMsg);
+                if (SendMsgFunction != null)SendMsgFunction(HeartbeatMsg);else BLog.Instance().Error("HeartbeatSolver SendMsgFunction is NULL!");
             }
             catch (Exception ex) {
                 SendHeartbeatException(ex);

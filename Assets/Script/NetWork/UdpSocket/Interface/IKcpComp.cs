@@ -18,7 +18,11 @@ namespace THEDARKKNIGHT.Network.Interface {
 
         void SetMsgCallback(Action<byte[]> data);
 
+        void SetMsgSendFunction(Action<IntPtr, int> data);
+
         void OnError(Action<SocketError> error);
+
+        bool GetWaitsnd();
     }
 
 }

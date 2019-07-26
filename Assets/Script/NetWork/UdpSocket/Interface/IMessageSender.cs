@@ -11,7 +11,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket
     {
         void SetCurrentID(uint ID);
 
-        void SetMessageSend(Action<byte[]> sendMessageFuction);
+        void SetMessageSend(Action<byte[],int> sendMessageFuction);
 
         void SendMsg(byte[] msg);
 
