@@ -6,105 +6,183 @@ using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
 using THEDARKKNIGHT.Log;
-namespace THEDARKKNIGHT.Network.TcpSocket {
+using System.Threading;
+
+namespace THEDARKKNIGHT.Network.TcpSocket.Client
+{
 
 
     public abstract class TcpSocketClient
     {
+        public enum STATE
+        {
+            ONINIT, //初始化
+            ONCONNECTED, //连接中
+            ONDISCONNECT, //断开连接中
+            ONDESTORYING,//销毁连接中
+            ONDESTORY//连接关闭中
+        }
 
-        public int ListenNum = 10;
+        public STATE CurrentState = STATE.ONINIT;
+
 
         public Socket SocketClient;
 
-        private Dictionary<string, StateObject> ClientDic = new Dictionary<string, StateObject>();
+        ByteArray readBuffer = new ByteArray();
 
-        private List<string> CloseClients = new List<string>();
+        protected string IP;
 
-        public TcpSocketClient() {
-            StateObjectPool.Instance().CreateStateObjectPool(ListenNum);
+        protected int Port;
+
+        private ManualResetEvent TimeoutObject = new ManualResetEvent(false);
+        public TcpSocketClient()
+        {
+
         }
 
-        public void ConnectToServer(string IP , int Port) {
-            SocketClient = new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);
-            EndPoint IPAddress = CreateRemoteIP(IP, Port);
-            SocketClient.BeginConnect(IPAddress, new AsyncCallback(OnSuccessConnected), SocketClient);
+        public void ConnectToServer(string IP, int Port)
+        {
+            CurrentState = STATE.ONINIT;
+            this.IP = IP;
+            this.Port = Port;
+            try
+            {
+                SocketClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                EndPoint IPAddress = CreateRemoteIP(IP, Port);
+                IAsyncResult statue = SocketClient.BeginConnect(IPAddress, OnSuccessConnected, SocketClient);
+                if (TimeoutObject.WaitOne(5000, false))
+                {
+                    if (CurrentState != STATE.ONCONNECTED)
+                        ConnectTimeout();
+                }
+                else {
+                    ConnectTimeout();
+                }
+             
+            }
+            catch (Exception ex) {
+                Debug.Log(ex);
+            }
         }
 
         private void OnSuccessConnected(IAsyncResult ar)
         {
             Socket ConnectSocket = ((Socket)ar.AsyncState);
-            StateObject state = StateObjectPool.Instance().OutQuene();
-            state.workSocket = ConnectSocket;
-            ClientDic.Add(ConnectSocket.RemoteEndPoint.ToString(), state);
+            Debug.Log("LocalIP:" + ConnectSocket.LocalEndPoint.ToString());
             ConnectSuccess(ConnectSocket.RemoteEndPoint.ToString());
-            ConnectSocket.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
+            TimeoutObject.Set();
+            ConnectSocket.BeginReceive(readBuffer.Bytes, readBuffer.WriteIdx, readBuffer.Remain, 0, ReadCallback, ConnectSocket);
         }
 
         private void ReadCallback(IAsyncResult ar)
         {
-            StateObject state = (StateObject)ar.AsyncState;
-            Socket handler = state.workSocket;
-            int bytesRead = handler.EndReceive(ar);
-            BLog.Instance().Log("bytesRead :" + bytesRead);
-            if (bytesRead > 0)
+            try
             {
-                ReceviceData(state.buffer, bytesRead, handler.RemoteEndPoint.ToString());
-                handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
+                if (SocketClient == null) return;
+                Socket socket = (Socket)(ar.AsyncState);
+                int bytesRead = socket.EndReceive(ar);
+                if (bytesRead > 0)
+                {
+                    readBuffer.WriteIdx += bytesRead;
+                    if (readBuffer.Remain < 8)
+                    {
+                        readBuffer.MoveBytes();
+                        readBuffer.Resize(readBuffer.Length * 2);
+                    }
+                    ReceviceCallback(readBuffer, bytesRead, socket.RemoteEndPoint.ToString());
+                    socket.BeginReceive(readBuffer.Bytes, readBuffer.WriteIdx, readBuffer.Remain, 0, ReadCallback, socket);
+                }
+                else
+                {
+                    BLog.Instance().Log("连接已经断开:");
+                    ClientLostConnect(socket.RemoteEndPoint.ToString());
+                }
             }
-            else
+            catch (Exception ex)
             {
-                BLog.Instance().Log("连接已经断开:");
-                ClientDic.Remove(state.workSocket.RemoteEndPoint.ToString());
-                ClientConnectClose(state.workSocket.RemoteEndPoint.ToString());
-                StateObjectPool.Instance().EnQuene(state);
+                Debug.LogError(ex);
+            }
+
+        }
+
+        protected abstract void ConnectSuccess(string IPAddress);
+
+        protected abstract void ReceviceCallback(ByteArray data, int length, string IPAddress);
+
+        protected abstract void SendCallback(int senderCount);
+
+        protected abstract void ClientLostConnect(string IPAddress);
+
+        protected abstract void ConnectTimeout();
+
+        protected void SendMsg(byte[] msg, int from, int count)
+        {
+            try
+            {
+                Send(SocketClient, msg, from, count);
+            }
+            catch
+            {
+                ClientLostConnect(SocketClient.RemoteEndPoint.ToString());
             }
         }
 
-        public abstract void ConnectSuccess(string IPAddress);
-
-        public abstract void ReceviceData(byte[] data, int length, string IPAddress);
-
-        public abstract void ClientConnectClose(string IPAddress);
-
-        public void SendMsg(byte[] msg) {
-            CloseClients.Clear();
-            foreach (KeyValuePair<string, StateObject> item in ClientDic)
+        protected void SendMsg(byte[] msg)
+        {
+            try
             {
-                try
-                {
-                    Send(item.Value.workSocket, msg);
-                }
-                catch
-                {
-                    CloseClients.Add(item.Key);
-                }
+                Send(SocketClient, msg);
             }
-            CloseClients.ForEach((string IPaddress) =>
+            catch
             {
-                StateObjectPool.Instance().EnQuene(ClientDic[IPaddress]);
-                ClientDic.Remove(IPaddress);
-            });
+                ClientLostConnect(SocketClient.RemoteEndPoint.ToString());
+            }
         }
+
+
+
 
         private void Send(Socket handler, byte[] data)
         {
-            handler.BeginSend(data, 0, data.Length, 0, null, handler);
+            if (handler != null) handler.BeginSend(data, 0, data.Length, 0, OnSendCallback, handler);
         }
+
+        private void Send(Socket handler, byte[] data, int from, int count)
+        {
+            if (handler != null) handler.BeginSend(data, 0, data.Length, 0, OnSendCallback, handler);
+        }
+
+
+        private void OnSendCallback(IAsyncResult ar)
+        {
+            Socket sender = (Socket)(ar.AsyncState);
+            if (sender != null && sender.Connected) { 
+                int count = sender.EndSend(ar);
+                SendCallback(count);
+            }
+        }
+
 
         private EndPoint CreateRemoteIP(string ipAddress, int port)
         {
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse(ipAddress) , port);
+            IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
             return endPoint;
         }
 
-        public void CloseClient() {
+        public void CloseClient()
+        {
             try
             {
                 if (SocketClient != null)
+                {
+                    SocketClient.Shutdown(SocketShutdown.Both);
                     SocketClient.Close();
-                ClientDic.Clear();
+                }
+                SocketClient = null;
+                CurrentState = STATE.ONDESTORY;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 BLog.Instance().Log(ex.Message);
             }
         }

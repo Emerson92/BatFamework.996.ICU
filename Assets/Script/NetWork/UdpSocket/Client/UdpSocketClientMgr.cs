@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using THEDARKKNIGHT.Network.Interface;
+using THEDARKKNIGHT.Network.TcpSocket.Client;
 using THEDARKKNIGHT.Network.UdpSocket.Protocl;
 using UnityEngine;
 namespace THEDARKKNIGHT.Network.UdpSocket
@@ -16,7 +17,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket
 
         private IKcpComp kcp;
 
-        private HeartbeatSolver Heartbeat;
+        private HeartbeatSolverClient Heartbeat;
 
         private IReceviceDataKeeper keep;
 
@@ -86,7 +87,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket
             memoryStream = new RecyclableMemoryStreamManager();
         }
 
-        public void SetHeartbeat(HeartbeatSolver Heartbeat)
+        public void SetHeartbeat(HeartbeatSolverClient Heartbeat)
         {
             if (Heartbeat != null)
             {

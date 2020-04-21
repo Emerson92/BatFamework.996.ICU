@@ -36,7 +36,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket
             SocketClient.workSocket = socketClient;
             InitSuccess(IP, (uint)listernPort, (uint)sendPort);
             EndPoint tempRemoteEP = new IPEndPoint(IPAddress.Any, 0);
-            socketClient.BeginReceiveFrom(SocketClient.buffer, 0, StateObject.BufferSize, SocketFlags.None, ref tempRemoteEP, new AsyncCallback(ReadCallback), SocketClient);
+            //socketClient.BeginReceiveFrom(SocketClient.buffer, 0, StateObject.BufferSize, SocketFlags.None, ref tempRemoteEP, new AsyncCallback(ReadCallback), SocketClient);
         }
 
         private void ReadCallback(IAsyncResult ar)
@@ -49,10 +49,10 @@ namespace THEDARKKNIGHT.Network.UdpSocket
             if (receiver != null && !clientDic.ContainsKey(receiver.ToString())) clientDic.Add(receiver.ToString(), receiver);
             if (bytesRead > 0)
             {
-                ReceviceData(state.buffer, bytesRead, receiver.ToString());
+                //ReceviceData(state.buffer, bytesRead, receiver.ToString());
             }
             EndPoint tempRemoteEP = new IPEndPoint(IPAddress.Any, 0);
-            handler.BeginReceiveFrom(state.buffer, 0, StateObject.BufferSize, 0, ref tempRemoteEP, new AsyncCallback(ReadCallback), state);
+            //handler.BeginReceiveFrom(state.buffer, 0, StateObject.BufferSize, 0, ref tempRemoteEP, new AsyncCallback(ReadCallback), state);
         }
 
         public void SendMsg(byte[] msg)
@@ -64,7 +64,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket
             }
             catch (Exception ex)
             {
-                BLog.Instance().Log(ex);
+                BLog.Instance().Log(ex.ToString());
             }
         }
 
@@ -106,7 +106,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket
             }
             catch (Exception ex)
             {
-                BLog.Instance().Log(ex);
+                BLog.Instance().Log(ex.ToString());
             }
         }
 

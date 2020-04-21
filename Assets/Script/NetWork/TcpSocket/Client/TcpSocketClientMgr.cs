@@ -1,67 +1,123 @@
-﻿using THEDARKKNIGHT.Log;
+﻿using System;
+using System.Net;
+using THEDARKKNIGHT.Log;
+using THEDARKKNIGHT.Network.TcpSocket.Client;
+using UnityEngine;
+
 namespace THEDARKKNIGHT.Network.TcpSocket
 {
     public class TcpSocketClientMgr : TcpSocketClient
     {
 
+        public Action<string> LostServerConnected;
+
+        /// <summary>
+        /// 使用小端方式进行通讯
+        /// </summary>
+        public static bool TransportLittleEndian = true;
+
         /// <summary>
         /// 消息处理器
         /// </summary>
-        private ReceviceDataKeeper Keeper;
+        private ReceviceDataCKeeper Keeper;
 
         /// <summary>
         /// 消息发送器
         /// </summary>
-        private MessagerDataSender Messger;
+        private MessagerDataCSender Sender;
 
-
-        private HeartbeatSolver Heartbeat;
-
-        public TcpSocketClientMgr(ReceviceDataKeeper Keeper, MessagerDataSender Messger) {
-            if (Messger != null)
+        public TcpSocketClientMgr(ReceviceDataCKeeper Keeper, MessagerDataCSender Messger)
+        {
+            if (Keeper != null)
                 this.Keeper = Keeper;
-            if (Messger != null) {
-                this.Messger = Messger;
+            if (Messger != null)
+            {
+                this.Sender = Messger;
                 Messger.SetSendMsgFunction(SendMsg);//给予发送消息的权利
+                Messger.MsgSendComplete = MsgSendCompletCallback;///消息发送完毕通知
+                Messger.ReConnect(OnReconnect);///重新建立连接
+                if(Keeper != null) Keeper.ReceivedFeedbackMsg = Messger.TellHeartbeatMsg();///收到消息回复通知心跳管理器
             }
+            CurrentState = STATE.ONINIT;
         }
 
-        public void SetHeartbeat(HeartbeatSolver Heartbeat)
+        /// <summary>
+        /// 心跳超时重新建立连接
+        /// </summary>
+        private void OnReconnect()
         {
-            if (Heartbeat != null) {
-                this.Heartbeat = Heartbeat;
-                this.Heartbeat.SetSendMsgAuthority(SendMsg);
-            }
+            BLog.Instance().Log("心跳超时重新建立连接：");
+            CloseClient();
+            ConnectToServer(IP,Port);
         }
 
-        public override void ClientConnectClose(string IPAddress)
+        /// <summary>
+        /// 获取消息发送器
+        /// </summary>
+        /// <returns></returns>
+        public MessagerDataCSender GetSendAssist()
         {
+            return Sender;
+        }
+
+        public void Send(byte[] msg) {
+            if (Sender != null) Sender.SendMsg(msg);
+        }
+
+        private void MsgSendCompletCallback()
+        {
+            BLog.Instance().Log("消息队列发送完毕，现在关闭连接");
+            base.CloseClient();
+            CurrentState = STATE.ONDESTORY;
+            Sender.MsgSendComplete = null;
+            Sender = null;
+        }
+
+
+
+        protected override void ClientLostConnect(string IPAddress)
+        {
+            CurrentState = STATE.ONDISCONNECT;
             BLog.Instance().Log("ClientConnectClose ：" + IPAddress);
-            OnDestoryClient();
+            base.CloseClient();
+            if (LostServerConnected != null) LostServerConnected(IPAddress);
         }
 
-        public override void ConnectSuccess(string IPAddress)
+        protected override void ConnectSuccess(string IPAddress)
         {
-            BLog.Instance().Log("ConnectSuccess ："+ IPAddress);
-            if (Heartbeat != null)
-                Heartbeat.StartToSendHeartbeat();
+            CurrentState = STATE.ONCONNECTED;
+            BLog.Instance().Log("ConnectSuccess ：" + IPAddress);
+            if (Sender != null) Sender.ConnectSuccess(IPAddress);
         }
 
-        public override void ReceviceData(byte[] data, int length, string IPAddress)
+        protected override void ReceviceCallback(ByteArray data, int length, string IPAddress)
         {
             if (Keeper != null)
                 Keeper.MessageDataRecevice(data, length, IPAddress);
         }
 
-        public void OnDestoryClient()
+
+        protected override void SendCallback(int count)
         {
+            if (Sender != null)
+                Sender.SendCallback(count);
+        }
+
+
+        public void Close()
+        {
+            BLog.Instance().Log("关闭连接");
+            CurrentState = STATE.ONDESTORYING;
             if (Keeper != null)
-                Keeper.Close();
-            if (Messger != null)
-                Messger.Close();
-            if (Heartbeat != null)
-                Heartbeat.Close();
-            CloseClient();
+                Keeper.Close(CurrentState);
+            if (Sender != null)
+                Sender.Close(CurrentState);
+            Keeper = null;
+        }
+
+        protected override void ConnectTimeout()
+        {
+            Debug.Log("连接超时");
         }
     }
 }

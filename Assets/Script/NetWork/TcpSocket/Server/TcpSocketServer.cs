@@ -5,7 +5,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using THEDARKKNIGHT.Log;
-namespace THEDARKKNIGHT.Network.TcpSocket
+using UnityEngine;
+
+namespace THEDARKKNIGHT.Network.TcpSocket.Server
 {
 
     public abstract class TcpSocketServer
@@ -17,6 +19,7 @@ namespace THEDARKKNIGHT.Network.TcpSocket
             Connecting,
             Connected,
             Disconnected,
+            Destorying,
             Destory
         }
 
@@ -89,84 +92,168 @@ namespace THEDARKKNIGHT.Network.TcpSocket
             allDone.Set();
             Socket listener = (Socket)ar.AsyncState;
             Socket handler = listener.EndAccept(ar);
-            StateObject state = StateObjectPool.Instance().OutQuene();
-            state.workSocket = handler;
-            ClientDic.Add(handler.RemoteEndPoint.ToString(), state);
-            ConnectSuccess(handler.RemoteEndPoint.ToString(), state);
-            handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
+            StateObject state = null;
+            lock (ClientDic) {
+                if (ClientDic.ContainsKey(handler.RemoteEndPoint.ToString()))
+                {
+                    state = ClientDic[handler.RemoteEndPoint.ToString()];
+                    state.workSocket = handler;
+                }
+                else
+                {
+                    state = StateObjectPool.Instance().OutQuene();
+                    state.workSocket = handler;
+                    ClientDic.Add(handler.RemoteEndPoint.ToString(), state);
+                }
+            }
+            NewClientConnected(handler.RemoteEndPoint.ToString(), state);
+            handler.BeginReceive(state.Buffer.Bytes, state.Buffer.WriteIdx, state.Buffer.Remain, 0, ReadCallback, state);
         }
 
         private void ReadCallback(IAsyncResult ar)
         {
-            StateObject state = (StateObject)ar.AsyncState;
-            Socket handler = state.workSocket;
-            int bytesRead = handler.EndReceive(ar);
-            BLog.Instance().Log("bytesRead :"+ bytesRead);
-            if (bytesRead > 0)
+            try
             {
-                ReceviceData(state.buffer, bytesRead, handler.RemoteEndPoint.ToString());
-                handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
+                StateObject state = (StateObject)ar.AsyncState;
+                Socket handler = state.workSocket;
+                if (handler == null || severSocket == null) return;
+                int bytesRead = handler.EndReceive(ar);
+                if (bytesRead > 0)
+                {
+                    state.Buffer.WriteIdx += bytesRead;
+                    if (state.Buffer.Remain < 8)
+                    {
+                        state.Buffer.MoveBytes();
+                        state.Buffer.Resize(state.Buffer.Length * 2);
+                    }
+                    ReceviceData(state.Buffer, bytesRead, handler.RemoteEndPoint.ToString());
+                    handler.BeginReceive(state.Buffer.Bytes, state.Buffer.WriteIdx, state.Buffer.Remain, 0, ReadCallback, state);
+                }
+                else
+                {
+                    TcpLifeCycle = NetWorkLife.Disconnected;
+                    Debug.Log("连接已经断开:" + handler.RemoteEndPoint.ToString());
+                    ClientLoseConnect(state);
+                    ClientDic.Remove(state.workSocket.RemoteEndPoint.ToString());
+                    StateObjectPool.Instance().EnQuene(state);
+                }
             }
-            else
-            {
-                TcpLifeCycle = NetWorkLife.Disconnected;
-                BLog.Instance().Log("连接已经断开:");
-                ClientConnectClose(state);
-                ClientDic.Remove(state.workSocket.RemoteEndPoint.ToString());
-                StateObjectPool.Instance().EnQuene(state);
+            catch (Exception ex) {
+                Debug.LogError("ReadCallback :" + ex);
             }
-           
         }
 
-        public abstract void ConnectSuccess(string IPAddress, StateObject state);
+        protected abstract void NewClientConnected(string IPAddress, StateObject state);
 
-        public abstract void ReceviceData(byte[] data, int length, string IPAddress);
+        protected abstract void ReceviceData(ByteArray data, int length, string IPAddress);
 
-        public abstract void ClientConnectClose(StateObject state);
-
-        public void SendToAll(byte[] data)
+        protected virtual void ClientLoseConnect(StateObject state)
         {
-            CloseClients.Clear();
-            foreach (KeyValuePair<string, StateObject> item in ClientDic)
-            {
-                try
-                {
-                    Send(item.Value.workSocket, data);
-                }
-                catch
-                {
-                    CloseClients.Add(item.Key);
-                }
+            //if(ClientDic.ContainsKey(state.workSocket.RemoteEndPoint.ToString())) ClientDic.Remove(state.workSocket.RemoteEndPoint.ToString());
+            CleanData(state);
+        }
+
+        private static void CleanData(StateObject state)
+        {
+            state.workSocket.Dispose();
+            state.workSocket = null;
+        }
+
+        protected void DisableClient(string IPAddress) {
+            StateObject state = null;
+            if (ClientDic.TryGetValue(IPAddress,out state)) {
+                CleanData(state);
             }
-            CloseClients.ForEach((string IPaddress) =>
-            {
-                StateObjectPool.Instance().EnQuene(ClientDic[IPaddress]);
-                ClientDic.Remove(IPaddress);
-            });
+        }
+
+
+        protected abstract void SendCallback(int senderCount, string IPAddress);
+
+
+        public void SendToClient(byte[] data, int from, int count,string IPAddress) {
+            CloseClients.Clear();
+            lock (ClientDic) { 
+                if (ClientDic.ContainsKey(IPAddress)) {
+                    try {
+                        Send(ClientDic[IPAddress].workSocket, data, from, count);
+                    }
+                    catch{
+                        CloseClients.Add(IPAddress);
+                    }
+                }
+                CloseClients.ForEach((string IPaddress) =>
+                {
+                    CleanData(ClientDic[IPaddress]);
+                });
+            }
+        }
+
+
+        public void SendToAll(byte[] data, int from, int count) {
+            CloseClients.Clear();
+            lock (ClientDic) { 
+                foreach (KeyValuePair<string, StateObject> item in ClientDic)
+                {
+                    try
+                    {
+                        Send(item.Value.workSocket, data, from , count);
+                    }
+                    catch
+                    {
+                        CloseClients.Add(item.Key);
+                    }
+                }
+                CloseClients.ForEach((string IPaddress) =>
+                {
+                    CleanData(ClientDic[IPaddress]);
+                });
+            }
+        }
+
+        private void Send(Socket handler, byte[] data, int from, int count)
+        {
+            if(handler != null) handler.BeginSend(data, 0, data.Length, 0, SenderCallback, handler);
+        }
+
+        private void SenderCallback(IAsyncResult ar)
+        {
+            Socket sender = (Socket)(ar.AsyncState);
+            int count = sender.EndSend(ar);
+            SendCallback(count, sender.RemoteEndPoint.ToString());
         }
 
         public void CloseServer()
         {
             try
             {
-                severSocket.Close();
-                severSocket = null;
+                TcpLifeCycle = NetWorkLife.Destorying;
+    
+            }
+            catch (Exception ex) {
+                BLog.Instance().Log("CloseServer 关闭Socket连接发生异常:" + ex.Message);
+            }
+        }
+
+        protected void DestoryServer() {
+            try
+            {
                 TcpLifeCycle = NetWorkLife.Destory;
                 foreach (KeyValuePair<string, StateObject> item in ClientDic)
                 {
                     item.Value.workSocket.Close();
+                    item.Value.workSocket = null;
                 }
-                SocketListenThread.Abort();   
+                if(severSocket !=null) severSocket.Close();
+                severSocket = null;
+                SocketListenThread.Abort();
+                BLog.Instance().Log("服务器关闭");
             }
-            catch (Exception ex) {
-                BLog.Instance().Log("关闭Socket连接发生异常:"+ex.Message);
+            catch (Exception ex)
+            {
+                BLog.Instance().Log("DestoryServer Socket连接发生异常:" + ex.Message);
             }
         }
 
-        private void Send(Socket handler, byte[] data)
-        {
-            handler.BeginSend(data, 0, data.Length, 0, null, handler);
-        }
     }
 
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using THEDARKKNIGHT.BatCore;
+using THEDARKKNIGHT.Network.TcpSocket;
 using UnityEngine;
 namespace THEDARKKNIGHT.Network
 {
@@ -49,9 +50,11 @@ namespace THEDARKKNIGHT.Network
 
         public Socket workSocket = null;
 
-        public const int BufferSize = 1024;
+        public ByteArray Buffer;
 
-        public byte[] buffer = new byte[BufferSize];
+        public StateObject(int size = ByteArray.DEFAULT_SIZE) {
+            Buffer = new ByteArray(size);
+        }
 
     }
 }

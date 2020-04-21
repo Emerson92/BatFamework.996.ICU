@@ -33,12 +33,14 @@ namespace THEDARKKNIGHT.ThreadHelper
         // Update is called once per frame
         void Update()
         {
-            if (ExcutionQuenen.Count > 0)
-            {
-                Action callback = ExcutionQuenen.Dequeue();
-                if (callback != null)
-                    callback();
-                callback = null;
+            lock (ExcutionQuenen) {
+                if (ExcutionQuenen.Count > 0)
+                {
+                    Action callback = ExcutionQuenen.Dequeue();
+                    if (callback != null)
+                        callback();
+                    callback = null;
+                }
             }
         }
 
@@ -92,7 +94,12 @@ namespace THEDARKKNIGHT.ThreadHelper
         public void ExcutionFunc(Action callback)
         {
             if (ExcutionQuenen != null)
-                ExcutionQuenen.Enqueue(callback);
+            {
+                lock (ExcutionQuenen)
+                {
+                    ExcutionQuenen.Enqueue(callback);
+                }
+            }
         }
     }
 }

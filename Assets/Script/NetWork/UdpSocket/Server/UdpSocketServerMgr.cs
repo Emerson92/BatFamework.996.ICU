@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using THEDARKKNIGHT.Network.Interface;
+using THEDARKKNIGHT.Network.TcpSocket.Client;
 using UnityEngine;
 namespace THEDARKKNIGHT.Network.UdpSocket {
 
@@ -9,7 +11,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket {
 
         private IKcpComp comp;
 
-        private HeartbeatSolver Heartbeat;
+        private HeartbeatSolverClient Heartbeat;
 
         private IReceviceDataKeeper keep;
 
@@ -33,13 +35,14 @@ namespace THEDARKKNIGHT.Network.UdpSocket {
             set
             {
                 send = value;
-                send.SetMessageSend(SendMsg);
+                //send.SetMessageSend(SendMsg);
             }
             get
             {
                 return send;
             }
         }
+
 
         public IKcpComp Comp
         {
@@ -58,12 +61,12 @@ namespace THEDARKKNIGHT.Network.UdpSocket {
 
         }
 
-        public void SetHeartbeat(HeartbeatSolver Heartbeat)
+        public void SetHeartbeat(HeartbeatSolverClient Heartbeat)
         {
             if (Heartbeat != null)
             {
                 this.Heartbeat = Heartbeat;
-                this.Heartbeat.SetSendMsgAuthority(SendMsg);
+                //this.Heartbeat.SetSendMsgAuthority(SendMsg);
             }
         }
 

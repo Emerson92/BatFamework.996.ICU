@@ -1,0 +1,5 @@
+syntax = "proto3";
+message MsgTalk{
+	int32 MsgType = 1;
+	string Msgbody = 2;
+}

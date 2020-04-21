@@ -119,7 +119,7 @@ namespace THEDARKKNIGHT.Network.UdpSocket.Component {
 
         public void SetSendComp(IMessageSender sender)
         {
-           this.sendComp = sender
+            this.sendComp = sender;
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace THEDARKKNIGHT.Interface
@@ -6,6 +7,10 @@ namespace THEDARKKNIGHT.Interface
     public interface IMessagerParseSolver
     {
 
-        void MessageSolver(object data);
+        void MessageSolver(byte[] data,string IPAddress);
+
+        void SetMessageFeedback(Action<byte[], string> msgFeedback);
+
+        void Close();
     }
 }
