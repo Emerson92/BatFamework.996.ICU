@@ -1,0 +1,5 @@
+syntax = "proto3";
+message Broadcast{
+	string IPAddress= 1;
+	int32 Port= 2;
+}

@@ -53,6 +53,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scenes\Example\FrameSync\proto\Broadcast.cs" />
+     <Compile Include="Assets\Scenes\Example\FrameSync\Script\DeviceDiscovry.cs" />
      <Compile Include="Assets\Scenes\Example\Http\Script\Http.cs" />
      <Compile Include="Assets\Scenes\Example\LoadAsset\Script\LoadTest.cs" />
      <Compile Include="Assets\Scenes\Example\Lua\LinkProcess\Script\LuaProcessDemo.cs" />
