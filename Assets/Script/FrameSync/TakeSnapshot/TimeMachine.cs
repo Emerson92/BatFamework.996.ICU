@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Interface;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Utility;
@@ -137,6 +138,11 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Snapshot
                     streamPool.Enqueue(stream);
                 }
             }
+        }
+
+        internal void ConfiremedFrame(int frameNum)
+        {
+            throw new NotImplementedException();
         }
     }
 
