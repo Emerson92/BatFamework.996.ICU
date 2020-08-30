@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
@@ -17,7 +18,7 @@ namespace THEDARKKNIGHT.Example.FameSync.Test
 
         public Action<string> OnBroadcastMsgCallback;
 
-        private string IPAddress;
+        public string IPAddress;
 
         private byte[] data;
 
@@ -27,16 +28,15 @@ namespace THEDARKKNIGHT.Example.FameSync.Test
             Broadcast cast = new Broadcast();
             cast.IPAddress = IPAddress;
             cast.Port = broadcastPort;
-            data = BFrameSyncUtility.NSeralizableClassTobytes(cast);
-            broadcastData = Encoding.UTF8.GetString(data);
-            broadcastInterval = 2 * 1000;
-            Debug.Log(" cast.IPAddress :" + cast.IPAddress + "Prot :" + broadcastPort + " data Length:" + data.Length);
+            broadcastData = JsonUtility.ToJson(cast)+"|";
+            broadcastInterval = 3 * 1000;
+            Debug.Log(" cast.IPAddress :" + cast.IPAddress + "Prot :" + broadcastPort + "broadcastData:" + broadcastData);
         }
 
         public void Start()
         {
-            InitAndStartServer();
-            //InitAndStartClient();
+            Initialize();
+            StartAsClient();
         }
 
 
@@ -48,7 +48,6 @@ namespace THEDARKKNIGHT.Example.FameSync.Test
         /// <param name="data"></param>
         public override void OnReceivedBroadcast(string fromAddress, string data)
         {
-            //base.OnReceivedBroadcast(fromAddress, data);
             Debug.Log("OnReceivedBrocast " + data);
             OnBroadcastMsgCallback?.Invoke(data);
         }
@@ -81,27 +80,19 @@ namespace THEDARKKNIGHT.Example.FameSync.Test
             return null;
         }
 
-        public void ReBroadcast()
-        {
-            StartCoroutine(IEnum_ReBroadcast());
-        }
-
-        IEnumerator IEnum_ReBroadcast()
+        public IEnumerator InitAndStartServer()
         {
             TryStopBroadCast();
-            yield return null;
-            InitAndStartServer();
-        }
-
-        private void InitAndStartServer()
-        {
-
+            yield return new WaitForSeconds(1);
             Initialize();
             StartAsServer();
         }
 
-        private void InitAndStartClient()
+        public IEnumerator InitAndStartClient()
         {
+
+            TryStopBroadCast();
+            yield return new WaitForSeconds(1);
             Initialize();
             StartAsClient();
         }

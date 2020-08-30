@@ -2,21 +2,12 @@
 // Consider using 'partial classes' to extend these types
 // Input: Broadcast.proto
 
-#pragma warning disable CS1591, CS0612, CS3021, IDE1006
-[global::ProtoBuf.ProtoContract()]
-public partial class Broadcast : global::ProtoBuf.IExtensible
+
+public class Broadcast
 {
-    private global::ProtoBuf.IExtension __pbn__extensionData;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-        => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+    public string IPAddress;
 
-    [global::ProtoBuf.ProtoMember(1)]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string IPAddress { get; set; } = "";
-
-    [global::ProtoBuf.ProtoMember(2)]
-    public int Port { get; set; }
+    public int Port;
 
 }
 
-#pragma warning restore CS1591, CS0612, CS3021, IDE1006
