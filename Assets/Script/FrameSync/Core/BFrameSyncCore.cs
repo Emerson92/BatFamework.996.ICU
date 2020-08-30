@@ -71,7 +71,7 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync {
         /// <summary>
         /// Logic Frame Update Function
         /// </summary>
-        public abstract void FrameLockLogic(int frameConut);
+        public abstract void FrameLockLogic(int frameIndex);
 
         /// <summary>
         /// Render Frame Function

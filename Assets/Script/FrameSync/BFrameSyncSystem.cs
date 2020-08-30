@@ -18,8 +18,13 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync
 
         public TimeMachine TimeMachineInstance;
 
-        public BFrameSyncSystem() {
+        public Queue<BNFrameCommdend> BNFrameCmdQueue = new Queue<BNFrameCommdend>();
+
+        private bool ISSERVER;
+
+        public BFrameSyncSystem(bool isServer = false) {
             TimeMachineInstance = new TimeMachine();
+            this.ISSERVER = isServer;
             Init();
         }
 
@@ -39,21 +44,38 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync
            
             BNFrameCommdend Ncmd = (BNFrameCommdend)data;
             uint frameIndex = (uint)Ncmd.NFrameNum;
-            TimeMachineInstance.GetFrameSnapshot(frameIndex);///////Dispatch the snapshot to each component;
-            for (int i = 0; i < SyncObjectGroup.Count; i++)
+            /****************************
+            *  this part only client use
+            *****************************/
+            if (!ISSERVER)
             {
-                for (int j = 0; j < Ncmd.OperateCmd.Count;j++) {
-                    if (SyncObjectGroup[i].GetComponentType() == Ncmd.OperateCmd[j].OperateType) {
-                        if (SyncObjectGroup[i].UpdateByNet(frameIndex, Ncmd.OperateCmd[j].cmd)) {
-                            TimeMachineInstance.RollbackTo(frameIndex);//////Rollback the Frame beacause one local frame can not match the frame from server
-                            return null;
+                TimeMachineInstance.GetFrameSnapshot(frameIndex);///////Dispatch the snapshot to each component;
+                for (int i = 0; i < SyncObjectGroup.Count; i++)
+                {
+                    for (int j = 0; j < Ncmd.OperateCmd.Count; j++)
+                    {
+                        if (SyncObjectGroup[i].GetComponentType() == Ncmd.OperateCmd[j].OperateType)
+                        {
+                            if (SyncObjectGroup[i].UpdateByNet(frameIndex, Ncmd.OperateCmd[j].cmd))
+                            {
+                                TimeMachineInstance.RollbackTo(frameIndex);//////Rollback the Frame beacause one local frame can not match the frame from server
+                                return null;
+                            }
                         }
                     }
                 }
+                ///////Network frame is no error ,so comfire this frame
+                TimeMachineInstance.ConfiremedFrame((uint)Ncmd.NFrameNum);
             }
-
-            ///////Network frame is no error ,so comfire this frame
-            TimeMachineInstance.ConfiremedFrame((uint)Ncmd.NFrameNum);
+            else {
+                /****************************
+                *  this part only Server use
+                *****************************/
+                lock (BNFrameCmdQueue)
+                {
+                    BNFrameCmdQueue.Enqueue(Ncmd);
+                }
+            }
             return null;
         }
 
@@ -68,17 +90,48 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync
         /// Locals the logic update.
         /// </summary>
         /// <param name="frameConut">Frame conut.</param>
-        void LocalLogicUpdate(int frameConut)
+        void LocalLogicUpdate(int frameIndex)
         {
             BNFrameCommdend frameCmd = new BNFrameCommdend();
-            frameCmd.NFrameNum = frameConut;
+            frameCmd.NFrameNum = frameIndex;
             frameCmd.OperateCmd = new List<BNOperateCommend>();
+            /****************************
+             *  this part only client use
+             *****************************/
+            if (ISSERVER) { 
+                lock (BNFrameCmdQueue)
+                {
+                    for (int num = 0; num < BNFrameCmdQueue.Count; num++)
+                    {
+                        BNFrameCommdend Ncmd = BNFrameCmdQueue.Dequeue();
+                        
+                        TimeMachineInstance.GetFrameSnapshot((uint)frameIndex);///////Dispatch the snapshot to each component;
+                        for (int i = 0; i < SyncObjectGroup.Count; i++)
+                        {
+                            for (int j = 0; j < Ncmd.OperateCmd.Count; j++)
+                            {
+                                frameCmd.OperateCmd.Add(Ncmd.OperateCmd[j]);//Add the clien operater into Commdend of Frame
+                                if (SyncObjectGroup[i].GetComponentType() == Ncmd.OperateCmd[j].OperateType)
+                                {
+                                    if (SyncObjectGroup[i].UpdateByNet((uint)frameIndex, Ncmd.OperateCmd[j].cmd))
+                                    {
+                                        TimeMachineInstance.RollbackTo((uint)frameIndex);//////Rollback the Frame beacause one local frame can not match the frame from server
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                        ///////Network frame is no error ,so comfire this frame
+                        TimeMachineInstance.ConfiremedFrame((uint)frameIndex);
+                    }
+                }
+            }
+
             ///////TODO each Component's commend is collected ,and send it to Server 
             for (int i = 0; i < SyncObjectGroup.Count; i++)
             {
-                BNOperateCommend operatedCmd = SyncObjectGroup[i].UpdateLogic(frameConut);
-                if (operatedCmd != null)
-                    frameCmd.OperateCmd.Add(operatedCmd);
+                BNOperateCommend operatedCmd = SyncObjectGroup[i].UpdateLogic(frameIndex);
+                if (operatedCmd != null) frameCmd.OperateCmd.Add(operatedCmd);
             }
             SendCommendToServer(frameCmd);
         }
