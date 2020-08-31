@@ -12,7 +12,9 @@ namespace THEDARKKNIGHT.Example.FameSync {
 
 		public GameObject UIItem;
 
-		public List<Memeber> memberList = new List<Memeber>(); 
+		public List<Memeber> memberList = new List<Memeber>();
+
+		public float CheckTime = 5;
 		
 	}
 

@@ -83,7 +83,7 @@ namespace THEDARKKNIGHT.Example.FameSync.Test
         public IEnumerator InitAndStartServer()
         {
             TryStopBroadCast();
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(2);
             Initialize();
             StartAsServer();
         }
@@ -92,7 +92,7 @@ namespace THEDARKKNIGHT.Example.FameSync.Test
         {
 
             TryStopBroadCast();
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(2);
             Initialize();
             StartAsClient();
         }
