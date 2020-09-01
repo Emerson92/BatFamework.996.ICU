@@ -46,8 +46,6 @@ namespace THEDARKKNIGHT.Network.TcpSocket.Test
             tcpMgr = new TcpSocketClientMgr(new ReceviceDataCKeeper(new MsgParseClient()),new MessagerDataCSender(new HeartbeatSolverClient().SetHeartbeatMsg(" ").SendPeriod(10)));
         }
 
-
-
         // Use this for initialization
         void Start()
         {

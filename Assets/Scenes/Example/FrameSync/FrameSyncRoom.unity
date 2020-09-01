@@ -1063,6 +1063,9 @@ MonoBehaviour:
   discovry: {fileID: 2036505388}
   CreatRoomBtn: {fileID: 1161913892}
   ExitRoomBtn: {fileID: 1988763478}
+  RoomRemberList: []
+  ClientItem: {fileID: 1969580459099034, guid: aaeb1b4684e954dbfb36213db4bad14f, type: 3}
+  ClientParent: {fileID: 495865554}
   RoomItem: {fileID: 1543822018406202, guid: 83df6d8a2585a49a1b9cce9d4253bb06, type: 3}
   RoomScroll: {fileID: 2023894444}
 --- !u!1 &782005394

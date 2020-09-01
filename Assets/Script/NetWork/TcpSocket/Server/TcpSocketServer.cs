@@ -222,7 +222,7 @@ namespace THEDARKKNIGHT.Network.TcpSocket.Server
             SendCallback(count, sender.RemoteEndPoint.ToString());
         }
 
-        public void CloseServer()
+        protected void CloseServer()
         {
             try
             {

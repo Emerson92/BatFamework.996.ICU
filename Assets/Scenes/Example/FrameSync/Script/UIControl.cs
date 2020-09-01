@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using THEDARKKNIGHT.EventSystem;
 using THEDARKKNIGHT.Example.FameSync.Test;
 using THEDARKKNIGHT.Network.TcpSocket;
 using THEDARKKNIGHT.Network.TcpSocket.Client;
@@ -26,38 +27,108 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
 
 		public List<Room> RoomLobbyList = new List<Room>();
 
+		private List<Room> removeList = new List<Room>();
+
+		public List<RoomMemeber> RoomRemberList = new List<RoomMemeber>();
+
+		public GameObject ClientItem;
+
+		public Transform ClientParent;
+
 		public GameObject RoomItem;
 
 		public Transform RoomScroll;
 
-		private List<Room> removeList = new List<Room>();
+		private Room ServerRoom = null;
 
-		// Use this for initialization
-		void Start () {
+
+
+
+        // Use this for initialization
+        void Start () {
 			discovry.OnBroadcastMsgCallback = OnMsgCallback;
 			CreatRoomBtn.onClick.AddListener(OnCreatNewRoom);
 			ExitRoomBtn.onClick.AddListener(OnExitRoom);
 			InvokeRepeating("CheckRoomList",1,1);
+			BEventManager.Instance().AddListener("MsgOnReceive", OnMsgReceiveCallback);
 		}
 
-		private void OnExitRoom()
+        private object OnMsgReceiveCallback(object data)
+        {
+			MsgBox box = (MsgBox)data ;
+			RoomLobby statue = JsonUtility.FromJson<RoomLobby>(Encoding.UTF8.GetString(box.data));
+            switch (box.MsgType)
+            {
+                case 0:
+                    break;
+                case 1:
+                    GameObject clientItem = GameObject.Instantiate(ClientItem, ClientParent);
+                    clientItem.transform.GetChild(0).GetComponent<Text>().text = box.IPAddress;
+                    clientItem.transform.GetChild(1).GetComponent<Image>().color = statue.ClientStatue ? Color.green : Color.red;
+                    RoomMemeber memeber = new RoomMemeber();
+                    memeber.IPAddress = box.IPAddress;
+                    memeber.IsReady = statue.ClientStatue ? true : false;
+                    memeber.UIItem = clientItem;
+                    RoomRemberList.Add(memeber);
+                    break;
+                case 2:
+                    break;
+            }
+            return null;
+        }
+
+        private void OnExitRoom()
 		{
 			StartCoroutine(discovry.InitAndStartClient());
 		}
 
 		private void OnCreatNewRoom()
 		{
-			if (ISSTARTSERVER) {
+			if (ISSTARTSERVER)
+			{
 				Room RoomLobby = new Room();
 				RoomLobby.RoomIPAddress = discovry.IPAddress;
 				RoomLobby.port = discovry.broadcastPort;
 				RoomLobby.IsOwner = true;
 				RoomLobby.UIItem = ChangeUIStaute(discovry.IPAddress, discovry.broadcastPort);
-				RoomLobbyList.Add(RoomLobby);
+				//RoomLobbyList.Add(RoomLobby);
+				ServerRoom = RoomLobby;
 				StartCoroutine(discovry.InitAndStartServer());
-				TcpSocketServerMgr tcpMgr = new TcpSocketServerMgr(new ReceviceDataSKeeper(new MsgParseServer()),new MessagerDataSSender(new HeartbeatSolverServer().SetHeartbeatMsg(" ").SendPeriod(10).SetCheckTick(6)));
-				tcpMgr.StartSever(discovry.IPAddress,8080);
+				//MsgParseServer parse = new MsgParseServer();
+				//parse.SetMessageFeedback((data, IPAddress) =>
+				//{
+
+				//	RoomLobby statue = JsonUtility.FromJson<RoomLobby>(Encoding.UTF8.GetString(data));
+				//	switch (statue.LobbyStatue) {
+				//		case 0:
+				//			break;
+				//		case 1:
+				//			GameObject clientItem = GameObject.Instantiate(ClientItem, ClientParent);
+				//			clientItem.transform.GetChild(0).GetComponent<Text>().text = IPAddress;
+				//			clientItem.transform.GetChild(1).GetComponent<Image>().color = statue.ClientStatue ? Color.green : Color.red;
+				//			RoomMemeber memeber = new RoomMemeber();
+				//			memeber.IPAddress = IPAddress;
+				//			memeber.IsReady = statue.ClientStatue ? true : false;
+				//			memeber.UIItem = clientItem;
+				//			RoomRemberList.Add(memeber);
+				//			break;
+				//		case 2:
+				//			break;
+				//	}
+				//});
+				//TODO Set ServerStart'
+				TcpCommuSystem.Instance().StartServer(discovry.IPAddress);
+				CreatRoomBtn.transform.GetChild(0).GetComponent<Text>().text = "关闭房间";
 				ISSTARTSERVER = false;
+			}
+			else {
+				if (ServerRoom != null) {
+					Destroy(ServerRoom.UIItem);
+					TcpCommuSystem.Instance().CloseServer();
+					ServerRoom = null;
+					CreatRoomBtn.transform.GetChild(0).GetComponent<Text>().text = "创建房间";
+					ISSTARTSERVER = true;
+				}
 			}
 
 		}
@@ -67,11 +138,6 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
 			GameObject room = GameObject.Instantiate(RoomItem, RoomScroll);
 			room.transform.GetChild(0).GetComponent<Text>().text = IP + ":" + port;
 			room.transform.GetChild(1).GetComponent<Button>().gameObject.SetActive(false);
-			//room.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(()=> {
-			//	///TODO CreateConnnect
-			//	TcpSocketClientMgr client = new TcpSocketClientMgr(new ReceviceDataCKeeper(new MsgParseClient()),new MessagerDataCSender(new HeartbeatSolverClient().SetHeartbeatMsg(" ").SendPeriod(10)));
-			//	client.ConnectToServer(IP,8080);
-			//});
 			return room;
 		}
 
@@ -114,7 +180,15 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
                 ///TODO CreateConnnect
                 TcpSocketClientMgr client = new TcpSocketClientMgr(new ReceviceDataCKeeper(new MsgParseClient()), new MessagerDataCSender(new HeartbeatSolverClient().SetHeartbeatMsg(" ").SendPeriod(10)));
                 client.ConnectToServer(IP, 8080);
-            });
+				RoomLobby statue = new RoomLobby();
+				statue.RoomStatue = false;
+				statue.LobbyStatue = 1;
+				statue.ClientStatue = false;
+				MsgTalk t = new MsgTalk();
+				t.MsgType = 1;
+				t.Msgbody = JsonUtility.ToJson(statue);
+				client.Send(BFrameSyncUtility.Encode(t));
+			});
 			RoomLobby = new Room();
 			RoomLobby.RoomIPAddress = discovry.IPAddress;
 			RoomLobby.port = discovry.broadcastPort;
@@ -122,16 +196,6 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
 			RoomLobby.UIItem = item;
 			if (RoomLobby != null ) RoomLobbyList.Add(RoomLobby);
 			
-		}
-
-		public ProtoBuf.IExtensible Decode(string protoName, byte[] bytes, int offset, int count)
-		{
-
-			using (var memory = new MemoryStream(bytes, offset, count))
-			{
-				Type t = Type.GetType(protoName);
-				return (ProtoBuf.IExtensible)ProtoBuf.Serializer.NonGeneric.Deserialize(t, memory);
-			}
 		}
 
 		// Update is called once per frame

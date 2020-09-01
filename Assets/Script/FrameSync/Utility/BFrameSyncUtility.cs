@@ -104,7 +104,23 @@ namespace THEDARKKNIGHT.SyncSystem.FrameSync.Utility
             }
         }
 
+        public static IExtensible Decode(string protoName, byte[] bytes, int offset, int count)
+        {
+
+            using (var memory = new MemoryStream(bytes, offset, count))
+            {
+                Type t = Type.GetType(protoName);
+                return (IExtensible)Serializer.NonGeneric.Deserialize(t, memory);
+            }
+        }
+
+        public static byte[] Encode(IExtensible proto)
+        {
+            using (var meomry = new MemoryStream())
+            {
+                Serializer.Serialize(meomry, proto);
+                return meomry.ToArray();
+            }
+        }
     }
-
-
 }

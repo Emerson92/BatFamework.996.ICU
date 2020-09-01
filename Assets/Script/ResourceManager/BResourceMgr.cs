@@ -171,9 +171,7 @@ namespace THEDARKKNIGHT.ResourceSystem {
                     BLog.Instance().Warn("Fail load AssetBundle's  all assets at " + resName);
                     yield break;
                 }
-
             }
-
         }
 
         /// <summary>

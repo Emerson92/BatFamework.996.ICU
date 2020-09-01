@@ -12,13 +12,17 @@ namespace THEDARKKNIGHT.Example.FameSync {
 
 		public GameObject UIItem;
 
-		public List<Memeber> memberList = new List<Memeber>();
+		//public List<Memeber> memberList = new List<Memeber>();
 
 		public float CheckTime = 5;
 		
 	}
 
-	public class Memeber {
+	public class RoomMemeber {
+
+		public string IPAddress;
+
+		public GameObject UIItem;
 
 		public bool IsReady;
 	
