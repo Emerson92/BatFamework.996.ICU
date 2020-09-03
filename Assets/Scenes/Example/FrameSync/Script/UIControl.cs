@@ -13,6 +13,8 @@ using THEDARKKNIGHT.SyncSystem.FrameSync.Utility;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static MsgDataParse;
+
 namespace THEDARKKNIGHT.Example.FameSync.UI { 
 
 	public class UIControl : MonoBehaviour {
@@ -41,9 +43,6 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
 
 		private Room ServerRoom = null;
 
-
-
-
         // Use this for initialization
         void Start () {
 			discovry.OnBroadcastMsgCallback = OnMsgCallback;
@@ -55,27 +54,76 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
 
         private object OnMsgReceiveCallback(object data)
         {
-			MsgBox box = (MsgBox)data ;
-			RoomLobby statue = JsonUtility.FromJson<RoomLobby>(Encoding.UTF8.GetString(box.data));
+			MsgBoxData msg = (MsgBoxData)data ;
+			MsgBox box = msg.Body;
+			
             switch (box.MsgType)
             {
                 case 0:
                     break;
-                case 1:
-                    GameObject clientItem = GameObject.Instantiate(ClientItem, ClientParent);
-                    clientItem.transform.GetChild(0).GetComponent<Text>().text = box.IPAddress;
-                    clientItem.transform.GetChild(1).GetComponent<Image>().color = statue.ClientStatue ? Color.green : Color.red;
-                    RoomMemeber memeber = new RoomMemeber();
-                    memeber.IPAddress = box.IPAddress;
+                case 1://进入房间
+					RoomLobby statue = JsonUtility.FromJson<RoomLobby>(box.Msgbody);
+					GameObject clientItem = GameObject.Instantiate(ClientItem, ClientParent);
+					clientItem.transform.GetChild(0).GetComponent<Text>().text = msg.IPAddress;
+					clientItem.transform.GetChild(1).GetComponent<Image>().color = statue.ClientStatue ? Color.green : Color.red;
+					RoomMemeber memeber = new RoomMemeber();
+                    memeber.IPAddress = msg.IPAddress;
                     memeber.IsReady = statue.ClientStatue ? true : false;
                     memeber.UIItem = clientItem;
                     RoomRemberList.Add(memeber);
+					//TODO 下发房间列表
+					SendAllRemember();
                     break;
-                case 2:
-                    break;
-            }
+                case 2://退出房间
+					int i = 0;
+					int num = 0;
+					RoomRemberList.ForEach((remeber)=> {
+						if (remeber.IPAddress == msg.IPAddress) {
+							Destroy(remeber.UIItem);
+							num = i;
+						}
+						i++;
+					});
+					RoomRemberList.RemoveAt(num);
+					SendAllRemember();
+					break;
+				case 3://下发房间成员信息
+					//TODO 新增 or 删除
+					RoomList list = JsonUtility.FromJson<RoomList>(box.Msgbody);
+					DestoryAllRemeberUI();
+					RoomRemberList.Clear();
+					list.RoomRemberList.ForEach((remeber)=> {
+						GameObject c = GameObject.Instantiate(ClientItem, ClientParent);
+						c.transform.GetChild(0).GetComponent<Text>().text = remeber.IPAddress;
+						c.transform.GetChild(1).GetComponent<Image>().color = remeber.IsReady ? Color.green : Color.red;
+						RoomMemeber m = new RoomMemeber();
+						m.IPAddress = remeber.IPAddress;
+						m.IsReady = remeber.IsReady ? true : false;
+						m.UIItem = c;
+						RoomRemberList.Add(m);
+					});
+					break;
+			}
             return null;
         }
+
+        private void DestoryAllRemeberUI()
+        {
+			Transform[] childes = RoomScroll.GetComponentsInChildren<Transform>();
+			for (int i = 0; i < childes.Length; i++) {
+				Destroy(childes[i]);
+			}
+		}
+
+        private void SendAllRemember()
+        {
+			RoomList list = new RoomList();
+			list.RoomRemberList = RoomRemberList;
+			MsgBox b = new MsgBox();
+			b.MsgType = 3;
+			b.Msgbody = JsonUtility.ToJson(list);
+			TcpCommuSystem.Instance().SendMsg(BFrameSyncUtility.Encode(b));
+		}
 
         private void OnExitRoom()
 		{
@@ -85,43 +133,20 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
 		private void OnCreatNewRoom()
 		{
 			if (ISSTARTSERVER)
-			{
-				Room RoomLobby = new Room();
-				RoomLobby.RoomIPAddress = discovry.IPAddress;
-				RoomLobby.port = discovry.broadcastPort;
-				RoomLobby.IsOwner = true;
-				RoomLobby.UIItem = ChangeUIStaute(discovry.IPAddress, discovry.broadcastPort);
-				//RoomLobbyList.Add(RoomLobby);
-				ServerRoom = RoomLobby;
-				StartCoroutine(discovry.InitAndStartServer());
-				//MsgParseServer parse = new MsgParseServer();
-				//parse.SetMessageFeedback((data, IPAddress) =>
-				//{
-
-				//	RoomLobby statue = JsonUtility.FromJson<RoomLobby>(Encoding.UTF8.GetString(data));
-				//	switch (statue.LobbyStatue) {
-				//		case 0:
-				//			break;
-				//		case 1:
-				//			GameObject clientItem = GameObject.Instantiate(ClientItem, ClientParent);
-				//			clientItem.transform.GetChild(0).GetComponent<Text>().text = IPAddress;
-				//			clientItem.transform.GetChild(1).GetComponent<Image>().color = statue.ClientStatue ? Color.green : Color.red;
-				//			RoomMemeber memeber = new RoomMemeber();
-				//			memeber.IPAddress = IPAddress;
-				//			memeber.IsReady = statue.ClientStatue ? true : false;
-				//			memeber.UIItem = clientItem;
-				//			RoomRemberList.Add(memeber);
-				//			break;
-				//		case 2:
-				//			break;
-				//	}
-				//});
-				//TODO Set ServerStart'
-				TcpCommuSystem.Instance().StartServer(discovry.IPAddress);
-				CreatRoomBtn.transform.GetChild(0).GetComponent<Text>().text = "关闭房间";
-				ISSTARTSERVER = false;
-			}
-			else {
+            {
+                Room RoomLobby = new Room();
+                RoomLobby.RoomIPAddress = discovry.IPAddress;
+                RoomLobby.port = discovry.broadcastPort;
+                RoomLobby.IsOwner = true;
+                RoomLobby.UIItem = ChangeUIStaute(discovry.IPAddress, discovry.broadcastPort);
+                CreatServerRemeber(RoomLobby);
+                StartCoroutine(discovry.InitAndStartServer());
+                //TODO Set ServerStart'
+                TcpCommuSystem.Instance().StartServer(discovry.IPAddress);
+                CreatRoomBtn.transform.GetChild(0).GetComponent<Text>().text = "关闭房间";
+                ISSTARTSERVER = false;
+            }
+            else {
 				if (ServerRoom != null) {
 					Destroy(ServerRoom.UIItem);
 					TcpCommuSystem.Instance().CloseServer();
@@ -133,7 +158,20 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
 
 		}
 
-		private GameObject ChangeUIStaute(string IP,int port)
+        private void CreatServerRemeber(Room RoomLobby)
+        {
+            GameObject c = GameObject.Instantiate(ClientItem, ClientParent);
+            c.transform.GetChild(0).GetComponent<Text>().text = discovry.IPAddress;
+            c.transform.GetChild(1).GetComponent<Image>().color = Color.green;
+            RoomMemeber m = new RoomMemeber();
+            m.IPAddress = discovry.IPAddress;
+            m.IsReady = true;
+            m.UIItem = c;
+            RoomRemberList.Add(m);
+            ServerRoom = RoomLobby;
+        }
+
+        private GameObject ChangeUIStaute(string IP,int port)
 		{
 			GameObject room = GameObject.Instantiate(RoomItem, RoomScroll);
 			room.transform.GetChild(0).GetComponent<Text>().text = IP + ":" + port;
@@ -177,17 +215,16 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
 			item.transform.GetChild(0).GetComponent<Text>().text = IPAddress;
 			item.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(() =>
 			{
-                ///TODO CreateConnnect
-                TcpSocketClientMgr client = new TcpSocketClientMgr(new ReceviceDataCKeeper(new MsgParseClient()), new MessagerDataCSender(new HeartbeatSolverClient().SetHeartbeatMsg(" ").SendPeriod(10)));
-                client.ConnectToServer(IP, 8080);
+				///TODO CreateConnnect
+				TcpCommuSystem.Instance().ConnectToServer(IP);
 				RoomLobby statue = new RoomLobby();
 				statue.RoomStatue = false;
 				statue.LobbyStatue = 1;
 				statue.ClientStatue = false;
-				MsgTalk t = new MsgTalk();
-				t.MsgType = 1;
-				t.Msgbody = JsonUtility.ToJson(statue);
-				client.Send(BFrameSyncUtility.Encode(t));
+				MsgBox b = new MsgBox();
+				b.MsgType = 1;
+				b.Msgbody = JsonUtility.ToJson(statue);
+				TcpCommuSystem.Instance().SendMsg(BFrameSyncUtility.Encode(b));
 			});
 			RoomLobby = new Room();
 			RoomLobby.RoomIPAddress = discovry.IPAddress;

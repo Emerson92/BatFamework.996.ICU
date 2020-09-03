@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace THEDARKKNIGHT.Example.FameSync { 
@@ -22,6 +23,7 @@ namespace THEDARKKNIGHT.Example.FameSync {
 
 		public string IPAddress;
 
+		[NonSerialized]
 		public GameObject UIItem;
 
 		public bool IsReady;

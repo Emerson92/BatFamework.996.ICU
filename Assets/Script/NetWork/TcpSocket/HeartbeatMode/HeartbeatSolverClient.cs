@@ -65,6 +65,12 @@ namespace THEDARKKNIGHT.Network.TcpSocket.Client
             return this;
         }
 
+        public HeartbeatSolverClient SetHeartbeatMsg(byte[] msg)
+        {
+            this.HeartbeatMsg = msg;
+            return this;
+        }
+
         public void SetSendMsgAuthority(Action<byte[]> authority)
         {
             this.SendMsgFunction = authority;
