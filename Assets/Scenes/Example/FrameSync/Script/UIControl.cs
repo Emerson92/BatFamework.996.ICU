@@ -10,10 +10,11 @@ using THEDARKKNIGHT.Network.TcpSocket;
 using THEDARKKNIGHT.Network.TcpSocket.Client;
 using THEDARKKNIGHT.Network.TcpSocket.Server;
 using THEDARKKNIGHT.SyncSystem.FrameSync.Utility;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static MsgDataParse;
+using static THEDARKKNIGHT.Example.FameSync.UI.MsgDataParse;
 
 namespace THEDARKKNIGHT.Example.FameSync.UI { 
 
@@ -24,6 +25,8 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
 		public DeviceDiscovry discovry;
 
 		public Button CreatRoomBtn;
+
+		public Button StartBtn;
 
 		public Button ExitRoomBtn;
 
@@ -50,6 +53,12 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
 			ExitRoomBtn.onClick.AddListener(OnExitRoom);
 			InvokeRepeating("CheckRoomList",1,1);
 			BEventManager.Instance().AddListener("MsgOnReceive", OnMsgReceiveCallback);
+			StartBtn.onClick.AddListener(OnStartGame);
+		}
+
+        private void OnStartGame()
+        {
+			FrameSyncSceneManager.Instance().EnterFrameSyncMainScene();
 		}
 
         private object OnMsgReceiveCallback(object data)
@@ -73,6 +82,7 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
                     RoomRemberList.Add(memeber);
 					//TODO 下发房间列表
 					SendAllRemember();
+					CheckReadyState();
                     break;
                 case 2://退出房间
 					int i = 0;
@@ -103,9 +113,26 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
 						RoomRemberList.Add(m);
 					});
 					break;
+				case 4://房间关闭
+					DestoryAllRemeberUI();
+					TcpCommuSystem.Instance().Close();
+					break;
 			}
             return null;
         }
+
+        private void CheckReadyState()
+        {
+			bool ReadyToGO = true;
+			for (int i = 0; i < RoomRemberList.Count; i++) {
+				if (!RoomRemberList[i].IsReady)
+				{
+					ReadyToGO = false;
+					break;
+				}
+			}
+			StartBtn.interactable = ReadyToGO ? true : false;
+		}
 
         private void DestoryAllRemeberUI()
         {
@@ -149,9 +176,14 @@ namespace THEDARKKNIGHT.Example.FameSync.UI {
             else {
 				if (ServerRoom != null) {
 					Destroy(ServerRoom.UIItem);
-					TcpCommuSystem.Instance().CloseServer();
 					ServerRoom = null;
 					CreatRoomBtn.transform.GetChild(0).GetComponent<Text>().text = "创建房间";
+					DestoryAllRemeberUI();
+					MsgBox b = new MsgBox();
+					b.MsgType = 4;
+					b.Msgbody = null;
+					TcpCommuSystem.Instance().SendMsg(BFrameSyncUtility.Encode(b));
+					TcpCommuSystem.Instance().Close();
 					ISSTARTSERVER = true;
 				}
 			}
